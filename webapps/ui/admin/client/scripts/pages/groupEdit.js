@@ -42,7 +42,7 @@ var Controller = [
   '$uibModal',
   'unescape',
   '$translate',
-  function(
+  function (
     $scope,
     pageService,
     $routeParams,
@@ -59,11 +59,11 @@ var Controller = [
       TenantResource = camAPI.resource('tenant'),
       UserResource = camAPI.resource('user');
 
-    var refreshBreadcrumbs = function() {
+    var refreshBreadcrumbs = function () {
       pageService.breadcrumbsClear();
       pageService.breadcrumbsAdd({
         label: $translate.instant('GROUP_EDIT_GROUPS'),
-        href: '#/groups/'
+        href: '#/groups/',
       });
     };
 
@@ -84,12 +84,12 @@ var Controller = [
     var groupUserPages = ($scope.groupUserPages = {
       size: 25,
       total: 0,
-      current: 1
+      current: 1,
     });
     var groupTenantPages = ($scope.groupTenantPages = {
       size: 25,
       total: 0,
-      current: 1
+      current: 1,
     });
 
     var tenantsSorting = ($scope.tenantsSorting = null);
@@ -98,7 +98,7 @@ var Controller = [
     // common form validation //////////////////////////
 
     /** form must be valid & user must have made some changes */
-    $scope.canSubmit = function(form, modelObject) {
+    $scope.canSubmit = function (form, modelObject) {
       return (
         form.$valid &&
         !form.$pristine &&
@@ -109,11 +109,11 @@ var Controller = [
 
     // update group form /////////////////////////////
 
-    var loadGroup = ($scope.loadGroup = function() {
+    var loadGroup = ($scope.loadGroup = function () {
       $scope.groupLoadingState = 'LOADING';
       GroupResource.get(
         {id: $scope.decodedGroupId},
-        function(err, res) {
+        function (err, res) {
           $scope.groupLoadingState = 'LOADED';
           $scope.group = res;
           $scope.groupName = res.name ? res.name : res.id;
@@ -126,40 +126,40 @@ var Controller = [
           refreshBreadcrumbs();
           pageService.breadcrumbsAdd({
             label: $scope.groupName,
-            href: '#/groups/' + $scope.group.id
+            href: '#/groups/' + $scope.group.id,
           });
         },
-        function() {
+        function () {
           $scope.groupLoadingState = 'ERROR';
         }
       );
     });
 
-    $scope.onTenantsSortingChanged = function(_sorting) {
+    $scope.onTenantsSortingChanged = function (_sorting) {
       tenantsSorting = $scope.tenantsSorting = $scope.tenantsSorting || {};
       tenantsSorting.sortBy = _sorting.sortBy;
       tenantsSorting.sortOrder = _sorting.sortOrder;
       updateGroupTenantView();
     };
 
-    $scope.onUsersSortingInitialized = function(_sorting) {
+    $scope.onUsersSortingInitialized = function (_sorting) {
       usersSorting = _sorting;
     };
 
-    $scope.onUsersSortingChanged = function(_sorting) {
+    $scope.onUsersSortingChanged = function (_sorting) {
       usersSorting = _sorting;
       updateGroupUserView();
     };
 
     $scope.$watch(
-      function() {
+      function () {
         return (
           $location.search().tab === 'users' &&
           usersSorting &&
           parseInt(($location.search() || {}).page || '1')
         );
       },
-      function(newValue) {
+      function (newValue) {
         if (newValue) {
           groupUserPages.current = newValue;
           updateGroupUserView();
@@ -168,14 +168,14 @@ var Controller = [
     );
 
     $scope.$watch(
-      function() {
+      function () {
         return (
           $location.search().tab === 'tenants' &&
           tenantsSorting &&
           parseInt(($location.search() || {}).page || '1')
         );
       },
-      function(newValue) {
+      function (newValue) {
         if (newValue) {
           groupTenantPages.current = newValue;
           updateGroupTenantView();
@@ -183,30 +183,30 @@ var Controller = [
       }
     );
 
-    $scope.pageChange = function(page) {
+    $scope.pageChange = function (page) {
       search.updateSilently({page: !page || page == 1 ? null : page});
     };
 
-    var preparePaging = function(pages) {
+    var preparePaging = function (pages) {
       var page = pages.current,
         count = pages.size,
         firstResult = (page - 1) * count;
 
       return {
         firstResult: firstResult,
-        maxResults: count
+        maxResults: count,
       };
     };
 
     $scope.canSortUserEntries = true;
-    var updateGroupUserView = function() {
+    var updateGroupUserView = function () {
       var pagingParams = preparePaging(groupUserPages);
       var searchParams = {memberOfGroup: $scope.decodedGroupId};
 
       $scope.userLoadingState = 'LOADING';
       UserResource.list(
         angular.extend({}, searchParams, pagingParams, usersSorting),
-        function(err, res) {
+        function (err, res) {
           if (err === null) {
             $scope.groupUserList = res;
             $scope.userLoadingState = res.length ? 'LOADED' : 'EMPTY';
@@ -214,7 +214,7 @@ var Controller = [
             // When using LDAP, sorting parameters might not work and throw errors
             // Try again with default sorting
             UserResource.list(angular.extend({}, searchParams, pagingParams))
-              .then(function(res) {
+              .then(function (res) {
                 $scope.canSortUserEntries = false;
                 $scope.groupUserList = res;
                 $scope.userLoadingState = res.length ? 'LOADED' : 'EMPTY';
@@ -222,34 +222,34 @@ var Controller = [
                 Notifications.addMessage({
                   status: $translate.instant('USERS_NO_SORTING_HEADER'),
                   message: $translate.instant('USERS_NO_SORTING_BODY'),
-                  exclusive: true
+                  exclusive: true,
                 });
               })
-              .catch(function() {
+              .catch(function () {
                 $scope.userLoadingState = 'ERROR';
               });
           }
         }
       );
 
-      UserResource.count(searchParams, function(err, res) {
+      UserResource.count(searchParams, function (err, res) {
         groupUserPages.total = res.count;
       });
     };
 
-    var updateGroupTenantView = ($scope.updateGroupTenantView = function() {
+    var updateGroupTenantView = ($scope.updateGroupTenantView = function () {
       var pagingParams = preparePaging(groupTenantPages);
       var searchParams = {groupMember: $scope.decodedGroupId};
 
       $scope.tenantLoadingState = 'LOADING';
       TenantResource.list(
         angular.extend({}, searchParams, pagingParams, tenantsSorting),
-        function(err, res) {
+        function (err, res) {
           if (err === null) {
             $scope.tenantList = res;
 
             $scope.idList = [];
-            angular.forEach($scope.tenantList, function(tenant) {
+            angular.forEach($scope.tenantList, function (tenant) {
               $scope.idList.push(tenant.id);
             });
 
@@ -260,63 +260,63 @@ var Controller = [
         }
       );
 
-      TenantResource.count(searchParams, function(err, res) {
+      TenantResource.count(searchParams, function (err, res) {
         groupTenantPages.total = res.count;
       });
 
       checkRemoveTenantMembershipAuthorized();
     });
 
-    var checkRemoveTenantMembershipAuthorized = function() {
+    var checkRemoveTenantMembershipAuthorized = function () {
       AuthorizationResource.check(
         {
           permissionName: 'DELETE',
           resourceName: 'tenant membership',
-          resourceType: 3
+          resourceType: 3,
         },
-        function(err, res) {
+        function (err, res) {
           $scope.availableOperations.removeTenant = res.authorized;
         }
       );
     };
 
-    GroupResource.options({id: $scope.decodedGroupId}, function(err, res) {
-      angular.forEach(res.links, function(link) {
+    GroupResource.options({id: $scope.decodedGroupId}, function (err, res) {
+      angular.forEach(res.links, function (link) {
         $scope.availableOperations[link.rel] = true;
       });
     });
 
-    $scope.removeTenant = function(tenantId) {
+    $scope.removeTenant = function (tenantId) {
       TenantResource.deleteGroupMember(
         {groupId: $scope.decodedGroupId, id: tenantId},
-        function() {
+        function () {
           Notifications.addMessage({
             type: 'success',
             status: $translate.instant('NOTIFICATIONS_STATUS_SUCCESS'),
             message: $translate.instant('GROUP_EDIT_REMOVED_FROM_TENANT', {
-              group: $scope.group.id
-            })
+              group: $scope.group.id,
+            }),
           });
           updateGroupTenantView();
         }
       );
     };
 
-    $scope.updateGroup = function() {
+    $scope.updateGroup = function () {
       GroupResource.update(
         angular.extend({}, {groupId: $scope.decodedGroupId}, $scope.group),
-        function(err) {
+        function (err) {
           if (err === null) {
             Notifications.addMessage({
               type: 'success',
               status: $translate.instant('NOTIFICATIONS_STATUS_SUCCESS'),
-              message: $translate.instant('GROUP_EDIT_UPDATE_SUCCESS')
+              message: $translate.instant('GROUP_EDIT_UPDATE_SUCCESS'),
             });
             loadGroup();
           } else {
             Notifications.addError({
               status: $translate.instant('NOTIFICATIONS_STATUS_FAILED'),
-              message: $translate.instant('GROUP_EDIT_UPDATE_FAILED')
+              message: $translate.instant('GROUP_EDIT_UPDATE_FAILED'),
             });
           }
         }
@@ -325,35 +325,35 @@ var Controller = [
 
     // delete group form /////////////////////////////
 
-    $scope.deleteGroup = function() {
+    $scope.deleteGroup = function () {
       $modal
         .open({
           template: confirmationTemplate,
           controller: [
             '$scope',
-            function($dialogScope) {
+            function ($dialogScope) {
               $dialogScope.question = $translate.instant(
                 'GROUP_EDIT_DELETE_CONFIRM',
                 {group: $scope.group.id}
               );
-            }
-          ]
+            },
+          ],
         })
-        .result.then(function() {
-          GroupResource.delete({id: $scope.decodedGroupId}, function(err) {
+        .result.then(function () {
+          GroupResource.delete({id: $scope.decodedGroupId}, function (err) {
             if (err === null) {
               Notifications.addMessage({
                 type: 'success',
                 status: $translate.instant('NOTIFICATIONS_STATUS_SUCCESS'),
                 message: $translate.instant('GROUP_EDIT_DELETE_SUCCESS', {
-                  group: $scope.group.id
-                })
+                  group: $scope.group.id,
+                }),
               });
               $location.path('/groups');
             } else {
               Notifications.addError({
                 status: $translate.instant('NOTIFICATIONS_STATUS_FAILED'),
-                message: $translate.instant('GROUP_EDIT_DELETE_FAILED')
+                message: $translate.instant('GROUP_EDIT_DELETE_FAILED'),
               });
             }
           });
@@ -362,15 +362,15 @@ var Controller = [
     };
 
     // tenant membership dialog /////////////////////////
-    var openCreateDialog = function(dialogCfg) {
+    var openCreateDialog = function (dialogCfg) {
       var dialog = $modal.open({
         controller: dialogCfg.ctrl,
         template: dialogCfg.template,
-        resolve: dialogCfg.resolve
+        resolve: dialogCfg.resolve,
       });
 
       dialog.result
-        .then(function(result) {
+        .then(function (result) {
           if (result == 'SUCCESS') {
             dialogCfg.callback();
           }
@@ -378,33 +378,33 @@ var Controller = [
         .catch(angular.noop);
     };
 
-    var prepareResolveObject = function(listObj) {
+    var prepareResolveObject = function (listObj) {
       return angular.extend(
         {},
 
         {
-          member: function() {
+          member: function () {
             return $scope.group;
           },
-          memberId: function() {
+          memberId: function () {
             return $scope.decodedGroupId;
-          }
+          },
         },
 
         listObj
       );
     };
 
-    $scope.openCreateTenantMembershipDialog = function() {
+    $scope.openCreateTenantMembershipDialog = function () {
       var dialogConfig = {
         ctrl: 'TenantMembershipDialogController',
         template: tenantTemplate,
         callback: updateGroupTenantView,
         resolve: prepareResolveObject({
-          idList: function() {
+          idList: function () {
             return $scope.idList;
-          }
-        })
+          },
+        }),
       };
 
       openCreateDialog(dialogConfig);
@@ -412,11 +412,11 @@ var Controller = [
 
     // page controls ////////////////////////////////////
 
-    $scope.show = function(fragment) {
+    $scope.show = function (fragment) {
       return fragment == $location.search().tab;
     };
 
-    $scope.activeClass = function(link) {
+    $scope.activeClass = function (link) {
       var path = $location.absUrl();
       return path.indexOf(link) != -1 ? 'active' : '';
     };
@@ -431,20 +431,20 @@ var Controller = [
     }
 
     // translate
-    $scope.translate = function(token, object) {
+    $scope.translate = function (token, object) {
       return $translate.instant(token, object);
     };
-  }
+  },
 ];
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/groups/:groupId', {
       template: template,
       controller: Controller,
       authentication: 'required',
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];

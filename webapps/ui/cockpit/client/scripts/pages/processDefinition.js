@@ -28,7 +28,7 @@ var camCommons = require('../../../../../camunda-commons-ui/lib');
 
 var ngModule = angular.module('cam.cockpit.pages.processDefinition', [
   'dataDepend',
-  camCommons.name
+  camCommons.name,
 ]);
 
 var Controller = [
@@ -51,7 +51,7 @@ var Controller = [
   '$translate',
   'queryMaxResults',
   'configuration',
-  function(
+  function (
     $location,
     $scope,
     $rootScope,
@@ -76,9 +76,9 @@ var Controller = [
     var pageData = ($scope.pageData = dataDepend.create($scope));
 
     $scope.diagramCollapsed = true;
-    $scope.onDiagramCollapseChange = function(collapsed) {
+    $scope.onDiagramCollapseChange = function (collapsed) {
       if (!$scope.$$phase) {
-        $scope.$apply(function() {
+        $scope.$apply(function () {
           $scope.diagramCollapsed = collapsed;
         });
       } else {
@@ -88,18 +88,18 @@ var Controller = [
 
     // utilities ///////////////////////
     $scope.hovered = null;
-    $scope.hoverTitle = function(id) {
+    $scope.hoverTitle = function (id) {
       $scope.hovered = id || null;
     };
 
-    $scope.$on('$locationChangeSuccess', function() {
+    $scope.$on('$locationChangeSuccess', function () {
       var newFilter = parseFilterFromUri();
 
       if ($location.path().indexOf(processDefinition.id) > -1) {
         if (
           searchWidgetUtils.shouldUpdateFilter(newFilter, currentFilter, [
             'activityIds',
-            'parentProcessDefinitionId'
+            'parentProcessDefinitionId',
           ])
         ) {
           processData.set('filter', newFilter);
@@ -141,7 +141,7 @@ var Controller = [
       }
 
       $scope.filter = currentFilter = angular.extend({}, filter, {
-        scrollToBpmnElement: scrollTo
+        scrollToBpmnElement: scrollTo,
       });
 
       if (changed) {
@@ -161,7 +161,7 @@ var Controller = [
           'activityIdIn',
           params
         ),
-        parentProcessDefinitionId: params.parentProcessDefinitionId
+        parentProcessDefinitionId: params.parentProcessDefinitionId,
       };
 
       return filter;
@@ -186,7 +186,7 @@ var Controller = [
 
       search.updateSilently({
         parentProcessDefinitionId: parentProcessDefinitionId || null,
-        searchQuery: searches ? JSON.stringify(searches) : null
+        searchQuery: searches ? JSON.stringify(searches) : null,
       });
 
       currentFilter = filter;
@@ -201,25 +201,25 @@ var Controller = [
 
     processData.provide('parentId', [
       'filter',
-      function(filter) {
+      function (filter) {
         return filter.parentProcessDefinitionId;
-      }
+      },
     ]);
 
     processData.provide('parent', [
       'parentId',
-      function(parentId) {
+      function (parentId) {
         if (!parentId) {
           return null;
         } else {
           return ProcessDefinitionResource.get({id: parentId}).$promise;
         }
-      }
+      },
     ]);
 
     processData.provide('instances.all', [
       'processDefinition',
-      function(definition) {
+      function (definition) {
         var queryParams = {processDefinitionKey: definition.key};
 
         if (definition.tenantId) {
@@ -229,54 +229,54 @@ var Controller = [
         }
 
         return ProcessInstanceResource.count(queryParams).$promise;
-      }
+      },
     ]);
 
     processData.provide('instances.current', [
       'processDefinition',
-      function(definition) {
+      function (definition) {
         return ProcessInstanceResource.count({
-          processDefinitionId: definition.id
+          processDefinitionId: definition.id,
         }).$promise;
-      }
+      },
     ]);
 
     processData.provide('bpmn20Xml', [
       'processDefinition',
-      function(definition) {
+      function (definition) {
         return ProcessDefinitionResource.getBpmn20Xml({id: definition.id})
           .$promise;
-      }
+      },
     ]);
 
     processData.provide('parsedBpmn20', [
       'bpmn20Xml',
-      function(bpmn20Xml) {
+      function (bpmn20Xml) {
         return Transform.transformBpmn20Xml(bpmn20Xml.bpmn20Xml);
-      }
+      },
     ]);
 
     processData.provide('bpmnElements', [
       'parsedBpmn20',
-      function(parsedBpmn20) {
+      function (parsedBpmn20) {
         return parsedBpmn20.bpmnElements;
-      }
+      },
     ]);
 
     processData.provide('bpmnDefinition', [
       'parsedBpmn20',
-      function(parsedBpmn20) {
+      function (parsedBpmn20) {
         return parsedBpmn20.definitions;
-      }
+      },
     ]);
 
     processData.provide('allProcessDefinitions', [
       'processDefinition',
-      function(definition) {
+      function (definition) {
         var queryParams = {
           key: definition.key,
           sortBy: 'version',
-          sortOrder: 'desc'
+          sortOrder: 'desc',
         };
 
         if (definition.tenantId) {
@@ -287,16 +287,16 @@ var Controller = [
 
         return queryMaxResults(
           queryParams,
-          function(params) {
+          function (params) {
             return camAPI.resource('process-definition').list(params);
           },
-          function(params) {
+          function (params) {
             return camAPI.resource('process-definition').count(params);
           }
-        ).then(function(res) {
+        ).then(function (res) {
           return res.items;
         });
-      }
+      },
     ]);
 
     // processDiagram /////////////////////
@@ -304,35 +304,35 @@ var Controller = [
     processData.provide('processDiagram', [
       'bpmnDefinition',
       'bpmnElements',
-      function(bpmnDefinition, bpmnElements) {
+      function (bpmnDefinition, bpmnElements) {
         var diagram = ($scope.processDiagram = $scope.processDiagram || {});
 
         angular.extend(diagram, {
           bpmnDefinition: bpmnDefinition,
-          bpmnElements: bpmnElements
+          bpmnElements: bpmnElements,
         });
 
         return diagram;
-      }
+      },
     ]);
     processData.provide('activityInstanceStatistics', [
       'processDefinition',
-      function(processDefinition) {
+      function (processDefinition) {
         if (configuration.getRuntimeActivityInstanceMetrics()) {
           return ProcessDefinitionResource.queryActivityStatistics({
             id: processDefinition.id,
-            incidents: true
+            incidents: true,
           }).$promise;
         }
         return [];
-      }
+      },
     ]);
     // activityInstances
     processData.provide('activityInstances', [
       'activityInstanceStatistics',
-      function(instanceStatistics) {
+      function (instanceStatistics) {
         return instanceStatistics;
-      }
+      },
     ]);
 
     // activityInstanceTree, activityIdToInstancesMap, instanceIdToInstanceMap
@@ -342,7 +342,7 @@ var Controller = [
         'activityInstances',
         'processDefinition',
         'bpmnElements',
-        function(activityInstances, processDefinition, bpmnElements) {
+        function (activityInstances, processDefinition, bpmnElements) {
           var model = bpmnElements[processDefinition.key];
 
           function getActivityName(bpmnElement) {
@@ -359,7 +359,7 @@ var Controller = [
           function decorateActivityInstanceTree(instances) {
             return (
               (instances &&
-                instances.map(function(instance) {
+                instances.map(function (instance) {
                   var result = {};
                   var targetActivityId = instance.activityId,
                     targetBpmnElement = bpmnElements[targetActivityId];
@@ -377,12 +377,11 @@ var Controller = [
 
           activityInstances.name = getActivityName(model);
 
-          var activityIdToInstancesMap = decorateActivityInstanceTree(
-            activityInstances
-          );
+          var activityIdToInstancesMap =
+            decorateActivityInstanceTree(activityInstances);
 
           return [activityIdToInstancesMap];
-        }
+        },
       ]
     );
 
@@ -391,18 +390,18 @@ var Controller = [
     // begin data usage ////////////////////////////
     $rootScope.showBreadcrumbs = true;
 
-    processData.observe('allProcessDefinitions', function(allDefinitions) {
+    processData.observe('allProcessDefinitions', function (allDefinitions) {
       $scope.allDefinitions = allDefinitions;
     });
 
     $scope.breadcrumbData = processData.observe(
       ['processDefinition', 'parent'],
-      function(definition, parent) {
+      function (definition, parent) {
         page.breadcrumbsClear();
 
         page.breadcrumbsAdd({
           label: $translate.instant('PROCESS_DEFINITION_PROCESSES'),
-          href: '#/processes/'
+          href: '#/processes/',
         });
 
         if (parent) {
@@ -410,12 +409,12 @@ var Controller = [
             type: 'processDefinition',
             label: parent.name || parent.id.slice(0, 8) + '…',
             href: '#/process-definition/' + parent.id + '/runtime',
-            processDefinition: parent
+            processDefinition: parent,
           });
         }
 
         var plugins = Views.getProviders({
-          component: 'cockpit.processDefinition.view'
+          component: 'cockpit.processDefinition.view',
         });
 
         page.breadcrumbsAdd({
@@ -425,20 +424,20 @@ var Controller = [
           processDefinition: definition,
 
           choices: plugins
-            .sort(function(a, b) {
+            .sort(function (a, b) {
               return a.priority < b.priority
                 ? -1
                 : a.priority > b.priority
                 ? 1
                 : 0;
             })
-            .map(function(plugin) {
+            .map(function (plugin) {
               return {
                 active: plugin.id === 'runtime',
                 label: plugin.label,
-                href: '#/process-definition/' + definition.id + '/' + plugin.id
+                href: '#/process-definition/' + definition.id + '/' + plugin.id,
               };
-            })
+            }),
         });
 
         page.titleSet(
@@ -449,21 +448,22 @@ var Controller = [
 
     $scope.instanceStatistics = processData.observe(
       ['instances.all', 'instances.current'],
-      function(allCount, currentCount) {
+      function (allCount, currentCount) {
         $scope.instanceStatistics.all = allCount;
         $scope.instanceStatistics.current = currentCount;
       }
     );
 
-    $scope.processDiagramData = processData.observe('processDiagram', function(
-      processDiagram
-    ) {
-      $scope.processDiagram = processDiagram;
-    });
+    $scope.processDiagramData = processData.observe(
+      'processDiagram',
+      function (processDiagram) {
+        $scope.processDiagram = processDiagram;
+      }
+    );
 
     processData.observe('filter', autoCompleteFilter);
 
-    $scope.handleBpmnElementSelection = function(activityId, event) {
+    $scope.handleBpmnElementSelection = function (activityId, event) {
       var newFilter = angular.copy(currentFilter),
         ctrl = event.ctrlKey,
         activityIds = angular.copy(newFilter.activityIds) || [],
@@ -486,7 +486,7 @@ var Controller = [
       }
 
       if (ctrl & selected) {
-        return activityIds.filter(function(id) {
+        return activityIds.filter(function (id) {
           return id !== activityId && id !== activityId + '#multiInstanceBody';
         });
       }
@@ -514,21 +514,21 @@ var Controller = [
         'filter',
         'pageData',
         'instanceStatistics',
-        'allDefinitions'
-      ]
+        'allDefinitions',
+      ],
     };
     $scope.processDefinitionTabs = Views.getProviders({
-      component: 'cockpit.processDefinition.runtime.tab'
+      component: 'cockpit.processDefinition.runtime.tab',
     });
     $scope.processDefinitionActions = Views.getProviders({
-      component: 'cockpit.processDefinition.runtime.action'
+      component: 'cockpit.processDefinition.runtime.action',
     });
 
     // extend the current scope to instantiate
     // with process definition data providers
     Data.instantiateProviders('cockpit.processDefinition.data', {
       $scope: $scope,
-      processData: processData
+      processData: processData,
     });
 
     $scope.hasReportPlugin =
@@ -542,17 +542,17 @@ var Controller = [
 
     // INITIALIZE PLUGINS
     var processPlugins = Views.getProviders({
-      component: 'cockpit.processDefinition.runtime.tab'
+      component: 'cockpit.processDefinition.runtime.tab',
     })
       .concat(
         Views.getProviders({
-          component: 'cockpit.processDefinition.runtime.action'
+          component: 'cockpit.processDefinition.runtime.action',
         })
       )
       .concat(Views.getProviders({component: 'cockpit.processDefinition.view'}))
       .concat(
         Views.getProviders({
-          component: 'cockpit.processDefinition.diagram.overlay'
+          component: 'cockpit.processDefinition.diagram.overlay',
         })
       )
       .concat(Views.getProviders({component: 'cockpit.jobDefinition.action'}));
@@ -560,7 +560,7 @@ var Controller = [
     var initData = {
       processDefinition: processDefinition,
       processData: processData,
-      pageData: pageData
+      pageData: pageData,
     };
 
     for (var i = 0; i < processPlugins.length; i++) {
@@ -569,11 +569,11 @@ var Controller = [
       }
     }
 
-    $scope.selectTab = function(tabProvider) {
+    $scope.selectTab = function (tabProvider) {
       $scope.selectedTab = tabProvider;
 
       search.updateSilently({
-        detailsTab: tabProvider.id
+        detailsTab: tabProvider.id,
       });
     };
 
@@ -587,7 +587,7 @@ var Controller = [
       if (selectedTabId) {
         var provider = Views.getProvider({
           component: 'cockpit.processDefinition.runtime.tab',
-          id: selectedTabId
+          id: selectedTabId,
         });
         if (provider && tabs.indexOf(provider) != -1) {
           $scope.selectedTab = provider;
@@ -596,7 +596,7 @@ var Controller = [
       }
 
       search.updateSilently({
-        detailsTab: null
+        detailsTab: null,
       });
 
       $scope.selectedTab = tabs[0];
@@ -604,7 +604,7 @@ var Controller = [
 
     setDefaultTab($scope.processDefinitionTabs);
 
-    $scope.getDeploymentUrl = function() {
+    $scope.getDeploymentUrl = function () {
       var path = '#/repository';
 
       var deploymentId = processDefinition.deploymentId;
@@ -615,19 +615,19 @@ var Controller = [
           {
             type: 'id',
             operator: 'eq',
-            value: deploymentId
-          }
-        ])
+            value: deploymentId,
+          },
+        ]),
       };
 
       return routeUtil.redirectTo(path, searches, [
         'deployment',
         'resourceName',
-        'deploymentsQuery'
+        'deploymentsQuery',
       ]);
     };
 
-    $scope.isLatestVersion = function() {
+    $scope.isLatestVersion = function () {
       return (
         $scope.processDefinition &&
         $scope.processDefinition.version === getLatestVersion()
@@ -638,14 +638,14 @@ var Controller = [
       if ($scope.allDefinitions) {
         return Math.max.apply(
           null,
-          $scope.allDefinitions.map(function(def) {
+          $scope.allDefinitions.map(function (def) {
             return def.version;
           })
         );
       }
     }
 
-    $scope.getMigrationUrl = function() {
+    $scope.getMigrationUrl = function () {
       var path = '#/migration';
 
       var latestVersion = getLatestVersion();
@@ -658,25 +658,25 @@ var Controller = [
           : $scope.processDefinition.version,
         targetVersion: $scope.isLatestVersion()
           ? $scope.processDefinition.version
-          : latestVersion
+          : latestVersion,
       };
 
       return routeUtil.redirectTo(path, searches, [
         'sourceKey',
         'targetKey',
         'sourceVersion',
-        'targetVersion'
+        'targetVersion',
       ]);
     };
-  }
+  },
 ];
 
 var RouteConfig = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider
       .when('/process-definition/:id', {
-        redirectTo: routeUtil.redirectToRuntime
+        redirectTo: routeUtil.redirectToRuntime,
       })
       .when('/process-definition/:id/runtime', {
         template: template,
@@ -687,24 +687,24 @@ var RouteConfig = [
           processDefinition: [
             'ResourceResolver',
             'ProcessDefinitionResource',
-            function(ResourceResolver, ProcessDefinitionResource) {
+            function (ResourceResolver, ProcessDefinitionResource) {
               return ResourceResolver.getByRouteParam('id', {
                 name: 'process definition',
-                resolve: function(id) {
+                resolve: function (id) {
                   return ProcessDefinitionResource.get({id: id});
-                }
+                },
               });
-            }
-          ]
+            },
+          ],
         },
-        reloadOnSearch: false
+        reloadOnSearch: false,
       });
-  }
+  },
 ];
 
 var ViewConfig = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.processDefinition.view', {
       id: 'runtime',
       priority: 20,
@@ -715,10 +715,10 @@ var ViewConfig = [
         'variables',
         'startedAfter',
         'startedBefore',
-        'viewbox'
-      ]
+        'viewbox',
+      ],
     });
-  }
+  },
 ];
 
 ngModule.config(RouteConfig).config(ViewConfig);

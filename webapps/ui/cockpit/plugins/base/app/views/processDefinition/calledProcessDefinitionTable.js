@@ -28,7 +28,7 @@ var template = fs.readFileSync(
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.processDefinition.runtime.tab', {
       id: 'call-process-definitions-table',
       label: 'PLUGIN_CALLED_PROCESS_DEFINITIONS_LABEL',
@@ -40,7 +40,7 @@ module.exports = [
         'PluginProcessDefinitionResource',
         '$translate',
         'localConf',
-        function(
+        function (
           $scope,
           $location,
           $q,
@@ -61,10 +61,10 @@ module.exports = [
           $scope.sortObj = loadLocal({
             sortBy: 'key',
             sortOrder: 'asc',
-            sortReverse: false
+            sortReverse: false,
           });
 
-          $scope.onSortChange = function(sortObj) {
+          $scope.onSortChange = function (sortObj) {
             sortObj = sortObj || $scope.sortObj;
             // sortReverse required by anqular-sorting;
             sortObj.sortReverse = sortObj.sortOrder !== 'asc';
@@ -79,15 +79,16 @@ module.exports = [
             return localConf.get('sortCalledProcessDefTab', defaultValue);
           }
 
-          $scope.getSearchQueryForSearchType = searchWidgetUtils.getSearchQueryForSearchType.bind(
-            null,
-            'activityIdIn'
-          );
+          $scope.getSearchQueryForSearchType =
+            searchWidgetUtils.getSearchQueryForSearchType.bind(
+              null,
+              'activityIdIn'
+            );
 
           processData.provide('calledProcessDefinitions', [
             'processDefinition',
             'filter',
-            function(processDefinition, newFilter) {
+            function (processDefinition, newFilter) {
               filter = angular.copy(newFilter);
 
               delete filter.page;
@@ -108,19 +109,19 @@ module.exports = [
                 {id: processDefinition.id},
                 filter
               ).$promise;
-            }
+            },
           ]);
 
           processData.observe(
             ['calledProcessDefinitions', 'bpmnElements'],
-            function(calledProcessDefinitions, bpmnElements) {
+            function (calledProcessDefinitions, bpmnElements) {
               $scope.calledProcessDefinitions = attachCalledFromActivities(
                 calledProcessDefinitions,
                 bpmnElements
-              ).map(function(calledProcessDefinition) {
+              ).map(function (calledProcessDefinition) {
                 return angular.extend({}, calledProcessDefinition, {
                   label:
-                    calledProcessDefinition.name || calledProcessDefinition.key
+                    calledProcessDefinition.name || calledProcessDefinition.key,
                 });
               });
               $scope.loadingState = $scope.calledProcessDefinitions.length
@@ -135,16 +136,16 @@ module.exports = [
           ) {
             var result = [];
 
-            angular.forEach(processDefinitions, function(d) {
+            angular.forEach(processDefinitions, function (d) {
               var calledFromActivityIds = d.calledFromActivityIds,
                 calledFromActivities = [];
 
-              angular.forEach(calledFromActivityIds, function(activityId) {
+              angular.forEach(calledFromActivityIds, function (activityId) {
                 var bpmnElement = bpmnElements[activityId];
 
                 var activity = {
                   id: activityId,
-                  name: (bpmnElement && bpmnElement.name) || activityId
+                  name: (bpmnElement && bpmnElement.name) || activityId,
                 };
 
                 calledFromActivities.push(activity);
@@ -152,16 +153,16 @@ module.exports = [
 
               result.push(
                 angular.extend({}, d, {
-                  calledFromActivities: calledFromActivities
+                  calledFromActivities: calledFromActivities,
                 })
               );
             });
 
             return result;
           }
-        }
+        },
       ],
-      priority: 5
+      priority: 5,
     });
-  }
+  },
 ];

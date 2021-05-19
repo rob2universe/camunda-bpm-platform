@@ -25,7 +25,7 @@ module.exports = [
   '$uibModalInstance',
   'incident',
   '$translate',
-  function(
+  function (
     $scope,
     $location,
     Notifications,
@@ -38,44 +38,44 @@ module.exports = [
       PERFORM = 'performing',
       FAILED = 'failed';
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       $modalInstance.close($scope.status);
     });
 
-    $scope.incrementRetry = function() {
+    $scope.incrementRetry = function () {
       $scope.status = PERFORM;
 
       JobResource.setRetries(
         {
-          id: incident.configuration
+          id: incident.configuration,
         },
         {
-          retries: 1
+          retries: 1,
         },
-        function() {
+        function () {
           $scope.status = FINISHED;
 
           Notifications.addMessage({
             status: $translate.instant('PLUGIN_JOB_RETRY_STATUS_FINISHED'),
             message: $translate.instant('PLUGIN_JOB_RETRY_MESSAGE_1'),
-            exclusive: true
+            exclusive: true,
           });
         },
-        function(error) {
+        function (error) {
           $scope.status = FAILED;
           Notifications.addError({
             status: $translate.instant('PLUGIN_JOB_RETRY_STATUS_FINISHED'),
             message: $translate.instant('PLUGIN_JOB_RETRY_ERROR_1', {
-              message: error.data.message
+              message: error.data.message,
             }),
-            exclusive: true
+            exclusive: true,
           });
         }
       );
     };
 
-    $scope.close = function(status) {
+    $scope.close = function (status) {
       $modalInstance.close(status);
     };
-  }
+  },
 ];

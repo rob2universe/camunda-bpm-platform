@@ -38,20 +38,20 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
       '$rootScope',
       'search',
       '$uibModal',
-      function($scope, $rootScope, search, $modal) {
-        $scope.openJobRetryDialog = function(incident) {
+      function ($scope, $rootScope, search, $modal) {
+        $scope.openJobRetryDialog = function (incident) {
           var dialog = $modal.open({
             resolve: {
-              incident: function() {
+              incident: function () {
                 return incident;
-              }
+              },
             },
             controller: 'JobRetryController',
-            template: dialogTemplate
+            template: dialogTemplate,
           });
 
           dialog.result
-            .then(function(result) {
+            .then(function (result) {
               if (result === 'finished') {
                 // refresh filter and all views
                 $scope.processData.set(
@@ -62,9 +62,9 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
             })
             .catch(angular.noop);
         };
-      }
+      },
     ],
-    priority: 50
+    priority: 50,
   });
 };
 

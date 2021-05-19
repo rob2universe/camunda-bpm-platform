@@ -22,7 +22,7 @@ var angular = require('angular');
 
 var template = fs.readFileSync(__dirname + '/template.html', 'utf8');
 
-module.exports = function(viewContext) {
+module.exports = function (viewContext) {
   return [
     '$scope',
     '$timeout',
@@ -33,7 +33,7 @@ module.exports = function(viewContext) {
     'processData',
     'processDiagram',
     'PluginProcessInstanceResource',
-    function(
+    function (
       $scope,
       $timeout,
       $location,
@@ -50,7 +50,7 @@ module.exports = function(viewContext) {
       function getFlowNodes() {
         var nodes = [];
 
-        elementRegistry.forEach(function(shape) {
+        elementRegistry.forEach(function (shape) {
           var bo = shape.businessObject;
           if (bo.$instanceOf('bpmn:CallActivity')) {
             nodes.push(bo.id);
@@ -73,9 +73,9 @@ module.exports = function(viewContext) {
 
         $scope.processData.set('filter', {
           activityIds: [activities[0].activityId],
-          activityInstanceIds: activities.map(function(activity) {
+          activityInstanceIds: activities.map(function (activity) {
             return activity.id;
-          })
+          }),
         });
       }
 
@@ -92,7 +92,7 @@ module.exports = function(viewContext) {
         /**
          * calls function dynamically and make sure to call $scope.apply
          */
-        var applyFunction = function() {
+        var applyFunction = function () {
           arguments[0].apply(this, Array.prototype.slice.call(arguments, 1));
           var phase = $scope.$root.$$phase;
           if (phase !== '$apply' && phase !== '$digest') {
@@ -104,8 +104,8 @@ module.exports = function(viewContext) {
          * hide buttonOverlay after delay time
          * @param delay
          */
-        var delayHide = function(delay) {
-          hideTimeout = $timeout(function() {
+        var delayHide = function (delay) {
+          hideTimeout = $timeout(function () {
             buttonOverlay.hide();
           }, delay);
         };
@@ -113,16 +113,16 @@ module.exports = function(viewContext) {
         /**
          * cancels timeout object
          */
-        var cancelHide = function() {
+        var cancelHide = function () {
           return hideTimeout && $timeout.cancel(hideTimeout);
         };
 
-        var mouseoverListener = function() {
+        var mouseoverListener = function () {
           buttonOverlay.show();
           applyFunction(cancelHide);
         };
 
-        var redirectToCalledPInstance = function(activityInstance) {
+        var redirectToCalledPInstance = function (activityInstance) {
           var url =
             '/process-instance/' +
             activityInstance.calledProcessInstanceId +
@@ -131,7 +131,7 @@ module.exports = function(viewContext) {
           $location.url(url);
         };
 
-        var clickListener = function() {
+        var clickListener = function () {
           buttonOverlay.tooltip('hide');
           return activityInstances.length > 1
             ? applyFunction(showCalledPInstances, activityInstances)
@@ -140,19 +140,19 @@ module.exports = function(viewContext) {
 
         // attach diagramNode listeners
         diagramNode.on('mouseover', mouseoverListener);
-        diagramNode.on('mouseout', function() {
+        diagramNode.on('mouseout', function () {
           delayHide(50);
         });
 
         // attach buttonOverlay listeners
         buttonOverlay.on('mouseover', mouseoverListener);
-        buttonOverlay.on('mouseout', function() {
+        buttonOverlay.on('mouseout', function () {
           delayHide(100);
         });
         buttonOverlay.on('click', clickListener);
 
         // clear listeners
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
           buttonOverlay.off('mouseover mouseout click');
           diagramNode.off('mouseover mouseout');
         });
@@ -173,19 +173,19 @@ module.exports = function(viewContext) {
               'PLUGIN_ACTIVITY_INSTANCE_SHOW_CALLED_PROCESS_INSTANCES'
             ),
             placement: 'top',
-            animation: false
+            animation: false,
           });
 
           overlays.add(id, {
             position: {
               top: 0,
-              right: 0
+              right: 0,
             },
             show: {
               minZoom: -Infinity,
-              maxZoom: +Infinity
+              maxZoom: +Infinity,
             },
-            html: overlaysNodes[id]
+            html: overlaysNodes[id],
           });
 
           addInteractions(overlaysNodes[id], id, activityInstances);
@@ -203,8 +203,8 @@ module.exports = function(viewContext) {
        * adds the callActivity overlay to each callActivity to a processInstance
        * @param callActivityToInstancesMap
        */
-      var addOverlays = function(callActivityToInstancesMap) {
-        Object.keys(callActivityToInstancesMap).map(function(id) {
+      var addOverlays = function (callActivityToInstancesMap) {
+        Object.keys(callActivityToInstancesMap).map(function (id) {
           return (
             callActivityToInstancesMap[id][0].calledProcessInstanceId &&
             addOverlayForSingleElement(id, callActivityToInstancesMap[id])
@@ -217,8 +217,11 @@ module.exports = function(viewContext) {
        * @param flowNodes (flowNodes of type CallActivity only)
        * @param activityIdToInstancesMap
        */
-      var getCallActivitiesMap = function(flowNodes, activityIdToInstancesMap) {
-        return flowNodes.reduce(function(map, id) {
+      var getCallActivitiesMap = function (
+        flowNodes,
+        activityIdToInstancesMap
+      ) {
+        return flowNodes.reduce(function (map, id) {
           if (
             activityIdToInstancesMap[id] &&
             activityIdToInstancesMap[id].length > 0
@@ -231,20 +234,21 @@ module.exports = function(viewContext) {
 
       if (viewContext === 'history') {
         flowNodes.length &&
-          processData.observe('activityIdToInstancesMap', function(
-            activityIdToInstancesMap
-          ) {
-            callActivityToInstancesMap = getCallActivitiesMap(
-              flowNodes,
-              activityIdToInstancesMap
-            );
-            addOverlays(callActivityToInstancesMap);
-          });
+          processData.observe(
+            'activityIdToInstancesMap',
+            function (activityIdToInstancesMap) {
+              callActivityToInstancesMap = getCallActivitiesMap(
+                flowNodes,
+                activityIdToInstancesMap
+              );
+              addOverlays(callActivityToInstancesMap);
+            }
+          );
       } else {
         flowNodes.length &&
           processData.observe(
             ['activityIdToInstancesMap', 'processInstance'],
-            function(activityIdToInstancesMap, processInstance) {
+            function (activityIdToInstancesMap, processInstance) {
               callActivityToInstancesMap = getCallActivitiesMap(
                 flowNodes,
                 activityIdToInstancesMap
@@ -254,8 +258,8 @@ module.exports = function(viewContext) {
               //  this is done so that it can be used to redirect to the calledProcessInstance.
               PluginProcessInstanceResource.processInstances(
                 {id: processInstance.id},
-                function(calledPInstances) {
-                  calledPInstances.forEach(function(calledPInstance) {
+                function (calledPInstances) {
+                  calledPInstances.forEach(function (calledPInstance) {
                     var instances =
                       callActivityToInstancesMap[
                         calledPInstance.callActivityId
@@ -270,6 +274,6 @@ module.exports = function(viewContext) {
             }
           );
       }
-    }
+    },
   ];
 };

@@ -25,7 +25,7 @@ var angular = require('angular'),
   diagramPlugins = require('./processDefinition/diagramPlugins');
 
 var ngModule = angular.module('cockpit.plugin.jobDefinition.views', [
-  diagramPlugins.name
+  diagramPlugins.name,
 ]);
 
 ngModule.config(jobDefinitionTable);

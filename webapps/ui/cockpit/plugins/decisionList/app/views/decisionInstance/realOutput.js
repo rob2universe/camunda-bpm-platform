@@ -21,13 +21,13 @@ var angular = require('../../../../../../../camunda-commons-ui/vendor/angular');
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.decisionInstance.table', {
       id: 'realOutput',
-      initialize: function(data) {
+      initialize: function (data) {
         var outputCell, selector, realOutput;
 
-        data.decisionInstance.outputs.map(function(output) {
+        data.decisionInstance.outputs.map(function (output) {
           selector =
             '.output-cell[data-col-id=' +
             output.clauseId +
@@ -53,7 +53,7 @@ module.exports = [
           }
           outputCell.appendChild(realOutput);
         });
-      }
+      },
     });
-  }
+  },
 ];

@@ -32,10 +32,10 @@ var Controller = [
   '$scope',
   '$uibModal',
   '$rootScope',
-  function($scope, $modal, $rootScope) {
+  function ($scope, $modal, $rootScope) {
     var deploymentData = $scope.deploymentData;
 
-    $scope.deleteDeployment = function($event, deployment) {
+    $scope.deleteDeployment = function ($event, deployment) {
       $event.stopPropagation();
 
       $modal
@@ -43,20 +43,20 @@ var Controller = [
           controller: 'camDeleteDeploymentModalCtrl',
           template: modalTemplate,
           resolve: {
-            deploymentData: function() {
+            deploymentData: function () {
               return deploymentData;
             },
-            deployment: function() {
+            deployment: function () {
               return deployment;
-            }
-          }
+            },
+          },
         })
-        .result.then(function() {
+        .result.then(function () {
           $rootScope.$broadcast('cam-common:cam-searchable:query-force-change');
         })
-        .catch(function() {});
+        .catch(function () {});
     };
-  }
+  },
 ];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -64,7 +64,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     id: 'delete-deployment',
     template: template,
     controller: Controller,
-    priority: 1000
+    priority: 1000,
   });
 };
 

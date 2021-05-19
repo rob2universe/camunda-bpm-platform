@@ -19,14 +19,14 @@
 module.exports = [
   'camDateFormatProvider',
   'configurationProvider',
-  function(camDateFormatProvider, configurationProvider) {
+  function (camDateFormatProvider, configurationProvider) {
     var dateProperties = [
       'monthName',
       'day',
       'abbr',
       'normal',
       'long',
-      'short'
+      'short',
     ];
     for (var i = 0; i < dateProperties.length; i++) {
       camDateFormatProvider.setDateFormat(
@@ -34,5 +34,5 @@ module.exports = [
         dateProperties[i]
       );
     }
-  }
+  },
 ];

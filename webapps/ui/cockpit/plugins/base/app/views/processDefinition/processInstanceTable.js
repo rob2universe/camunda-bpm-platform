@@ -28,13 +28,13 @@ var searchConfig = JSON.parse(
   fs.readFileSync(__dirname + '/process-instance-search-config.json', 'utf8')
 );
 
-var debouncePromiseFactory = require('camunda-bpm-sdk-js').utils
-  .debouncePromiseFactory;
+var debouncePromiseFactory =
+  require('camunda-bpm-sdk-js').utils.debouncePromiseFactory;
 var debouncePromise = debouncePromiseFactory();
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.processDefinition.runtime.tab', {
       id: 'process-instances-table',
       label: 'PLUGIN_PROCESS_INSTANCES_LABEL',
@@ -47,7 +47,7 @@ module.exports = [
         'PluginProcessInstanceResource',
         '$translate',
         'localConf',
-        function(
+        function (
           $scope,
           $location,
           search,
@@ -87,14 +87,14 @@ module.exports = [
               firstResult = (page - 1) * count;
 
             var defaultParams = {
-              processDefinitionId: processDefinition.id
+              processDefinitionId: processDefinition.id,
             };
 
             var pagingParams = {
               firstResult: firstResult,
               maxResults: count,
               sortBy: sortObj.sortBy,
-              sortOrder: sortObj.sortOrder
+              sortOrder: sortObj.sortOrder,
             };
 
             var countParams = angular.extend({}, queryParams, defaultParams);
@@ -109,14 +109,14 @@ module.exports = [
             $scope.loadingState = 'LOADING';
 
             return PluginProcessInstanceResource.count(countParams)
-              .$promise.then(function(data) {
+              .$promise.then(function (data) {
                 var total = data.count;
 
                 return debouncePromise(
                   PluginProcessInstanceResource.query(pagingParams, params)
                     .$promise
                 )
-                  .then(function(data) {
+                  .then(function (data) {
                     $scope.processInstances = data;
                     $scope.loadingState = data.length ? 'LOADED' : 'EMPTY';
 
@@ -140,7 +140,7 @@ module.exports = [
             return localConf.get('sortProcInst', defaultValue);
           }
 
-          $scope.getProcessInstanceUrl = function(processInstance, params) {
+          $scope.getProcessInstanceUrl = function (processInstance, params) {
             var path = '#/process-instance/' + processInstance.id;
             var searches = angular.extend(
               {},
@@ -155,9 +155,9 @@ module.exports = [
 
             return routeUtil.redirectTo(path, searches, keepSearchParams);
           };
-        }
+        },
       ],
-      priority: 10
+      priority: 10,
     });
-  }
+  },
 ];

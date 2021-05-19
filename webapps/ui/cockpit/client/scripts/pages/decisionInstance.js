@@ -30,7 +30,7 @@ var camCommons = require('../../../../../camunda-commons-ui/lib');
 
 var ngModule = angular.module('cam.cockpit.pages.decisionInstance', [
   'dataDepend',
-  camCommons.name
+  camCommons.name,
 ]);
 
 var Controller = [
@@ -44,7 +44,7 @@ var Controller = [
   'Views',
   'search',
   '$translate',
-  function(
+  function (
     $scope,
     $rootScope,
     $q,
@@ -74,11 +74,11 @@ var Controller = [
     }
 
     var processInstancePlugins = Views.getProviders({
-      component: 'cockpit.processInstance.view'
+      component: 'cockpit.processInstance.view',
     });
 
     var hasHistoryPlugin =
-      processInstancePlugins.filter(function(plugin) {
+      processInstancePlugins.filter(function (plugin) {
         return plugin.id === 'history';
       }).length > 0;
 
@@ -102,12 +102,12 @@ var Controller = [
 
     // begin data definition //////////////////////
 
-    decisionData.provide('tableXml', function() {
+    decisionData.provide('tableXml', function () {
       var deferred = $q.defer();
 
       decisionDefinitionService.getXml(
         decisionInstance.decisionDefinitionId,
-        function(err, data) {
+        function (err, data) {
           if (!err) {
             deferred.resolve(data.dmnXml);
           } else {
@@ -119,12 +119,12 @@ var Controller = [
       return deferred.promise;
     });
 
-    decisionData.provide('decisionDefinition', function() {
+    decisionData.provide('decisionDefinition', function () {
       var deferred = $q.defer();
 
       decisionDefinitionService.get(
         decisionInstance.decisionDefinitionId,
-        function(err, data) {
+        function (err, data) {
           if (!err) {
             deferred.resolve(data);
           } else {
@@ -148,38 +148,38 @@ var Controller = [
     page.breadcrumbsAdd([
       {
         label: $translate.instant('DECISION_INSTANCE_DECISIONS'),
-        href: '#/decisions/'
+        href: '#/decisions/',
       },
       {
         type: 'decisionDefinition',
         label:
           decisionInstance.decisionDefinitionName ||
-          (decisionInstance.decisionDefinitionKey ||
-            decisionInstance.decisionDefinitionId),
-        href: '#/decision-definition/' + decisionInstance.decisionDefinitionId
+          decisionInstance.decisionDefinitionKey ||
+          decisionInstance.decisionDefinitionId,
+        href: '#/decision-definition/' + decisionInstance.decisionDefinitionId,
       },
       {
         type: 'decisionInstance',
         label: decisionInstance.id,
-        href: '#/decision-instance/' + decisionInstance.id
-      }
+        href: '#/decision-instance/' + decisionInstance.id,
+      },
     ]);
 
     page.titleSet(
       [
         decisionInstance.id,
-        $translate.instant('DECISION_INSTANCE_INSTANCE_VIEW')
+        $translate.instant('DECISION_INSTANCE_INSTANCE_VIEW'),
       ].join(' | ')
     );
 
-    decisionData.observe(['tableXml'], function(tableXml) {
+    decisionData.observe(['tableXml'], function (tableXml) {
       $scope.tableXml = tableXml;
     });
-    decisionData.observe(['decisionDefinition'], function(decisionDefinition) {
+    decisionData.observe(['decisionDefinition'], function (decisionDefinition) {
       $scope.decisionDefinition = decisionDefinition;
     });
 
-    $scope.getDeploymentUrl = function() {
+    $scope.getDeploymentUrl = function () {
       var path = '#/repository';
 
       var deploymentId = $scope.decisionDefinition.deploymentId;
@@ -190,36 +190,36 @@ var Controller = [
           {
             type: 'id',
             operator: 'eq',
-            value: deploymentId
-          }
-        ])
+            value: deploymentId,
+          },
+        ]),
       };
 
       return routeUtil.redirectTo(path, searches, [
         'deployment',
         'resourceName',
-        'deploymentsQuery'
+        'deploymentsQuery',
       ]);
     };
 
-    $scope.getActivitySearch = function(decisionInstance) {
+    $scope.getActivitySearch = function (decisionInstance) {
       return JSON.stringify([
         {
           type: 'caseActivityIdIn',
           operator: 'eq',
-          value: decisionInstance.activityId
-        }
+          value: decisionInstance.activityId,
+        },
       ]);
     };
 
-    $scope.initializeTablePlugins = function() {
+    $scope.initializeTablePlugins = function () {
       var tablePlugins = Views.getProviders({
-        component: 'cockpit.decisionInstance.table'
+        component: 'cockpit.decisionInstance.table',
       });
 
       var initData = {
         decisionInstance: decisionInstance,
-        tableControl: $scope.control
+        tableControl: $scope.control,
       };
 
       for (var i = 0; i < tablePlugins.length; i++) {
@@ -231,23 +231,23 @@ var Controller = [
 
     $scope.decisionInstanceVars = {read: ['decisionInstance', 'decisionData']};
     $scope.decisionInstanceTabs = Views.getProviders({
-      component: 'cockpit.decisionInstance.tab'
+      component: 'cockpit.decisionInstance.tab',
     });
     $scope.decisionInstanceActions = Views.getProviders({
-      component: 'cockpit.decisionInstance.action'
+      component: 'cockpit.decisionInstance.action',
     });
 
     // INITIALIZE PLUGINS
 
     var decisionPlugins = Views.getProviders({
-      component: 'cockpit.decisionInstance.tab'
+      component: 'cockpit.decisionInstance.tab',
     }).concat(
       Views.getProviders({component: 'cockpit.decisionInstance.action'})
     );
 
     var initData = {
       decisionInstance: decisionInstance,
-      decisionData: decisionData
+      decisionData: decisionData,
     };
 
     for (var i = 0; i < decisionPlugins.length; i++) {
@@ -256,11 +256,11 @@ var Controller = [
       }
     }
 
-    $scope.selectTab = function(tabProvider) {
+    $scope.selectTab = function (tabProvider) {
       $scope.selectedTab = tabProvider;
 
       search.updateSilently({
-        detailsTab: tabProvider.id
+        detailsTab: tabProvider.id,
       });
     };
 
@@ -274,7 +274,7 @@ var Controller = [
       if (selectedTabId) {
         var provider = Views.getProvider({
           component: 'cockpit.decisionInstance.tab',
-          id: selectedTabId
+          id: selectedTabId,
         });
         if (provider && tabs.indexOf(provider) != -1) {
           $scope.selectedTab = provider;
@@ -283,25 +283,25 @@ var Controller = [
       }
 
       search.updateSilently({
-        detailsTab: null
+        detailsTab: null,
       });
 
       $scope.selectedTab = tabs[0];
     }
 
     setDefaultTab($scope.decisionInstanceTabs);
-  }
+  },
 ];
 
 var RouteConfig = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/decision-instance/:id', {
-      redirectTo: function(params, currentPath, currentSearch) {
+      redirectTo: function (params, currentPath, currentSearch) {
         var redirectUrl = currentPath + '/history';
 
         return routeUtil.redirectTo(redirectUrl, currentSearch, true);
-      }
+      },
     });
 
     $routeProvider.when('/decision-instance/:id/history', {
@@ -314,10 +314,10 @@ var RouteConfig = [
           'ResourceResolver',
           'camAPI',
           '$q',
-          function(ResourceResolver, camAPI, $q) {
+          function (ResourceResolver, camAPI, $q) {
             return ResourceResolver.getByRouteParam('id', {
               name: 'decision instance',
-              resolve: function(id) {
+              resolve: function (id) {
                 var deferred = $q.defer();
 
                 var historyService = camAPI.resource('history');
@@ -329,15 +329,15 @@ var RouteConfig = [
                     includeOutputs: true,
                     disableBinaryFetching: true,
                     disableCustomObjectDeserialization: true,
-                    maxResults: 1
+                    maxResults: 1,
                   },
-                  function(err, data) {
+                  function (err, data) {
                     if (!err && data.length) {
                       deferred.resolve(data[0]);
                     } else {
                       deferred.reject(
                         err || {
-                          status: 404
+                          status: 404,
                         }
                       );
                     }
@@ -345,26 +345,26 @@ var RouteConfig = [
                 );
 
                 return deferred.promise;
-              }
+              },
             });
-          }
-        ]
+          },
+        ],
       },
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];
 
 var ViewConfig = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.decisionInstance.view', {
       id: 'history',
       priority: 20,
       label: 'History',
-      keepSearchParams: []
+      keepSearchParams: [],
     });
-  }
+  },
 ];
 
 ngModule.config(RouteConfig).config(ViewConfig);

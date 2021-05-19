@@ -44,7 +44,7 @@ module.exports = [
   'Notifications',
   'localConf',
   'configuration',
-  function(
+  function (
     $scope,
     page,
     camAPI,
@@ -60,26 +60,26 @@ module.exports = [
         class: 'id',
         request: 'batchId',
         sortable: true,
-        content: $translate.instant('BATCHES_PROGRESS_ID')
+        content: $translate.instant('BATCHES_PROGRESS_ID'),
       },
       {
         class: 'type',
         request: '',
         sortable: false,
-        content: $translate.instant('BATCHES_PROGRESS_TYPE')
+        content: $translate.instant('BATCHES_PROGRESS_TYPE'),
       },
       {
         class: 'failed',
         request: '',
         sortable: false,
-        content: $translate.instant('BATCHES_PROGRESS_FAIL_JOBS')
+        content: $translate.instant('BATCHES_PROGRESS_FAIL_JOBS'),
       },
       {
         class: '',
         request: '',
         sortable: false,
-        content: $translate.instant('BATCHES_PROGRESS_PROGRESS')
-      }
+        content: $translate.instant('BATCHES_PROGRESS_PROGRESS'),
+      },
     ];
 
     $scope.historyHeadColumns = [
@@ -87,26 +87,26 @@ module.exports = [
         class: 'id',
         request: 'batchId',
         sortable: true,
-        content: $translate.instant('BATCHES_PROGRESS_ID')
+        content: $translate.instant('BATCHES_PROGRESS_ID'),
       },
       {
         class: 'type',
         request: '',
         sortable: false,
-        content: $translate.instant('BATCHES_PROGRESS_TYPE')
+        content: $translate.instant('BATCHES_PROGRESS_TYPE'),
       },
       {
         class: 'start-time',
         request: 'startTime',
         sortable: true,
-        content: $translate.instant('BATCHES_PROGRESS_START_TIME')
+        content: $translate.instant('BATCHES_PROGRESS_START_TIME'),
       },
       {
         class: 'end-time',
         request: 'endTime',
         sortable: true,
-        content: $translate.instant('BATCHES_PROGRESS_END_TIME')
-      }
+        content: $translate.instant('BATCHES_PROGRESS_END_TIME'),
+      },
     ];
 
     $scope.jobHeadColumns = [
@@ -114,78 +114,78 @@ module.exports = [
         class: 'id',
         request: 'jobId',
         sortable: true,
-        content: $translate.instant('BATCHES_PROGRESS_ID')
+        content: $translate.instant('BATCHES_PROGRESS_ID'),
       },
       {
         class: 'type',
         request: '',
         sortable: false,
-        content: $translate.instant('BATCHES_PROGRESS_EXCEPTION')
+        content: $translate.instant('BATCHES_PROGRESS_EXCEPTION'),
       },
       {
         class: 'action',
         request: '',
         sortable: false,
-        content: $translate.instant('BATCHES_PROGRESS_ACTIONS')
-      }
+        content: $translate.instant('BATCHES_PROGRESS_ACTIONS'),
+      },
     ];
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
       events.removeAllListeners();
       $scope.ctrl.stopLoadingPeriodically();
     });
 
     $scope.$watch(
-      function() {
+      function () {
         return $location.search() || {};
       },
-      function(newValue) {
+      function (newValue) {
         if (newValue.details && newValue.type) {
           $scope.ctrl.loadDetails(newValue.details, newValue.type);
         }
       }
     );
 
-    events.on('details:switchToHistory', function() {
+    events.on('details:switchToHistory', function () {
       $location.search('type', 'history');
     });
 
-    events.on('deleteModal:open', function(deleteModal) {
+    events.on('deleteModal:open', function (deleteModal) {
       var modal = (deleteModal.instance = $modal.open({
         template: deleteModalTemplate,
-        controller: deleteModalCtrl
+        controller: deleteModalCtrl,
       }));
 
-      modal.result.catch(function() {});
+      modal.result.catch(function () {});
     });
 
-    events.on('batch:delete:failed', function(err) {
+    events.on('batch:delete:failed', function (err) {
       Notifications.addError({
         status: $translate.instant('BATCHES_DELETE_BATCH_STATUS'),
         message: $translate.instant('BATCHES_DELETE_BATCH_FAILED', {
-          message: err.message
+          message: err.message,
         }),
-        exclusive: true
+        exclusive: true,
       });
     });
 
-    events.on('job:delete:failed', function(err) {
+    events.on('job:delete:failed', function (err) {
       Notifications.addError({
         status: $translate.instant('BATCHES_DELETE_JOB_STATUS'),
         message: $translate.instant('BATCHES_DELETE_JOB_FAILED', {
-          message: err.message
+          message: err.message,
         }),
-        exclusive: true
+        exclusive: true,
       });
     });
 
-    events.on('job:retry:failed', function(err) {
+    events.on('job:retry:failed', function (err) {
       Notifications.addError({
         status: $translate.instant('BATCHES_RETRY_JOB_STATUS'),
         message: $translate.instant('BATCHES_RETRY_JOB_FAILED', {
-          message: err.message
+          message: err.message,
         }),
-        exclusive: true
+        exclusive: true,
       });
     });
 
@@ -194,17 +194,17 @@ module.exports = [
     $scope.ctrl = new Ctrl(camAPI, localConf, configuration);
     $scope.ctrl.loadPeriodically(5000);
 
-    $scope.openLog = function(job) {
+    $scope.openLog = function (job) {
       $modal.open({
         controller: jobLogModalCtrl,
         template: jobLogModalTemplate,
         resolve: {
-          job: function() {
+          job: function () {
             return job;
-          }
+          },
         },
-        size: 'lg'
+        size: 'lg',
       });
     };
-  }
+  },
 ];

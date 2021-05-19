@@ -21,7 +21,7 @@ var fs = require('fs');
 
 var template = fs.readFileSync(__dirname + '/external-tasks-tab.html', 'utf8');
 
-module.exports = function() {
+module.exports = function () {
   return {
     restrict: 'A',
     template: template,
@@ -29,7 +29,7 @@ module.exports = function() {
     controller: 'ExternalTasksTabController as TasksTab',
     scope: {
       onLoad: '&externalTasksTab',
-      processData: '='
-    }
+      processData: '=',
+    },
   };
 };

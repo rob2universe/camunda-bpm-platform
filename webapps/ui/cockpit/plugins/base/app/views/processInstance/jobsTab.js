@@ -41,7 +41,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
       '$uibModal',
       'localConf',
       '$q',
-      function(
+      function (
         $scope,
         camAPI,
         Notifications,
@@ -59,7 +59,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
 
         var sorting = ($scope.sorting = loadLocal({
           sortBy: 'jobId',
-          sortOrder: 'desc'
+          sortOrder: 'desc',
         }));
 
         // prettier-ignore
@@ -77,7 +77,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           return localConf.get('sortPIJobsTab', defaultValue);
         }
 
-        $scope.onSortChange = function(sortObj) {
+        $scope.onSortChange = function (sortObj) {
           sorting = sortObj;
           saveLocal(sorting);
           updateView(sorting);
@@ -87,12 +87,12 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           localConf.set('sortPIJobsTab', sorting);
         }
 
-        $scope.onPaginationChange = function(pages) {
+        $scope.onPaginationChange = function (pages) {
           $scope.pages.current = pages.current;
           updateView(sorting);
         };
 
-        var updateView = function(sorting) {
+        var updateView = function (sorting) {
           var page = $scope.pages.current,
             count = $scope.pages.size,
             firstResult = (page - 1) * count;
@@ -104,13 +104,13 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
             sorting: [
               {
                 sortBy: sorting.sortBy,
-                sortOrder: sorting.sortOrder
-              }
-            ]
+                sortOrder: sorting.sortOrder,
+              },
+            ],
           };
 
           //get 'count' of jobs
-          jobProvider.count(queryParams, function(error, response) {
+          jobProvider.count(queryParams, function (error, response) {
             $scope.pages.total = response;
           });
 
@@ -119,17 +119,17 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           jobProvider.list(queryParams, jobCallback);
         };
 
-        var jobCallback = function(err, res) {
+        var jobCallback = function (err, res) {
           if (err) {
             Notifications.addError({
               status: $translate.instant('PLUGIN_JOBS'),
-              message: $translate.instant('PLUGIN_JOBS_LOADING_ERROR')
+              message: $translate.instant('PLUGIN_JOBS_LOADING_ERROR'),
             });
           } else {
             //Load Job definitions
             $scope.jobs = res;
 
-            var jobDefinitionIds = $scope.jobs.reduce(function(
+            var jobDefinitionIds = $scope.jobs.reduce(function (
               accumulate,
               current
             ) {
@@ -142,14 +142,14 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
             new Set());
 
             var promises = [];
-            jobDefinitionIds.forEach(function(id) {
+            jobDefinitionIds.forEach(function (id) {
               promises.push(jobDefinitionProvider.get(id));
             });
 
-            $q.all(promises).then(function(res) {
+            $q.all(promises).then(function (res) {
               var processDefinitions = res;
-              $scope.jobs = $scope.jobs.map(function(job) {
-                var definition = processDefinitions.filter(function(
+              $scope.jobs = $scope.jobs.map(function (job) {
+                var definition = processDefinitions.filter(function (
                   definition
                 ) {
                   return definition.id === job.jobDefinitionId;
@@ -167,17 +167,17 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           }
         };
 
-        var recalculateDate = function(job, useCreationDate) {
+        var recalculateDate = function (job, useCreationDate) {
           jobProvider.recalculateDuedate(
             {id: job.id, creationDateBased: useCreationDate},
-            function(err) {
+            function (err) {
               if (err) {
                 Notifications.addError({
                   status: $translate.instant('PLUGIN_JOBS_RECALCULATE_ERROR'),
                   message: $translate.instant(
                     'PLUGIN_JOBS_RECALCULATE_ERROR_MESSAGE'
                   ),
-                  exclusive: true
+                  exclusive: true,
                 });
               } else {
                 Notifications.addMessage({
@@ -185,7 +185,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
                   message: $translate.instant(
                     'PLUGIN_JOBS_RECALCULATE_SUCCESS_MESSAGE'
                   ),
-                  exclusive: true
+                  exclusive: true,
                 });
                 updateJob(job);
               }
@@ -193,17 +193,17 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           );
         };
 
-        var setDuedate = function(job, date, cascade) {
+        var setDuedate = function (job, date, cascade) {
           jobProvider.setDuedate(
             {id: job.id, duedate: date, cascade: cascade},
-            function(err) {
+            function (err) {
               if (err) {
                 Notifications.addError({
                   status: $translate.instant('PLUGIN_JOBS_RECALCULATE_ERROR'),
                   message: $translate.instant(
                     'PLUGIN_JOBS_SET_DUEDATE_ERROR_MESSAGE'
                   ),
-                  exclusive: true
+                  exclusive: true,
                 });
               } else {
                 Notifications.addMessage({
@@ -211,7 +211,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
                   message: $translate.instant(
                     'PLUGIN_JOBS_SET_DUEDATE_SUCCESS_MESSAGE'
                   ),
-                  exclusive: true
+                  exclusive: true,
                 });
                 updateJob(job);
               }
@@ -219,8 +219,8 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           );
         };
 
-        var updateJob = function(job) {
-          jobProvider.get(job.id, function(err, res) {
+        var updateJob = function (job) {
+          jobProvider.get(job.id, function (err, res) {
             if (res) {
               //use cached activityName to avoid unnecessary requests
               res.activityName = job.activityName;
@@ -230,19 +230,19 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           });
         };
 
-        $scope.openRecalculationWindow = function(job) {
+        $scope.openRecalculationWindow = function (job) {
           $modal
             .open({
               controller: [
                 '$scope',
                 '$filter',
-                function($scope, $filter) {
+                function ($scope, $filter) {
                   var dateFilter = $filter('date'),
                     dateFormat = "yyyy-MM-dd'T'HH:mm:ss";
 
                   $scope.cascade = true;
                   $scope.date = dateFilter(Date.now(), dateFormat);
-                  $scope.submit = function() {
+                  $scope.submit = function () {
                     switch ($scope.recalculationType) {
                       case 'specific':
                         setDuedate(
@@ -263,28 +263,28 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
                     $scope.status = 'DONE';
                   };
 
-                  $scope.isValid = function() {
+                  $scope.isValid = function () {
                     return $scope.recalculationType === 'specific'
                       ? this.rescheduleJobDuedateForm.$valid
                       : true;
                   };
-                }
+                },
               ],
-              template: jobRescheduleTemplate
+              template: jobRescheduleTemplate,
             })
             .result.catch(angular.noop);
         };
 
-        $scope.toggleSuspension = function(job) {
+        $scope.toggleSuspension = function (job) {
           jobProvider.suspended(
             {id: job.id, suspended: !job.suspended},
-            function(err) {
+            function (err) {
               if (err) {
                 Notifications.addError({
                   status: $translate.instant('PLUGIN_JOBS_ERROR'),
                   message: $translate.instant('PLUGIN_JOBS_SUSPEND_FAILURE'),
                   exclusive: false,
-                  duration: 5000
+                  duration: 5000,
                 });
               } else {
                 job.suspended = !job.suspended;
@@ -292,16 +292,16 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
                   status: $translate.instant('PLUGIN_JOBS_SUCCESS'),
                   message: $translate.instant('PLUGIN_JOBS_SUSPEND_SUCCESS'),
                   exclusive: false,
-                  duration: 5000
+                  duration: 5000,
                 });
               }
             }
           );
         };
 
-        var updateActivityNames = function() {
+        var updateActivityNames = function () {
           //map job names to bpmn element name
-          angular.forEach($scope.jobs, function(job) {
+          angular.forEach($scope.jobs, function (job) {
             var activityId = job.activityId,
               bpmnElement = $scope.bpmnElements[activityId];
 
@@ -317,14 +317,14 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
           });
         };
 
-        $scope.processData.observe(['bpmnElements'], function(bpmnElements) {
+        $scope.processData.observe(['bpmnElements'], function (bpmnElements) {
           $scope.bpmnElements = bpmnElements;
           updateActivityNames();
         });
 
         $scope.loadingState = 'LOADING';
-      }
-    ]
+      },
+    ],
   });
 };
 

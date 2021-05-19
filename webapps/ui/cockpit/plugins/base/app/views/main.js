@@ -60,7 +60,7 @@ var angular = require('angular'),
 var ngModule = angular.module('cockpit.plugin.base.views', [
   camCommon.name,
   diagramInstancePlugins.name,
-  diagramDefinitionPlugins.name
+  diagramDefinitionPlugins.name,
 ]);
 
 ngModule.config(dashboardDeployments);

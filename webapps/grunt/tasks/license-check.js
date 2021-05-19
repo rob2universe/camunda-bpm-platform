@@ -28,7 +28,7 @@ const PRODUCTION_LICENSES = [
   'CC0-1.0',
   'ISC',
   'MIT',
-  'WTFPL'
+  'WTFPL',
 ];
 
 const DEV_LICENSES = [
@@ -36,7 +36,7 @@ const DEV_LICENSES = [
   'CC-BY-4.0',
   'ODC-By-1.0',
   'Unlicense',
-  'Zlib'
+  'Zlib',
 ];
 
 const ALLOWED_PACKAGES = [
@@ -44,11 +44,14 @@ const ALLOWED_PACKAGES = [
   'desired-capabilities@0.1.0', // uses the CC0, but has wrong license field
   'jsonify@0.0.0', // uses the unlicense, but has wrong license field
   'map-stream@0.1.0', // uses the MIT, but has wrong license field
-  'stackframe@0.3.1' // uses the MIT, but has wrong license field
+  'stackframe@0.3.1', // uses the MIT, but has wrong license field
+  // TODO: sync with legal
+  'argparse@2.0.1',
+  'jetpack-id@1.0.0',
 ];
 
 const parseResults = (ALLOWED_LICENSES, resolve, reject) =>
-  function(err, packages) {
+  function (err, packages) {
     if (err) {
       throw err;
     } else {
@@ -76,8 +79,8 @@ const parseResults = (ALLOWED_LICENSES, resolve, reject) =>
         licenses = typeof licenses === 'object' ? licenses : [licenses];
 
         let approved = hasMultipleLicenses
-          ? licenses.every(license => ALLOWED_LICENSES.includes(license))
-          : licenses.some(license => ALLOWED_LICENSES.includes(license));
+          ? licenses.every((license) => ALLOWED_LICENSES.includes(license))
+          : licenses.some((license) => ALLOWED_LICENSES.includes(license));
 
         if (!approved) {
           licenseWarning += `${id} uses ${licenses.join(' OR ')}\n`;
@@ -92,8 +95,8 @@ const parseResults = (ALLOWED_LICENSES, resolve, reject) =>
     }
   };
 
-module.exports = function(grunt) {
-  grunt.registerTask('license-check', function() {
+module.exports = function (grunt) {
+  grunt.registerTask('license-check', function () {
     const done = this.async();
 
     const licenseChecks = [
@@ -102,7 +105,7 @@ module.exports = function(grunt) {
           {
             start: '.',
             production: true,
-            excludePrivatePackages: true
+            excludePrivatePackages: true,
           },
           parseResults(PRODUCTION_LICENSES, resolve, reject)
         );
@@ -112,7 +115,7 @@ module.exports = function(grunt) {
           {
             start: '.',
             development: true,
-            excludePrivatePackages: true
+            excludePrivatePackages: true,
           },
           parseResults(
             [...PRODUCTION_LICENSES, ...DEV_LICENSES],
@@ -120,14 +123,14 @@ module.exports = function(grunt) {
             reject
           )
         );
-      })
+      }),
     ];
 
     Promise.all(licenseChecks)
       .then(() => {
         done();
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         done(false);
       });

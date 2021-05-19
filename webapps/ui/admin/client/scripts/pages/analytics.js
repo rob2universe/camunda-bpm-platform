@@ -26,24 +26,24 @@ var Controller = [
   '$translate',
   'camAPI',
   'Notifications',
-  function($scope, $translate, camAPI, Notifications) {
+  function ($scope, $translate, camAPI, Notifications) {
     var telemetryResource = camAPI.resource('telemetry');
 
-    telemetryResource.get(function(err, res) {
+    telemetryResource.get(function (err, res) {
       $scope.enableUsage = res.enableTelemetry;
     });
 
-    $scope.submit = function() {
-      telemetryResource.configure(!!$scope.enableUsage, function(err) {
+    $scope.submit = function () {
+      telemetryResource.configure(!!$scope.enableUsage, function (err) {
         if (!err) {
           Notifications.addMessage({
             status: $translate.instant('TELEMETRY_SUCCESS_HEADING'),
-            message: $translate.instant('TELEMETRY_SUCCESS')
+            message: $translate.instant('TELEMETRY_SUCCESS'),
           });
         }
       });
     };
-  }
+  },
 ];
 
 module.exports = [
@@ -57,20 +57,20 @@ module.exports = [
       priority: 950,
       access: [
         'AuthorizationResource',
-        function(AuthorizationResource) {
-          return function(cb) {
+        function (AuthorizationResource) {
+          return function (cb) {
             AuthorizationResource.check({
               permissionName: 'ALL',
               resourceName: 'authorization',
-              resourceType: 4
+              resourceType: 4,
             })
-              .$promise.then(function(response) {
+              .$promise.then(function (response) {
                 cb(null, response.authorized);
               })
               .catch(cb);
           };
-        }
-      ]
+        },
+      ],
     });
-  }
+  },
 ];

@@ -35,7 +35,7 @@ var instancesTemplate = fs.readFileSync(
 var inspectTemplate = require('../../../../../client/scripts/components/variables/variable-inspect-dialog');
 var uploadTemplate = require('../../../../../client/scripts/components/variables/variable-upload-dialog');
 
-module.exports = function(ngModule) {
+module.exports = function (ngModule) {
   ngModule.controller('VariableInstancesController', [
     '$scope',
     '$sce',
@@ -51,7 +51,7 @@ module.exports = function(ngModule) {
     '$translate',
     'localConf',
     'escapeHtml',
-    function(
+    function (
       $scope,
       $sce,
       search,
@@ -92,13 +92,14 @@ module.exports = function(ngModule) {
 
       $scope.searchConfig = angular.copy(variableInstancesTabSearchConfig);
 
-      variableInstanceData.observe('instanceIdToInstanceMap', function(
-        instanceIdToInstanceMap
-      ) {
-        $scope.instanceIdToInstanceMap = instanceIdToInstanceMap;
-      });
+      variableInstanceData.observe(
+        'instanceIdToInstanceMap',
+        function (instanceIdToInstanceMap) {
+          $scope.instanceIdToInstanceMap = instanceIdToInstanceMap;
+        }
+      );
 
-      $scope.onSearchChange = function(query, pages, sortObj) {
+      $scope.onSearchChange = function (query, pages, sortObj) {
         $scope.query = query || $scope.query;
         $scope.pages = pages || $scope.pages;
 
@@ -116,28 +117,29 @@ module.exports = function(ngModule) {
 
       $scope.onSortChange = $scope.onSearchChange;
 
-      $scope.getSearchQueryForSearchType = searchWidgetUtils.getSearchQueryForSearchType.bind(
-        null,
-        'activityInstanceIdIn'
-      );
+      $scope.getSearchQueryForSearchType =
+        searchWidgetUtils.getSearchQueryForSearchType.bind(
+          null,
+          'activityInstanceIdIn'
+        );
 
-      $scope.uploadVariable = function(info) {
+      $scope.uploadVariable = function (info) {
         var promise = $q.defer();
         $modal
           .open({
             resolve: {
-              basePath: function() {
+              basePath: function () {
                 return getBasePath(info.variable);
               },
-              variable: function() {
+              variable: function () {
                 return info.variable;
-              }
+              },
             },
             controller: uploadTemplate.controller,
-            template: uploadTemplate.template
+            template: uploadTemplate.template,
           })
           .result.then(
-            function() {
+            function () {
               // updated the variable, need to get the new data
               // reject the promise anyway
               promise.reject();
@@ -145,7 +147,7 @@ module.exports = function(ngModule) {
               // but then update the filter to force re-get of variables
               variableInstanceData.set('filter', angular.copy($scope.filter));
             },
-            function() {
+            function () {
               // did not update the variable, reject the promise
               promise.reject();
             }
@@ -154,7 +156,7 @@ module.exports = function(ngModule) {
         return promise.promise;
       };
 
-      $scope.downloadVariable = function(info) {
+      $scope.downloadVariable = function (info) {
         return Uri.appUri(
           'engine://engine/:engine/variable-instance/' +
             info.variable.id +
@@ -162,10 +164,10 @@ module.exports = function(ngModule) {
         );
       };
 
-      $scope.deleteVariable = function(info) {
+      $scope.deleteVariable = function (info) {
         var promise = $q.defer();
 
-        var callback = function(error) {
+        var callback = function (error) {
           if (error) {
             var errorMessage = {text: '', payload: {}};
 
@@ -189,7 +191,7 @@ module.exports = function(ngModule) {
                 errorMessage.payload
               ),
               exclusive: true,
-              duration: 5000
+              duration: 5000,
             });
             promise.reject();
           } else {
@@ -201,7 +203,7 @@ module.exports = function(ngModule) {
                 'PLUGIN_VARIABLE_INSTANCES_MESSAGES_ADD_0',
                 {name: info.variable.name}
               ),
-              duration: 5000
+              duration: 5000,
             });
             promise.resolve(info.variable);
           }
@@ -211,7 +213,7 @@ module.exports = function(ngModule) {
           taskService.deleteVariable(
             {
               id: info.original.taskId,
-              varId: info.variable.name
+              varId: info.variable.name,
             },
             callback
           );
@@ -219,7 +221,7 @@ module.exports = function(ngModule) {
           executionService.deleteVariable(
             {
               id: info.variable.executionId,
-              varId: info.variable.name
+              varId: info.variable.name,
             },
             callback
           );
@@ -228,7 +230,7 @@ module.exports = function(ngModule) {
         return promise.promise;
       };
 
-      $scope.editVariable = function(info) {
+      $scope.editVariable = function (info) {
         var promise = $q.defer();
 
         $modal
@@ -240,22 +242,22 @@ module.exports = function(ngModule) {
             windowClass: 'cam-widget-variable-dialog',
 
             resolve: {
-              basePath: function() {
+              basePath: function () {
                 return getBasePath(info.variable);
               },
-              history: function() {
+              history: function () {
                 return false;
               },
-              readonly: function() {
+              readonly: function () {
                 return false;
               },
-              variable: function() {
+              variable: function () {
                 return info.variable;
-              }
-            }
+              },
+            },
           })
           .result.then(
-            function() {
+            function () {
               // updated the variable, need to get the new data
               // reject the promise anyway
               promise.reject();
@@ -263,7 +265,7 @@ module.exports = function(ngModule) {
               // but then update the filter to force re-get of variables
               variableInstanceData.set('filter', angular.copy($scope.filter));
             },
-            function() {
+            function () {
               // did not update the variable, reject the promise
               promise.reject();
             }
@@ -272,7 +274,7 @@ module.exports = function(ngModule) {
         return promise.promise;
       };
 
-      $scope.saveVariable = function(info) {
+      $scope.saveVariable = function (info) {
         var promise = $q.defer();
         var variable = info.variable;
         var modifiedVariable = {};
@@ -287,7 +289,7 @@ module.exports = function(ngModule) {
         var newVariable = {value: newValue, type: newType};
         modifiedVariable[variable.name] = newVariable;
 
-        var callback = function(error) {
+        var callback = function (error) {
           if (error) {
             var errorMessage = {text: '', payload: {}};
 
@@ -311,7 +313,7 @@ module.exports = function(ngModule) {
                 errorMessage.payload
               ),
               exclusive: true,
-              duration: 5000
+              duration: 5000,
             });
             variableInstanceIdexceptionMessageMap[variable.id] = error.data;
             promise.reject();
@@ -324,7 +326,7 @@ module.exports = function(ngModule) {
                 'PLUGIN_VARIABLE_INSTANCES_MESSAGES_ADD_1',
                 {name: variable.name}
               ),
-              duration: 5000
+              duration: 5000,
             });
 
             if (newVariable.type === 'Date') {
@@ -340,7 +342,7 @@ module.exports = function(ngModule) {
           taskService.modifyVariables(
             {
               id: info.original.taskId,
-              modifications: modifiedVariable
+              modifications: modifiedVariable,
             },
             callback
           );
@@ -348,7 +350,7 @@ module.exports = function(ngModule) {
           executionService.modifyVariables(
             {
               id: variable.executionId,
-              modifications: modifiedVariable
+              modifications: modifiedVariable,
             },
             callback
           );
@@ -380,7 +382,7 @@ module.exports = function(ngModule) {
           firstResult = (page - 1) * count;
 
         var defaultParams = {
-          processInstanceIdIn: [processInstance.id]
+          processInstanceIdIn: [processInstance.id],
         };
 
         // Add default sorting param
@@ -392,7 +394,7 @@ module.exports = function(ngModule) {
         var pagingParams = {
           firstResult: firstResult,
           maxResults: count,
-          deserializeValues: false
+          deserializeValues: false,
         };
         var countParams = angular.extend({}, defaultParams, variableQuery);
         var params = angular.extend(
@@ -413,15 +415,15 @@ module.exports = function(ngModule) {
         // get the 'count' of variables
         return variableService
           .count(countParams)
-          .then(function(response) {
+          .then(function (response) {
             $scope.total = response.count;
             // get variables objects
             return variableService
               .instances(params)
-              .then(function(response) {
+              .then(function (response) {
                 var data = response;
 
-                $scope.variables = data.map(function(item) {
+                $scope.variables = data.map(function (item) {
                   var instance =
                     instanceIdToInstanceMap[item.activityInstanceId];
                   item.instance = instance;
@@ -454,17 +456,17 @@ module.exports = function(ngModule) {
                       type: item.type,
                       value: item.value,
                       valueInfo: item.valueInfo,
-                      executionId: item.executionId
+                      executionId: item.executionId,
                     },
                     original: item,
                     additions: {
                       scope: {
                         html: activityInstanceLink,
                         scopeVariables: {
-                          processData: $scope.processData
-                        }
-                      }
-                    }
+                          processData: $scope.processData,
+                        },
+                      },
+                    },
                   };
                 });
                 $scope.loadingState = data.length ? 'LOADED' : 'EMPTY';
@@ -482,7 +484,7 @@ module.exports = function(ngModule) {
       function loadLocal(defaultValue) {
         return localConf.get('sortHistVarInstTab', defaultValue);
       }
-    }
+    },
   ]);
 
   var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -491,7 +493,7 @@ module.exports = function(ngModule) {
       label: 'PLUGIN_VARIABLE_INSTANCES_LABEL',
       template: instancesTemplate,
       controller: 'VariableInstancesController',
-      priority: 20
+      priority: 20,
     });
   };
 

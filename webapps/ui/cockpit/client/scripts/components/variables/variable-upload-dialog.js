@@ -36,7 +36,7 @@ var Controller = [
   '$translate',
   '$cookies',
   '$http',
-  function(
+  function (
     $modalInstance,
     $scope,
     Notifications,
@@ -58,11 +58,11 @@ var Controller = [
 
     var file;
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       $modalInstance.dismiss();
     });
 
-    $scope.upload = function() {
+    $scope.upload = function () {
       // progress listeners
 
       function uploadProgress(evt) {
@@ -77,14 +77,14 @@ var Controller = [
           $scope.status = UPLOAD_SUCCESS;
           Notifications.addMessage({
             status: $translate.instant('VARIABLE_UPLOAD_FILE'),
-            message: $translate.instant('VARIABLE_UPLOAD_MESSAGE_ADD')
+            message: $translate.instant('VARIABLE_UPLOAD_MESSAGE_ADD'),
           });
         } else {
           $scope.status = UPLOAD_FAILED;
           Notifications.addError({
             status: $translate.instant('VARIABLE_UPLOAD_FILE'),
             message: $translate.instant('VARIABLE_UPLOAD_MESSAGE_ERR'),
-            exclusive: true
+            exclusive: true,
           });
         }
       }
@@ -94,7 +94,7 @@ var Controller = [
         Notifications.addError({
           status: $translate.instant('VARIABLE_UPLOAD_FILE'),
           message: $translate.instant('VARIABLE_UPLOAD_MESSAGE_ERR'),
-          exclusive: true
+          exclusive: true,
         });
       }
 
@@ -108,20 +108,20 @@ var Controller = [
           transformRequest: angular.identity,
           headers: {'Content-Type': undefined},
           uploadEventHandlers: {
-            progress: uploadProgress
-          }
+            progress: uploadProgress,
+          },
         })
         .then(uploadComplete)
         .catch(uploadFailed);
     };
 
-    $scope.setFile = function(element) {
+    $scope.setFile = function (element) {
       file = element.files[0];
     };
-  }
+  },
 ];
 
 module.exports = {
   template: template,
-  controller: Controller
+  controller: Controller,
 };

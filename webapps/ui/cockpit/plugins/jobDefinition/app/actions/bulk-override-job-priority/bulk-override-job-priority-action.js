@@ -39,27 +39,27 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
         '$scope',
         '$rootScope',
         '$uibModal',
-        function($scope, $rootScope, $modal) {
+        function ($scope, $rootScope, $modal) {
           var processData = $scope.processData.newChild($scope);
 
           var jobDefinitions;
 
-          $scope.openDialog = function() {
+          $scope.openDialog = function () {
             var dialog = $modal.open({
               resolve: {
-                jobDefinitions: function() {
+                jobDefinitions: function () {
                   return jobDefinitions;
                 },
-                processData: function() {
+                processData: function () {
                   return processData;
-                }
+                },
               },
               controller: 'BulkJobDefinitionOverrideJobPriorityController',
-              template: dialogTemplate
+              template: dialogTemplate,
             });
 
             dialog.result
-              .then(function(result) {
+              .then(function (result) {
                 // dialog closed. YEA!
                 if (result.status === 'FINISHED') {
                   processData.changed('jobDefinitions');
@@ -68,9 +68,9 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
               })
               .catch(angular.noop);
           };
-        }
+        },
       ],
-      priority: 10
+      priority: 10,
     }
   );
 };

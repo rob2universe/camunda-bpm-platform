@@ -25,7 +25,7 @@ module.exports = [
   'searchWidgetUtils',
   'search',
   'exposeScopeProperties',
-  CamPaginationSearchIntegrationController
+  CamPaginationSearchIntegrationController,
 ];
 
 function CamPaginationSearchIntegrationController(
@@ -41,7 +41,7 @@ function CamPaginationSearchIntegrationController(
   this.locationChange = true;
 
   // reset Page when changing Tabs
-  $scope.$on('$destroy', function() {
+  $scope.$on('$destroy', function () {
     search('page', null);
   });
 
@@ -55,7 +55,7 @@ function CamPaginationSearchIntegrationController(
     'loadingState',
     'textEmpty',
     'storageGroup',
-    'blocked'
+    'blocked',
   ]);
 
   this.arrayTypes = angular.isArray(this.arrayTypes) ? this.arrayTypes : [];
@@ -65,11 +65,11 @@ function CamPaginationSearchIntegrationController(
   this.pages = {
     size: 50,
     total: 0,
-    current: this.getCurrentPageFromSearch()
+    current: this.getCurrentPageFromSearch(),
   };
 
   // RESULTS CHANGE TRIGGERS
-  var pagesWatchExpr = function() {
+  var pagesWatchExpr = function () {
     return this.pages.current;
   }.bind(this);
 
@@ -82,17 +82,18 @@ function CamPaginationSearchIntegrationController(
     this.onForcedRefresh.bind(this)
   );
 
-  $scope.$on('$destroy', function() {
+  $scope.$on('$destroy', function () {
     removeForcedRefresh();
   });
 }
 
-CamPaginationSearchIntegrationController.prototype.onForcedRefresh = function() {
-  this.resetPage();
-  this.executeQueries();
-};
+CamPaginationSearchIntegrationController.prototype.onForcedRefresh =
+  function () {
+    this.resetPage();
+    this.executeQueries();
+  };
 
-CamPaginationSearchIntegrationController.prototype.onBlockedChange = function(
+CamPaginationSearchIntegrationController.prototype.onBlockedChange = function (
   newValue,
   oldValue
 ) {
@@ -101,20 +102,22 @@ CamPaginationSearchIntegrationController.prototype.onBlockedChange = function(
   }
 };
 
-CamPaginationSearchIntegrationController.prototype.getSearchQueryString = function() {
-  return this.search().searchQuery;
-};
+CamPaginationSearchIntegrationController.prototype.getSearchQueryString =
+  function () {
+    return this.search().searchQuery;
+  };
 
-CamPaginationSearchIntegrationController.prototype.hasSearchQueryStringChanged = function() {
-  var searchQuery = this.getSearchQueryString();
+CamPaginationSearchIntegrationController.prototype.hasSearchQueryStringChanged =
+  function () {
+    var searchQuery = this.getSearchQueryString();
 
-  return (
-    searchQuery !== this.lastSearchQueryString &&
-    (this.lastSearchQueryString || searchQuery !== '[]')
-  );
-};
+    return (
+      searchQuery !== this.lastSearchQueryString &&
+      (this.lastSearchQueryString || searchQuery !== '[]')
+    );
+  };
 
-CamPaginationSearchIntegrationController.prototype.onPageChange = function(
+CamPaginationSearchIntegrationController.prototype.onPageChange = function (
   newValue,
   oldValue
 ) {
@@ -134,25 +137,27 @@ CamPaginationSearchIntegrationController.prototype.onPageChange = function(
   }
 };
 
-CamPaginationSearchIntegrationController.prototype.onLocationChange = function() {
-  var currentPage = this.getCurrentPageFromSearch();
+CamPaginationSearchIntegrationController.prototype.onLocationChange =
+  function () {
+    var currentPage = this.getCurrentPageFromSearch();
 
-  if (+this.pages.current !== +currentPage) {
-    this.pages.current = currentPage;
+    if (+this.pages.current !== +currentPage) {
+      this.pages.current = currentPage;
 
-    if (!this.hasSearchQueryStringChanged()) {
-      this.executeQueries();
-    } else {
-      this.locationChange = true;
+      if (!this.hasSearchQueryStringChanged()) {
+        this.executeQueries();
+      } else {
+        this.locationChange = true;
+      }
     }
-  }
-};
+  };
 
-CamPaginationSearchIntegrationController.prototype.getCurrentPageFromSearch = function() {
-  return +this.search().page || 1;
-};
+CamPaginationSearchIntegrationController.prototype.getCurrentPageFromSearch =
+  function () {
+    return +this.search().page || 1;
+  };
 
-CamPaginationSearchIntegrationController.prototype.updateQuery = function(
+CamPaginationSearchIntegrationController.prototype.updateQuery = function (
   newValue,
   oldValue
 ) {
@@ -171,7 +176,7 @@ CamPaginationSearchIntegrationController.prototype.updateQuery = function(
   }
 };
 
-CamPaginationSearchIntegrationController.prototype.resetPage = function() {
+CamPaginationSearchIntegrationController.prototype.resetPage = function () {
   var params = this.search();
 
   this.pages.current = 1;
@@ -181,21 +186,22 @@ CamPaginationSearchIntegrationController.prototype.resetPage = function() {
   this.search.updateSilently(params, true);
 };
 
-CamPaginationSearchIntegrationController.prototype.executeQueries = function() {
-  if (this.query && !this.blocked) {
-    this.locationChange = false;
-    this.onSearchChange({
-      query: angular.copy(this.query),
-      pages: angular.copy(this.pages)
-    }).then(
-      function(total) {
-        this.pages.total = total;
-      }.bind(this)
-    );
-  }
-};
+CamPaginationSearchIntegrationController.prototype.executeQueries =
+  function () {
+    if (this.query && !this.blocked) {
+      this.locationChange = false;
+      this.onSearchChange({
+        query: angular.copy(this.query),
+        pages: angular.copy(this.pages),
+      }).then(
+        function (total) {
+          this.pages.total = total;
+        }.bind(this)
+      );
+    }
+  };
 
-CamPaginationSearchIntegrationController.prototype.createQuery = function(
+CamPaginationSearchIntegrationController.prototype.createQuery = function (
   searches
 ) {
   return this.searchWidgetUtils.createSearchQueryForSearchWidget(
@@ -205,20 +211,18 @@ CamPaginationSearchIntegrationController.prototype.createQuery = function(
   );
 };
 
-CamPaginationSearchIntegrationController.prototype.areSearchesDifferent = function(
-  newSearches,
-  oldSearches
-) {
-  var preparedNewSearches = prepareSearchesForComparassion(newSearches);
-  var preparedOldSearches = prepareSearchesForComparassion(oldSearches);
+CamPaginationSearchIntegrationController.prototype.areSearchesDifferent =
+  function (newSearches, oldSearches) {
+    var preparedNewSearches = prepareSearchesForComparassion(newSearches);
+    var preparedOldSearches = prepareSearchesForComparassion(oldSearches);
 
-  return !angular.equals(preparedNewSearches, preparedOldSearches);
-};
+    return !angular.equals(preparedNewSearches, preparedOldSearches);
+  };
 
 function prepareSearchesForComparassion(searches) {
   return (
     searches &&
-    searches.map(function(search) {
+    searches.map(function (search) {
       return extractMeaningfulInformation(search);
     })
   );
@@ -234,6 +238,6 @@ function extractMeaningfulInformation(search) {
     value: value,
     type: type,
     operator: operator,
-    name: name
+    name: name,
   };
 }

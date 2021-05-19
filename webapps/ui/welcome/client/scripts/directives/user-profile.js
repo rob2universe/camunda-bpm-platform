@@ -25,56 +25,56 @@ module.exports = [
   'camAPI',
   'Notifications',
   '$translate',
-  function(camAPI, Notifications, $translate) {
+  function (camAPI, Notifications, $translate) {
     return {
       restrict: 'A',
 
       template: template,
 
       scope: {
-        username: '='
+        username: '=',
       },
 
       replace: true,
 
-      link: function($scope) {
+      link: function ($scope) {
         $scope.visibleForm = null;
-        $scope.showForm = function(name) {
+        $scope.showForm = function (name) {
           $scope.visibleForm = name || null;
         };
 
         $scope.processing = false;
         $scope.user = {
-          id: $scope.username
+          id: $scope.username,
         };
 
         $scope.password = {
           current: null,
           new: null,
           confirmation: null,
-          valid: true
+          valid: true,
         };
 
         var groupPages = ($scope.groupPages = {
           current: 1,
           size: 25,
-          total: 0
+          total: 0,
         });
 
         var groupResource = camAPI.resource('group');
 
-        groupResource.count({member: $scope.user.id}).then(function(res) {
+        groupResource.count({member: $scope.user.id}).then(function (res) {
           groupPages.total = res.count;
         });
 
-        $scope.loadGroups = function() {
+        $scope.loadGroups = function () {
           groupResource.list(
             {
               firstResult: groupPages.size * (groupPages.current - 1),
               maxResults: groupPages.size,
-              member: $scope.user.id
+              member: $scope.user.id,
             },
-            function(err, groups) {
+            function (err, groups) {
               if (err) {
                 throw err;
               }
@@ -88,18 +88,18 @@ module.exports = [
         var userResource = camAPI.resource('user');
         userResource.profile(
           {
-            id: $scope.user.id
+            id: $scope.user.id,
           },
-          function(err, data) {
+          function (err, data) {
             $scope.persistedProfile = data;
             angular.extend($scope.user, data);
             $scope.$root.userFullName = data.firstName + ' ' + data.lastName;
           }
         );
 
-        $scope.submitProfile = function() {
+        $scope.submitProfile = function () {
           $scope.processing = true;
-          userResource.updateProfile($scope.user, function(err) {
+          userResource.updateProfile($scope.user, function (err) {
             $scope.processing = false;
 
             if (!err) {
@@ -112,7 +112,7 @@ module.exports = [
                 message: '',
                 http: true,
                 exclusive: ['http'],
-                duration: 5000
+                duration: 5000,
               });
 
               $scope.showForm();
@@ -122,7 +122,7 @@ module.exports = [
                 message: err.message,
                 http: true,
                 exclusive: ['http'],
-                duration: 5000
+                duration: 5000,
               });
             }
           });
@@ -144,16 +144,16 @@ module.exports = [
         $scope.$watch('changePassword.new.$dirty', checkPassword);
         $scope.$watch('changePassword.confirmation.$dirty', checkPassword);
 
-        $scope.submitPassword = function() {
+        $scope.submitPassword = function () {
           $scope.processing = true;
 
           userResource.updateCredentials(
             {
               id: $scope.user.id,
               password: $scope.password.confirmation,
-              authenticatedUserPassword: $scope.password.current
+              authenticatedUserPassword: $scope.password.current,
             },
-            function(err) {
+            function (err) {
               $scope.processing = false;
 
               if (!err) {
@@ -161,7 +161,7 @@ module.exports = [
                 $scope.password = {
                   current: null,
                   new: null,
-                  confirmation: null
+                  confirmation: null,
                 };
 
                 Notifications.addMessage({
@@ -169,7 +169,7 @@ module.exports = [
                   message: '',
                   http: true,
                   exclusive: ['http'],
-                  duration: 5000
+                  duration: 5000,
                 });
 
                 $scope.showForm();
@@ -179,7 +179,7 @@ module.exports = [
                   message: err.message,
                   http: true,
                   exclusive: ['http'],
-                  duration: 5000
+                  duration: 5000,
                 });
               }
             }
@@ -187,10 +187,10 @@ module.exports = [
         };
 
         // translate
-        $scope.translate = function(token, object) {
+        $scope.translate = function (token, object) {
           return $translate.instant(token, object);
         };
-      }
+      },
     };
-  }
+  },
 ];

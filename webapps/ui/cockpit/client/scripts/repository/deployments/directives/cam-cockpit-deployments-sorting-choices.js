@@ -28,11 +28,11 @@ var angular = require('../../../../../../../camunda-commons-ui/vendor/angular');
 
 module.exports = [
   '$translate',
-  function($translate) {
+  function ($translate) {
     return {
       restrict: 'A',
       scope: {
-        deploymentsData: '='
+        deploymentsData: '=',
       },
 
       template: template,
@@ -40,26 +40,25 @@ module.exports = [
       controller: [
         '$scope',
         'search',
-        function($scope, search) {
-          var deploymentsSortingData = ($scope.deploymentsSortingData = $scope.deploymentsData.newChild(
-            $scope
-          ));
+        function ($scope, search) {
+          var deploymentsSortingData = ($scope.deploymentsSortingData =
+            $scope.deploymentsData.newChild($scope));
 
           var uniqueProps = ($scope.uniqueProps = {
             id: $translate.instant('REPOSITORY_DEPLOYMENTS_ID'),
             name: $translate.instant('REPOSITORY_DEPLOYMENTS_NAME'),
             deploymentTime: $translate.instant(
               'REPOSITORY_DEPLOYMENTS_DEPLOYMENT_TIME'
-            )
+            ),
           });
 
           // utilities /////////////////////////////////////////////////////////////////
 
-          var updateSilently = function(params) {
+          var updateSilently = function (params) {
             search.updateSilently(params);
           };
 
-          var updateSorting = function(searchParam, value) {
+          var updateSorting = function (searchParam, value) {
             var search = {};
             search[searchParam] = value;
             updateSilently(search);
@@ -68,32 +67,33 @@ module.exports = [
 
           // observe data /////////////////////////////////////////////////////////////
 
-          deploymentsSortingData.observe('deploymentsSorting', function(
-            pagination
-          ) {
-            $scope.sorting = angular.copy(pagination);
-          });
+          deploymentsSortingData.observe(
+            'deploymentsSorting',
+            function (pagination) {
+              $scope.sorting = angular.copy(pagination);
+            }
+          );
 
           // label ///////////////////////////////////////////////////////////////////
 
-          $scope.byLabel = function(sortBy) {
+          $scope.byLabel = function (sortBy) {
             return uniqueProps[sortBy];
           };
 
           // sort order //////////////////////////////////////////////////////////////
 
-          $scope.changeOrder = function() {
+          $scope.changeOrder = function () {
             var value = $scope.sorting.sortOrder === 'asc' ? 'desc' : 'asc';
             updateSorting('deploymentsSortOrder', value);
           };
 
           // sort by /////////////////////////////////////////////////////////////////
 
-          $scope.changeBy = function(by) {
+          $scope.changeBy = function (by) {
             updateSorting('deploymentsSortBy', by);
           };
-        }
-      ]
+        },
+      ],
     };
-  }
+  },
 ];

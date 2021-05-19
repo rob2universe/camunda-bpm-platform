@@ -26,7 +26,7 @@ var template = fs.readFileSync(
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.decisionInstance.tab', {
       id: 'decision-input-table',
       label: 'PLUGIN_OUTPUT_TABLE_LABEL',
@@ -36,8 +36,8 @@ module.exports = [
         '$translate',
         'localConf',
         'orderByFilter',
-        function($scope, $translate, localConf, orderBy) {
-          $scope.variables = $scope.decisionInstance.outputs.map(function(
+        function ($scope, $translate, localConf, orderBy) {
+          $scope.variables = $scope.decisionInstance.outputs.map(function (
             variable
           ) {
             return {
@@ -48,8 +48,8 @@ module.exports = [
                   variable.clauseName ||
                   variable.clauseId ||
                   variable.variableName,
-                valueInfo: variable.valueInfo
-              }
+                valueInfo: variable.valueInfo,
+              },
             };
           });
 
@@ -64,10 +64,10 @@ module.exports = [
           $scope.sortObj = loadLocal({
             sortBy: 'variable.name',
             sortOrder: 'asc',
-            sortReverse: false
+            sortReverse: false,
           });
 
-          $scope.onSortChange = function(sortObj) {
+          $scope.onSortChange = function (sortObj) {
             sortObj = sortObj || $scope.sortObj;
             sortObj.sortReverse = sortObj.sortOrder !== 'asc';
             saveLocal(sortObj);
@@ -86,9 +86,9 @@ module.exports = [
           function loadLocal(defaultValue) {
             return localConf.get('sortDecisionInputTab', defaultValue);
           }
-        }
+        },
       ],
-      priority: 10
+      priority: 10,
     });
-  }
+  },
 ];

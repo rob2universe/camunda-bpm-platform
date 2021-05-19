@@ -37,7 +37,7 @@ var angular = require('../../../../../camunda-commons-ui/vendor/angular');
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/users/:userId', {
       template: template,
       controller: [
@@ -54,7 +54,7 @@ module.exports = [
         'AuthenticationService',
         '$http',
         'Uri',
-        function(
+        function (
           $scope,
           page,
           $routeParams,
@@ -74,15 +74,15 @@ module.exports = [
             TenantResource = camAPI.resource('tenant'),
             UserResource = camAPI.resource('user');
 
-          var refreshBreadcrumbs = function() {
+          var refreshBreadcrumbs = function () {
             page.breadcrumbsClear();
             page.breadcrumbsAdd({
               label: $translate.instant('USERS_USERS'),
-              href: '#/users/'
+              href: '#/users/',
             });
           };
 
-          $scope.$root.$watch('userFullName', function(name) {
+          $scope.$root.$watch('userFullName', function (name) {
             if (name) {
               $scope.currentUserPassword = $translate.instant(
                 'USERS_MY_PASSWORD',
@@ -109,7 +109,7 @@ module.exports = [
             authenticatedUserPassword: '',
             password: '',
             password2: '',
-            valid: true
+            valid: true,
           };
 
           // list of the user's groups
@@ -121,7 +121,7 @@ module.exports = [
           // common form validation //////////////////////////
 
           /** form must be valid & user must have made some changes */
-          $scope.canSubmit = function(form, modelObject) {
+          $scope.canSubmit = function (form, modelObject) {
             return (
               form.$valid &&
               !form.$pristine &&
@@ -137,70 +137,70 @@ module.exports = [
 
           // load options ////////////////////////////////////
 
-          UserResource.options({id: $scope.decodedUserId}, function(err, res) {
-            angular.forEach(res.links, function(link) {
+          UserResource.options({id: $scope.decodedUserId}, function (err, res) {
+            angular.forEach(res.links, function (link) {
               $scope.availableOperations[link.rel] = true;
             });
           });
 
           // update profile form /////////////////////////////
 
-          var loadProfile = ($scope.loadProfile = function() {
-            UserResource.profile({id: $scope.decodedUserId}, function(
-              err,
-              res
-            ) {
-              $scope.user = res;
-              $scope.persistedProfile = res;
+          var loadProfile = ($scope.loadProfile = function () {
+            UserResource.profile(
+              {id: $scope.decodedUserId},
+              function (err, res) {
+                $scope.user = res;
+                $scope.persistedProfile = res;
 
-              $scope.profile = angular.copy(res);
-              $scope.profileCopy = angular.copy(res);
+                $scope.profile = angular.copy(res);
+                $scope.profileCopy = angular.copy(res);
 
-              var userFullName = [$scope.user.firstName, $scope.user.lastName]
-                .filter(function(v) {
-                  return !!v;
-                })
-                .join(' ');
+                var userFullName = [$scope.user.firstName, $scope.user.lastName]
+                  .filter(function (v) {
+                    return !!v;
+                  })
+                  .join(' ');
 
-              page.titleSet(
-                $translate.instant('USERS_EDIT_USER', {user: userFullName})
-              );
+                page.titleSet(
+                  $translate.instant('USERS_EDIT_USER', {user: userFullName})
+                );
 
-              refreshBreadcrumbs();
+                refreshBreadcrumbs();
 
-              page.breadcrumbsAdd({
-                label: userFullName,
-                href: '#/users/' + $scope.user.id
-              });
-            });
+                page.breadcrumbsAdd({
+                  label: userFullName,
+                  href: '#/users/' + $scope.user.id,
+                });
+              }
+            );
           });
 
-          $scope.updateProfile = function() {
+          $scope.updateProfile = function () {
             var resourceData = angular.extend(
               {},
               {id: $scope.decodedUserId},
               $scope.profile
             );
-            UserResource.updateProfile(resourceData, function(err) {
+            UserResource.updateProfile(resourceData, function (err) {
               if (err === null) {
                 $scope.persistedProfile = resourceData;
                 Notifications.addMessage({
                   type: 'success',
                   status: $translate.instant('NOTIFICATIONS_STATUS_SUCCESS'),
-                  message: $translate.instant('USERS_EDIT_SUCCESS_MSN')
+                  message: $translate.instant('USERS_EDIT_SUCCESS_MSN'),
                 });
                 loadProfile();
               } else {
                 Notifications.addError({
                   status: $translate.instant('NOTIFICATIONS_STATUS_FAILED'),
-                  message: $translate.instant('USERS_EDIT_FAILED')
+                  message: $translate.instant('USERS_EDIT_FAILED'),
                 });
               }
             });
           };
           // update password form ////////////////////////////
 
-          var resetCredentials = function(form) {
+          var resetCredentials = function (form) {
             $scope.credentials.authenticatedUserPassword = '';
             $scope.credentials.password = '';
             $scope.credentials.password2 = '';
@@ -208,11 +208,11 @@ module.exports = [
             form.$setPristine();
           };
 
-          $scope.updateCredentials = function(form) {
+          $scope.updateCredentials = function (form) {
             var credentialsData = {
               authenticatedUserPassword:
                 $scope.credentials.authenticatedUserPassword,
-              password: $scope.credentials.password
+              password: $scope.credentials.password,
             };
 
             var resourceData = angular.extend(
@@ -221,14 +221,14 @@ module.exports = [
               credentialsData
             );
 
-            UserResource.updateCredentials(resourceData, function(err) {
+            UserResource.updateCredentials(resourceData, function (err) {
               if (err === null) {
                 Notifications.addMessage({
                   type: 'success',
                   status: $translate.instant('NOTIFICATIONS_STATUS_PASSWORD'),
                   message: $translate.instant('USERS_PASSWORD_CHANGED'),
                   duration: 5000,
-                  exclusive: true
+                  exclusive: true,
                 });
                 resetCredentials(form);
               } else {
@@ -241,7 +241,7 @@ module.exports = [
                       message: $translate.instant(
                         'USERS_OLD_PASSWORD_NOT_VALID'
                       ),
-                      exclusive: true
+                      exclusive: true,
                     });
                   } else {
                     Notifications.addError({
@@ -249,7 +249,7 @@ module.exports = [
                         'NOTIFICATIONS_STATUS_PASSWORD'
                       ),
                       message: $translate.instant('USERS_PASSWORD_NOT_VALID'),
-                      exclusive: true
+                      exclusive: true,
                     });
                   }
                 } else {
@@ -257,7 +257,7 @@ module.exports = [
                     status: $translate.instant('NOTIFICATIONS_STATUS_PASSWORD'),
                     message: $translate.instant(
                       'USERS_PASSWORD_COULD_NOT_CHANGE'
-                    )
+                    ),
                   });
                 }
               }
@@ -266,22 +266,22 @@ module.exports = [
 
           // delete user form /////////////////////////////
 
-          $scope.deleteUser = function() {
+          $scope.deleteUser = function () {
             $modal
               .open({
                 template: confirmationTemplate,
                 controller: [
                   '$scope',
-                  function($dialogScope) {
+                  function ($dialogScope) {
                     $dialogScope.question = $translate.instant(
                       'USERS_USER_DELETE_CONFIRM',
                       {user: $scope.user.id}
                     );
-                  }
-                ]
+                  },
+                ],
               })
-              .result.then(function() {
-                UserResource.delete({id: $scope.decodedUserId}, function() {
+              .result.then(function () {
+                UserResource.delete({id: $scope.decodedUserId}, function () {
                   if ($scope.authenticatedUser.name !== $scope.user.id) {
                     Notifications.addMessage({
                       type: 'success',
@@ -289,18 +289,18 @@ module.exports = [
                         'NOTIFICATIONS_STATUS_SUCCESS'
                       ),
                       message: $translate.instant('USERS_USER_DELETE_SUCCESS', {
-                        user: $scope.user.id
-                      })
+                        user: $scope.user.id,
+                      }),
                     });
 
                     $location.path('/users');
                   } else {
                     $http
                       .get(Uri.appUri('engine://engine/'))
-                      .then(function(response) {
+                      .then(function (response) {
                         var engines = response.data;
 
-                        engines.forEach(function(engine) {
+                        engines.forEach(function (engine) {
                           AuthenticationService.logout(engine.name);
                         });
                       })
@@ -312,22 +312,22 @@ module.exports = [
           };
 
           // Unlock User
-          $scope.unlockUser = function() {
+          $scope.unlockUser = function () {
             UserResource.unlock({id: $scope.decodedUserId})
-              .then(function() {
+              .then(function () {
                 Notifications.addMessage({
                   type: 'success',
                   status: $translate.instant('NOTIFICATIONS_STATUS_SUCCESS'),
                   message: $translate.instant('USERS_USER_UNLOCK_SUCCESS', {
-                    user: $scope.user.id
-                  })
+                    user: $scope.user.id,
+                  }),
                 });
                 $location.path('/users');
               })
-              .catch(function(e) {
+              .catch(function (e) {
                 Notifications.addError({
                   status: $translate.instant('NOTIFICATIONS_STATUS_FAILED'),
-                  message: $translate.instant(e.message)
+                  message: $translate.instant(e.message),
                 });
               });
           };
@@ -336,7 +336,7 @@ module.exports = [
 
           var groupsSorting = ($scope.groupsSorting = {});
 
-          $scope.onGroupsSortingChanged = function(_sorting) {
+          $scope.onGroupsSortingChanged = function (_sorting) {
             groupsSorting = $scope.groupsSorting = $scope.groupsSorting || {};
             groupsSorting.sortBy = _sorting.sortBy;
             groupsSorting.sortOrder = _sorting.sortOrder;
@@ -344,14 +344,14 @@ module.exports = [
           };
 
           $scope.$watch(
-            function() {
+            function () {
               return $location.search().tab === 'groups';
             },
-            function(newValue) {
+            function (newValue) {
               if (newValue)
                 GroupResource.count({
-                  member: $scope.decodedUserId
-                }).then(function(res) {
+                  member: $scope.decodedUserId,
+                }).then(function (res) {
                   pages.total = res.count;
                 });
             }
@@ -359,12 +359,12 @@ module.exports = [
 
           var pages = ($scope.pages = {size: 50, total: 0, current: 1});
 
-          $scope.onPaginationChange = function(evt) {
+          $scope.onPaginationChange = function (evt) {
             $scope.pages.current = evt.current;
             loadGroups();
           };
 
-          var loadGroups = ($scope.loadGroups = function() {
+          var loadGroups = ($scope.loadGroups = function () {
             $scope.groupLoadingState = 'LOADING';
             GroupResource.list(
               angular.extend(
@@ -372,55 +372,55 @@ module.exports = [
                 {
                   member: $scope.decodedUserId,
                   firstResult: (pages.current - 1) * pages.size,
-                  maxResults: pages.size
+                  maxResults: pages.size,
                 },
                 groupsSorting
               ),
-              function(err, res) {
+              function (err, res) {
                 $scope.groupLoadingState = res.length ? 'LOADED' : 'EMPTY';
 
                 $scope.groupList = res;
                 $scope.groupIdList = [];
-                angular.forEach($scope.groupList, function(group) {
+                angular.forEach($scope.groupList, function (group) {
                   $scope.groupIdList.push(group.id);
                 });
               }
             );
           });
 
-          $scope.removeGroup = function(groupId) {
+          $scope.removeGroup = function (groupId) {
             GroupResource.deleteMember(
               {userId: $scope.decodedUserId, id: groupId},
-              function() {
+              function () {
                 Notifications.addMessage({
                   type: 'success',
                   status: $translate.instant('NOTIFICATIONS_STATUS_SUCCESS'),
                   message: $translate.instant('USERS_USER_DELETE_FROM_GROUP', {
-                    user: $scope.user.id
-                  })
+                    user: $scope.user.id,
+                  }),
                 });
                 loadGroups();
               }
             );
           };
 
-          $scope.openCreateGroupMembershipDialog = function() {
+          $scope.openCreateGroupMembershipDialog = function () {
             var dialogConfig = {
               ctrl: 'GroupMembershipDialogController',
               template: groupTemplate,
               callback: $scope.loadGroups,
               resolve: prepareResolveObject({
-                idList: function() {
+                idList: function () {
                   return $scope.groupIdList;
-                }
-              })
+                },
+              }),
             };
 
             openCreateDialog(dialogConfig);
           };
 
-          var checkRemoveGroupMembershipAuthorized = function() {
-            checkDeleteAuthorized('group membership', function(err, res) {
+          var checkRemoveGroupMembershipAuthorized = function () {
+            checkDeleteAuthorized('group membership', function (err, res) {
               $scope.availableOperations.removeGroup = res.authorized;
             });
           };
@@ -429,7 +429,7 @@ module.exports = [
 
           var tenantsSorting = ($scope.tenantsSorting = {});
 
-          $scope.onTenantsSortingChanged = function(_sorting) {
+          $scope.onTenantsSortingChanged = function (_sorting) {
             tenantsSorting = $scope.tenantsSorting =
               $scope.tenantsSorting || {};
             tenantsSorting.sortBy = _sorting.sortBy;
@@ -439,10 +439,10 @@ module.exports = [
           };
 
           $scope.$watch(
-            function() {
+            function () {
               return $location.search().tab === 'tenants' && tenantsSorting;
             },
-            function(newValue) {
+            function (newValue) {
               return newValue && (loadTenants() || countTenants());
             }
           );
@@ -450,18 +450,18 @@ module.exports = [
           var tenantPages = ($scope.tenantPages = {
             size: 50,
             total: 0,
-            current: 1
+            current: 1,
           });
 
-          var countTenants = function() {
+          var countTenants = function () {
             TenantResource.count({
-              userMember: $scope.decodedUserId
-            }).then(function(res) {
+              userMember: $scope.decodedUserId,
+            }).then(function (res) {
               tenantPages.total = res.count;
             });
           };
 
-          var loadTenants = ($scope.loadTenants = function() {
+          var loadTenants = ($scope.loadTenants = function () {
             $scope.tenantLoadingState = 'LOADING';
             TenantResource.list(
               angular.extend(
@@ -469,70 +469,70 @@ module.exports = [
                 {
                   userMember: $scope.decodedUserId,
                   maxResults: tenantPages.size,
-                  firstResult: (tenantPages.current - 1) * tenantPages.size
+                  firstResult: (tenantPages.current - 1) * tenantPages.size,
                 },
                 tenantsSorting
               ),
-              function(err, res) {
+              function (err, res) {
                 $scope.tenantLoadingState = res.length ? 'LOADED' : 'EMPTY';
 
                 $scope.tenantList = res;
                 $scope.idList = [];
-                angular.forEach($scope.tenantList, function(tenant) {
+                angular.forEach($scope.tenantList, function (tenant) {
                   $scope.idList.push(tenant.id);
                 });
               }
             );
           });
 
-          $scope.removeTenant = function(tenantId) {
+          $scope.removeTenant = function (tenantId) {
             TenantResource.deleteUserMember(
               {userId: $scope.decodedUserId, id: tenantId},
-              function() {
+              function () {
                 Notifications.addMessage({
                   type: 'success',
                   status: $translate.instant('NOTIFICATIONS_STATUS_SUCCESS'),
                   message: $translate.instant('USERS_USER_DELETE_FROM_TENANT', {
-                    user: $scope.user.id
-                  })
+                    user: $scope.user.id,
+                  }),
                 });
                 loadTenants();
               }
             );
           };
 
-          $scope.openCreateTenantMembershipDialog = function() {
+          $scope.openCreateTenantMembershipDialog = function () {
             var dialogConfig = {
               ctrl: 'TenantMembershipDialogController',
               template: tenantTemplate,
               callback: $scope.loadTenants,
               resolve: prepareResolveObject({
-                idList: function() {
+                idList: function () {
                   return $scope.idList;
-                }
-              })
+                },
+              }),
             };
 
             openCreateDialog(dialogConfig);
           };
 
-          var checkRemoveTenantMembershipAuthorized = function() {
-            checkDeleteAuthorized('tenant membership', function(err, res) {
+          var checkRemoveTenantMembershipAuthorized = function () {
+            checkDeleteAuthorized('tenant membership', function (err, res) {
               $scope.availableOperations.removeTenant = res.authorized;
             });
           };
 
           // Modal Dialog Configuration ///////////////////////////////
 
-          var openCreateDialog = function(dialogCfg) {
+          var openCreateDialog = function (dialogCfg) {
             var dialog = $modal.open({
               controller: dialogCfg.ctrl,
               template: dialogCfg.template,
-              resolve: dialogCfg.resolve
+              resolve: dialogCfg.resolve,
             });
 
             dialog.result
-              .then(function(result) {
+              .then(function (result) {
                 if (result == 'SUCCESS') {
                   dialogCfg.callback();
                 }
@@ -540,17 +540,17 @@ module.exports = [
               .catch(angular.noop);
           };
 
-          var prepareResolveObject = function(listObj) {
+          var prepareResolveObject = function (listObj) {
             return angular.extend(
               {},
 
               {
-                member: function() {
+                member: function () {
                   return $scope.user;
                 },
-                memberId: function() {
+                memberId: function () {
                   return $scope.decodedUserId;
-                }
+                },
               },
 
               listObj
@@ -559,12 +559,12 @@ module.exports = [
 
           // Delete Authorization Check /////////////////////////
 
-          var checkDeleteAuthorized = function(resourceName, cb) {
+          var checkDeleteAuthorized = function (resourceName, cb) {
             AuthorizationResource.check(
               {
                 permissionName: 'DELETE',
                 resourceName: resourceName,
-                resourceType: 3
+                resourceType: 3,
               },
               cb
             );
@@ -572,11 +572,11 @@ module.exports = [
 
           // page controls ////////////////////////////////////
 
-          $scope.show = function(fragment) {
+          $scope.show = function (fragment) {
             return fragment == $location.search().tab;
           };
 
-          $scope.activeClass = function(link) {
+          $scope.activeClass = function (link) {
             var path = $location.absUrl();
             return path.indexOf(link) != -1 ? 'active' : '';
           };
@@ -598,13 +598,13 @@ module.exports = [
           }
 
           // translate
-          $scope.translate = function(token, object) {
+          $scope.translate = function (token, object) {
             return $translate.instant(token, object);
           };
-        }
+        },
       ],
       authentication: 'required',
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];

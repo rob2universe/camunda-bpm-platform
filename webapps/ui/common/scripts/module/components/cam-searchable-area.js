@@ -21,7 +21,7 @@ var fs = require('fs');
 
 var template = fs.readFileSync(__dirname + '/cam-searchable-area.html', 'utf8');
 
-module.exports = function() {
+module.exports = function () {
   return {
     restrict: 'A',
     transclude: true,
@@ -38,7 +38,7 @@ module.exports = function() {
       textEmpty: '@',
       storageGroup: '=',
       searchId: '@?',
-      blocked: '='
-    }
+      blocked: '=',
+    },
   };
 };

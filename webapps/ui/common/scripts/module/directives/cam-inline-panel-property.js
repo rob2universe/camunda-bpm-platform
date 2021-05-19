@@ -24,7 +24,7 @@ var template = fs.readFileSync(
   'utf8'
 );
 
-module.exports = function() {
+module.exports = function () {
   return {
     restrict: 'A',
     template: template,
@@ -33,15 +33,15 @@ module.exports = function() {
       format: '&',
       onChange: '&',
       onRemove: '&',
-      type: '@'
+      type: '@',
     },
-    link: function($scope) {
-      $scope.remove = function($event) {
+    link: function ($scope) {
+      $scope.remove = function ($event) {
         $event.preventDefault();
         $event.stopPropagation();
 
         $scope.onRemove();
       };
-    }
+    },
   };
 };

@@ -21,7 +21,7 @@ var fs = require('fs');
 
 var template = fs.readFileSync(__dirname + '/cam-tabs.html', 'utf8');
 
-module.exports = function() {
+module.exports = function () {
   return {
     restrict: 'A',
     template: template,
@@ -30,7 +30,7 @@ module.exports = function() {
       providerParams: '=camTabs',
       tabsApi: '=?',
       vars: '=?',
-      varsValues: '=?'
-    }
+      varsValues: '=?',
+    },
   };
 };

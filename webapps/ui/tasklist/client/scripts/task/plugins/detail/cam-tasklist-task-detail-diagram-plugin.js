@@ -27,7 +27,7 @@ var Controller = [
   '$scope',
   '$q',
   'camAPI',
-  function($scope, $q, camAPI) {
+  function ($scope, $q, camAPI) {
     // setup ///////////////////////////////////////////////////////////
 
     var ProcessDefinition = camAPI.resource('process-definition');
@@ -39,25 +39,25 @@ var Controller = [
     diagramData.provide('xml', [
       'processDefinition',
       'caseDefinition',
-      function(processDefinition, caseDefinition) {
+      function (processDefinition, caseDefinition) {
         if (!processDefinition && !caseDefinition) {
           return $q.when(null);
         }
 
         if (processDefinition) {
           return getDefinition($q, ProcessDefinition, processDefinition)
-            .then(function(xml) {
+            .then(function (xml) {
               return xml.bpmn20Xml;
             })
-            .catch(function() {});
+            .catch(function () {});
         }
 
         return getDefinition($q, CaseDefinition, caseDefinition)
-          .then(function(xml) {
+          .then(function (xml) {
             return xml.cmmnXml;
           })
-          .catch(function() {});
-      }
+          .catch(function () {});
+      },
     ]);
 
     diagramData.provide('diagram', [
@@ -65,41 +65,41 @@ var Controller = [
       'task',
       'caseDefinition',
       'processDefinition',
-      function(xml, task, caseDefinition, processDefinition) {
+      function (xml, task, caseDefinition, processDefinition) {
         return {
           xml: xml,
           task: task,
-          definition: processDefinition || caseDefinition
+          definition: processDefinition || caseDefinition,
         };
-      }
+      },
     ]);
 
     // observer /////////////////////////////////////////////////////////
 
-    diagramData.observe('processDefinition', function(processDefinition) {
+    diagramData.observe('processDefinition', function (processDefinition) {
       $scope.processDefinition = processDefinition;
     });
 
-    diagramData.observe('caseDefinition', function(caseDefinition) {
+    diagramData.observe('caseDefinition', function (caseDefinition) {
       $scope.caseDefinition = caseDefinition;
     });
 
-    $scope.diagramState = diagramData.observe('diagram', function(diagram) {
+    $scope.diagramState = diagramData.observe('diagram', function (diagram) {
       $scope.diagram = diagram;
     });
 
     $scope.control = {};
 
-    $scope.highlightTask = function() {
+    $scope.highlightTask = function () {
       $scope.control.highlight($scope.diagram.task.taskDefinitionKey);
     };
-  }
+  },
 ];
 
 function getDefinition($q, DefinitionApi, definition) {
   var deferred = $q.defer();
 
-  DefinitionApi.xml(definition, function(err, res) {
+  DefinitionApi.xml(definition, function (err, res) {
     if (err) {
       deferred.reject(err);
     } else {
@@ -116,7 +116,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     label: 'DIAGRAM',
     template: template,
     controller: Controller,
-    priority: 600
+    priority: 600,
   });
 };
 

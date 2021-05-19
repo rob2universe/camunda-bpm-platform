@@ -26,13 +26,13 @@ var template = fs.readFileSync(
   'utf8'
 );
 
-module.exports = function(ngModule) {
+module.exports = function (ngModule) {
   ngModule.controller('CalledProcessInstanceController', [
     '$scope',
     'PluginProcessInstanceResource',
     '$translate',
     'localConf',
-    function($scope, PluginProcessInstanceResource, $translate, localConf) {
+    function ($scope, PluginProcessInstanceResource, $translate, localConf) {
       // input: processInstance, processData
 
       var calledProcessInstanceData = $scope.processData.newChild($scope);
@@ -51,10 +51,10 @@ module.exports = function(ngModule) {
       $scope.sortObj = loadLocal({
         sortBy: 'processDefinitionLabel',
         sortOrder: 'asc',
-        sortReverse: false
+        sortReverse: false,
       });
 
-      $scope.onSortChange = function(sortObj) {
+      $scope.onSortChange = function (sortObj) {
         sortObj = sortObj || $scope.sortObj;
         // sortReverse required by anqular-sorting;
         sortObj.sortReverse = sortObj.sortOrder !== 'asc';
@@ -71,14 +71,15 @@ module.exports = function(ngModule) {
 
       var filter = null;
 
-      $scope.getSearchQueryForSearchType = searchWidgetUtils.getSearchQueryForSearchType.bind(
-        null,
-        'activityInstanceIdIn'
-      );
+      $scope.getSearchQueryForSearchType =
+        searchWidgetUtils.getSearchQueryForSearchType.bind(
+          null,
+          'activityInstanceIdIn'
+        );
 
       calledProcessInstanceData.observe(
         ['filter', 'instanceIdToInstanceMap'],
-        function(newFilter, instanceIdToInstanceMap) {
+        function (newFilter, instanceIdToInstanceMap) {
           updateView(newFilter, instanceIdToInstanceMap);
         }
       );
@@ -99,13 +100,13 @@ module.exports = function(ngModule) {
         $scope.loadingState = 'LOADING';
         PluginProcessInstanceResource.processInstances(
           {
-            id: $scope.processInstance.id
+            id: $scope.processInstance.id,
           },
           filter
         )
-          .$promise.then(function(response) {
+          .$promise.then(function (response) {
             // angular.forEach(response.data, function (calledInstance) {
-            angular.forEach(response, function(calledInstance) {
+            angular.forEach(response, function (calledInstance) {
               var instance =
                 instanceIdToInstanceMap[calledInstance.callActivityInstanceId];
               calledInstance.instance = instance;
@@ -119,7 +120,7 @@ module.exports = function(ngModule) {
           })
           .catch(angular.noop);
       }
-    }
+    },
   ]);
 
   var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -128,7 +129,7 @@ module.exports = function(ngModule) {
       label: 'PLUGIN_CALLED_PROCESS_INSTANCE_LABEL',
       template: template,
       controller: 'CalledProcessInstanceController',
-      priority: 10
+      priority: 10,
     });
   };
 

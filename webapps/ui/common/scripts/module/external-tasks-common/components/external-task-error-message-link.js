@@ -24,7 +24,7 @@ var template = fs.readFileSync(
   'utf8'
 );
 
-module.exports = function() {
+module.exports = function () {
   return {
     restrict: 'A',
     template: template,
@@ -32,7 +32,7 @@ module.exports = function() {
     controller: 'ExternalTaskErrorMessageLinkController as Link',
     scope: {
       taskId: '=externalTaskErrorMessageLink',
-      historic: '=?'
-    }
+      historic: '=?',
+    },
   };
 };

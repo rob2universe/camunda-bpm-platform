@@ -23,7 +23,7 @@ var template = fs.readFileSync(
   'utf8'
 );
 
-var Controller = ['$scope', function() {}];
+var Controller = ['$scope', function () {}];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
   ViewsProvider.registerDefaultView('tasklist.task.detail', {
@@ -31,7 +31,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     label: 'DESCRIPTION',
     template: template,
     controller: Controller,
-    priority: 100
+    priority: 100,
   });
 };
 

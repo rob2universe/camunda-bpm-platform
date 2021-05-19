@@ -28,7 +28,7 @@ var Controller = [
   '$location',
   'Uri',
   '$translate',
-  function(
+  function (
     $scope,
     InitialUserResource,
     Notifications,
@@ -48,7 +48,7 @@ var Controller = [
       id: '',
       firstName: '',
       lastName: '',
-      email: ''
+      email: '',
     };
 
     $scope.created = false;
@@ -57,38 +57,38 @@ var Controller = [
     $scope.credentials = {
       password: '',
       password2: '',
-      valid: true
+      valid: true,
     };
 
-    $scope.createUser = function() {
+    $scope.createUser = function () {
       var user = {
         profile: $scope.profile,
-        credentials: {password: $scope.credentials.password}
+        credentials: {password: $scope.credentials.password},
       };
 
       InitialUserResource.create(user)
         .$promise.then(
-          function() {
+          function () {
             $scope.created = true;
           },
-          function() {
+          function () {
             Notifications.addError({
               status: $translate.instant('NOTIFICATIONS_STATUS_ERROR'),
-              message: $translate.instant('SETUP_COULD_NOT_CREATE_USER')
+              message: $translate.instant('SETUP_COULD_NOT_CREATE_USER'),
             });
           }
         )
-        .catch(function() {});
+        .catch(function () {});
     };
-  }
+  },
 ];
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/setup', {
       template: template,
-      controller: Controller
+      controller: Controller,
     });
-  }
+  },
 ];

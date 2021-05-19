@@ -23,7 +23,7 @@ var template = fs.readFileSync(__dirname + '/groups.html', 'utf8');
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('admin.dashboard.section', {
       id: 'group',
       label: 'GROUPS_GROUPS',
@@ -32,12 +32,12 @@ module.exports = [
       controller: [
         '$scope',
         'camAPI',
-        function($scope, camAPI) {
+        function ($scope, camAPI) {
           var service = camAPI.resource('group');
 
           $scope.access = {};
 
-          service.options(function(err, data) {
+          service.options(function (err, data) {
             if (err) {
               throw err;
             }
@@ -47,9 +47,9 @@ module.exports = [
               $scope.access[data.links[a].rel] = true;
             }
           });
-        }
+        },
       ],
-      priority: 0
+      priority: 0,
     });
-  }
+  },
 ];

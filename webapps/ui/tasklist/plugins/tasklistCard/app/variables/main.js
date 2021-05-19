@@ -23,7 +23,7 @@ var camTasklistVariablesDetailsModalCtrl = require('./modals/cam-tasklist-variab
 
 var ngModule = angular.module('tasklist.plugin.tasklistCard.variables', [
   'ui.bootstrap',
-  'angularMoment'
+  'angularMoment',
 ]);
 
 var tasklistCardVariablesPlugin = [
@@ -36,10 +36,10 @@ var tasklistCardVariablesPlugin = [
         'filter-properties="filterProperties" ' +
         'variables="task._embedded.variable" ' +
         'class="row variables"></div>',
-      controller: function() {},
-      priority: 200
+      controller: function () {},
+      priority: 200,
     });
-  }
+  },
 ];
 
 ngModule.config(tasklistCardVariablesPlugin);

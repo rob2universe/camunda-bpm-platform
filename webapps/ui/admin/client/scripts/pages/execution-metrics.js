@@ -22,8 +22,8 @@ var fs = require('fs');
 var template = fs.readFileSync(__dirname + '/execution-metrics.html', 'utf8');
 var CamSDK = require('camunda-bpm-sdk-js/lib/angularjs/index');
 
-var debouncePromiseFactory = require('camunda-bpm-sdk-js').utils
-  .debouncePromiseFactory;
+var debouncePromiseFactory =
+  require('camunda-bpm-sdk-js').utils.debouncePromiseFactory;
 var debounceQuery = debouncePromiseFactory();
 
 var Controller = [
@@ -32,7 +32,7 @@ var Controller = [
   'Uri',
   'camAPI',
   'fixDate',
-  function($scope, $filter, Uri, camAPI, fixDate) {
+  function ($scope, $filter, Uri, camAPI, fixDate) {
     var MetricsResource = camAPI.resource('metrics');
 
     // date variables
@@ -75,13 +75,13 @@ var Controller = [
       }
     }
 
-    $scope.$watch('startDate', function(newValue, oldValue) {
+    $scope.$watch('startDate', function (newValue, oldValue) {
       if (newValue !== oldValue) {
         handleDateChange();
       }
     });
 
-    $scope.$watch('endDate', function(newValue, oldValue) {
+    $scope.$watch('endDate', function (newValue, oldValue) {
       if (newValue !== oldValue) {
         handleDateChange();
       }
@@ -99,18 +99,18 @@ var Controller = [
         {
           name: 'unique-task-workers',
           startDate: fixDate($scope.startDate),
-          endDate: fixDate($scope.endDate)
+          endDate: fixDate($scope.endDate),
         },
-        function(err, res) {
+        function (err, res) {
           cb(err, !err ? res.result : null);
         }
       );
     }
 
-    $scope.$watch('showTaskWorkerMetric', function() {
+    $scope.$watch('showTaskWorkerMetric', function () {
       if ($scope.showTaskWorkerMetric) {
         $scope.loadingState = 'LOADING';
-        fetchTaskWorkerMetric(function(err, result) {
+        fetchTaskWorkerMetric(function (err, result) {
           if (!err) {
             $scope.loadingState = 'LOADED';
             $scope.metrics.taskWorkers = result;
@@ -125,57 +125,57 @@ var Controller = [
       }
     });
 
-    var load = ($scope.load = function() {
+    var load = ($scope.load = function () {
       $scope.loadingState = 'LOADING';
       var series = {
-        flowNodes: function(cb) {
+        flowNodes: function (cb) {
           MetricsResource.sum(
             {
               name: 'activity-instance-start',
               startDate: fixDate($scope.startDate),
-              endDate: fixDate($scope.endDate)
+              endDate: fixDate($scope.endDate),
             },
-            function(err, res) {
+            function (err, res) {
               cb(err, !err ? res.result : null);
             }
           );
         },
-        decisionElements: function(cb) {
+        decisionElements: function (cb) {
           MetricsResource.sum(
             {
               name: 'executed-decision-elements',
               startDate: fixDate($scope.startDate),
-              endDate: fixDate($scope.endDate)
+              endDate: fixDate($scope.endDate),
             },
-            function(err, res) {
+            function (err, res) {
               cb(err, !err ? res.result : null);
             }
           );
         },
-        rootProcessInstances: function(cb) {
+        rootProcessInstances: function (cb) {
           MetricsResource.sum(
             {
               name: 'root-process-instance-start',
               startDate: fixDate($scope.startDate),
-              endDate: fixDate($scope.endDate)
+              endDate: fixDate($scope.endDate),
             },
-            function(err, res) {
+            function (err, res) {
               cb(err, !err ? res.result : null);
             }
           );
         },
-        decisionInstances: function(cb) {
+        decisionInstances: function (cb) {
           MetricsResource.sum(
             {
               name: 'executed-decision-instances',
               startDate: fixDate($scope.startDate),
-              endDate: fixDate($scope.endDate)
+              endDate: fixDate($scope.endDate),
             },
-            function(err, res) {
+            function (err, res) {
               cb(err, !err ? res.result : null);
             }
           );
-        }
+        },
       };
 
       if ($scope.showTaskWorkerMetric) {
@@ -186,12 +186,12 @@ var Controller = [
 
       // promises??? YES!
       debounceQuery(CamSDK.utils.series(series))
-        .then(function(res) {
+        .then(function (res) {
           $scope.loadingState = 'LOADED';
           $scope.metrics = res;
           updateView();
         })
-        .catch(function() {
+        .catch(function () {
           setLoadingError('Could not set start and end dates.');
           $scope.loadingState = 'ERROR';
           updateView();
@@ -200,7 +200,7 @@ var Controller = [
     });
 
     load();
-  }
+  },
 ];
 
 module.exports = [
@@ -214,20 +214,20 @@ module.exports = [
       priority: 900,
       access: [
         'AuthorizationResource',
-        function(AuthorizationResource) {
-          return function(cb) {
+        function (AuthorizationResource) {
+          return function (cb) {
             AuthorizationResource.check({
               permissionName: 'ALL',
               resourceName: 'authorization',
-              resourceType: 4
+              resourceType: 4,
             })
-              .$promise.then(function(response) {
+              .$promise.then(function (response) {
                 cb(null, response.authorized);
               })
               .catch(cb);
           };
-        }
-      ]
+        },
+      ],
     });
-  }
+  },
 ];

@@ -30,7 +30,7 @@ module.exports = [
   'fixDate',
   '$translate',
   '$rootScope',
-  function(
+  function (
     $scope,
     $http,
     $filter,
@@ -57,14 +57,14 @@ module.exports = [
     $scope.data = {
       includeInstances: true,
       executeImmediately: true,
-      executionDate: dateFilter(Date.now(), dateFormat)
+      executionDate: dateFilter(Date.now(), dateFormat),
     };
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       $modalInstance.close($scope.status);
     });
 
-    $scope.updateSuspensionState = function() {
+    $scope.updateSuspensionState = function () {
       $scope.status = PERFORM_UPDATE;
 
       var data = {};
@@ -84,7 +84,7 @@ module.exports = [
           ),
           data
         )
-        .then(function() {
+        .then(function () {
           $scope.status = UPDATE_SUCCESS;
 
           if ($scope.data.executeImmediately) {
@@ -100,7 +100,7 @@ module.exports = [
               message: $translate.instant(
                 'PLUGIN_UPDATE_SUSPENSION_STATE_MESSAGE_1'
               ),
-              exclusive: true
+              exclusive: true,
             });
           } else {
             Notifications.addMessage({
@@ -110,11 +110,11 @@ module.exports = [
               message: $translate.instant(
                 'PLUGIN_UPDATE_SUSPENSION_STATE_MESSAGE_2'
               ),
-              exclusive: true
+              exclusive: true,
             });
           }
         })
-        .catch(function(response) {
+        .catch(function (response) {
           $scope.status = UPDATE_FAILED;
           var errorMessage;
           if ($scope.data.executeImmediately) {
@@ -133,12 +133,12 @@ module.exports = [
               'PLUGIN_UPDATE_SUSPENSION_STATE_STATUS_FINISHED'
             ),
             message: errorMessage,
-            exclusive: true
+            exclusive: true,
           });
         });
     };
 
-    $scope.isValid = function() {
+    $scope.isValid = function () {
       var formScope = angular
         .element('[name="updateSuspensionStateForm"]')
         .scope();
@@ -147,7 +147,7 @@ module.exports = [
         : false;
     };
 
-    $scope.close = function(status) {
+    $scope.close = function (status) {
       var response = {};
 
       response.status = status;
@@ -157,5 +157,5 @@ module.exports = [
 
       $modalInstance.close(response);
     };
-  }
+  },
 ];

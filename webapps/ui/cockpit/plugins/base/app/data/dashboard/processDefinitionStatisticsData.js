@@ -23,31 +23,31 @@ var Controller = [
   '$scope',
   'processData',
   'ProcessDefinitionResource',
-  function($scope, processData, ProcessDefinitionResource) {
-    processData.provide('processDefinitionsWithRootIncidents', function() {
+  function ($scope, processData, ProcessDefinitionResource) {
+    processData.provide('processDefinitionsWithRootIncidents', function () {
       return ProcessDefinitionResource.queryStatistics({
-        rootIncidents: true
+        rootIncidents: true,
       }).$promise;
     });
 
-    processData.provide('processDefinitions', function() {
+    processData.provide('processDefinitions', function () {
       return ProcessDefinitionResource.queryStatistics({
-        incidents: true
+        incidents: true,
       }).$promise;
     });
 
     processData.provide('processDefinitionStatistics', [
       'processDefinitions',
-      function(processDefinitions) {
+      function (processDefinitions) {
         return aggregateStatistics(processDefinitions);
-      }
+      },
     ]);
 
     processData.provide('processDefinitionWithRootIncidentsStatistics', [
       'processDefinitionsWithRootIncidents',
-      function(processDefinitions) {
+      function (processDefinitions) {
         return aggregateStatistics(processDefinitions);
-      }
+      },
     ]);
 
     /**
@@ -65,7 +65,7 @@ var Controller = [
      * of a process definition key and tenant id.
      *
      */
-    var aggregateStatistics = function(statistics) {
+    var aggregateStatistics = function (statistics) {
       // represents a map which contains to definition key and tenant id
       // the corresponding statistics.
       var statisticsResult = [];
@@ -73,7 +73,7 @@ var Controller = [
       var result = [];
 
       // iterate over assigned statistics
-      angular.forEach(statistics, function(currentStatistic) {
+      angular.forEach(statistics, function (currentStatistic) {
         // get the statistics to the definition key of the current item
         var statisticsForDefinition =
           statisticsResult[currentStatistic.definition.key];
@@ -125,7 +125,7 @@ var Controller = [
           statistic.instances += currentStatistic.instances;
           statistic.failedJobs += currentStatistic.failedJobs;
 
-          angular.forEach(currentStatistic.incidents, function(incident) {
+          angular.forEach(currentStatistic.incidents, function (incident) {
             var incidentType = incident.incidentType;
             var incidentCount = incident.incidentCount;
 
@@ -149,13 +149,13 @@ var Controller = [
 
       return result;
     };
-  }
+  },
 ];
 
 var Configuration = function PluginConfiguration(DataProvider) {
   DataProvider.registerData('cockpit.dashboard.data', {
     id: 'process-definition-statistics-data',
-    controller: Controller
+    controller: Controller,
   });
 };
 

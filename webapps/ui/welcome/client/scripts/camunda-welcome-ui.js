@@ -36,7 +36,7 @@ var directivesModule = require('./directives/main');
 var servicesModule = require('./services/main');
 var pluginsModule = require('./plugins/main');
 
-module.exports = function(pluginDependencies) {
+module.exports = function (pluginDependencies) {
   var ngDependencies = [
     'ng',
     'ngResource',
@@ -45,9 +45,9 @@ module.exports = function(pluginDependencies) {
     pagesModule.name,
     directivesModule.name,
     servicesModule.name,
-    pluginsModule.name
+    pluginsModule.name,
   ].concat(
-    pluginDependencies.map(function(el) {
+    pluginDependencies.map(function (el) {
       return el.ngModuleName;
     })
   );
@@ -68,7 +68,7 @@ module.exports = function(pluginDependencies) {
     'UriProvider',
     '$animateProvider',
     '$qProvider',
-    function($routeProvider, UriProvider, $animateProvider, $qProvider) {
+    function ($routeProvider, UriProvider, $animateProvider, $qProvider) {
       $routeProvider.otherwise({redirectTo: '/welcome'});
 
       UriProvider.replace(':appName', 'welcome');
@@ -81,7 +81,7 @@ module.exports = function(pluginDependencies) {
 
       UriProvider.replace(':engine', [
         '$window',
-        function($window) {
+        function ($window) {
           var uri = $window.location.href;
 
           var match = uri.match(/\/app\/welcome\/([\w-]+)(|\/)/);
@@ -90,13 +90,13 @@ module.exports = function(pluginDependencies) {
           } else {
             throw new Error('no process engine selected');
           }
-        }
+        },
       ]);
 
       $animateProvider.classNameFilter(/angular-animate/);
 
       $qProvider.errorOnUnhandledRejections(false);
-    }
+    },
   ];
 
   appNgModule.provider(
@@ -123,7 +123,7 @@ module.exports = function(pluginDependencies) {
   ).then(() => {
     angular.bootstrap(document.documentElement, [
       appNgModule.name,
-      'cam.welcome.custom'
+      'cam.welcome.custom',
     ]);
 
     if (top !== window) {
@@ -132,7 +132,7 @@ module.exports = function(pluginDependencies) {
   });
 };
 
-module.exports.exposePackages = function(container) {
+module.exports.exposePackages = function (container) {
   container.angular = angular;
   container.jquery = $;
   container['camunda-commons-ui'] = commons;

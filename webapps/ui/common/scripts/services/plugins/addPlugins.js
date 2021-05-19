@@ -19,13 +19,11 @@ var addApiAttributes = require('./getApiAttributes');
 var getPassthroughData = require('./getPassthroughData');
 var loadPlugins = require('./loadPlugins');
 
-module.exports = async function(config, module, appName) {
+module.exports = async function (config, module, appName) {
   const plugins = await loadPlugins(config, appName);
 
-  plugins.forEach(plugin => {
-    const pluginDirectiveUID = Math.random()
-      .toString(36)
-      .substring(2);
+  plugins.forEach((plugin) => {
+    const pluginDirectiveUID = Math.random().toString(36).substring(2);
 
     // overlay function for diagram overlay plugins
     plugin.overlay = [
@@ -44,13 +42,13 @@ module.exports = async function(config, module, appName) {
         scope.$on('$destroy', () => {
           plugin.unmount && plugin.unmount();
         });
-      }
+      },
     ];
 
     module.directive('pluginBridge' + pluginDirectiveUID, [
-      function() {
+      function () {
         return {
-          link: function(scope, element) {
+          link: function (scope, element) {
             const isolatedContainer = document.createElement('div');
             plugin.render(
               isolatedContainer,
@@ -66,37 +64,37 @@ module.exports = async function(config, module, appName) {
             scope.$on('$destroy', () => {
               plugin.unmount && plugin.unmount();
             });
-          }
+          },
         };
-      }
+      },
     ]);
 
     module.config([
       'ViewsProvider',
-      function(ViewsProvider) {
+      function (ViewsProvider) {
         ViewsProvider.registerDefaultView(plugin.pluginPoint, {
           ...plugin.properties, // For backwards-compatibility with 'label' property
           ...plugin,
-          template: `<div plugin-bridge${pluginDirectiveUID} />`
+          template: `<div plugin-bridge${pluginDirectiveUID} />`,
         });
-      }
+      },
     ]);
 
     if (plugin.pluginPoint === `${appName}.route`) {
       module.config([
         '$routeProvider',
-        function($routeProvider) {
+        function ($routeProvider) {
           $routeProvider.when(plugin.properties.path, {
             template: `<div plugin-bridge${pluginDirectiveUID} />`,
             controller: [
               '$scope',
-              function($scope) {
+              function ($scope) {
                 $scope.$root.showBreadcrumbs = false;
-              }
+              },
             ],
-            authentication: 'required'
+            authentication: 'required',
           });
-        }
+        },
       ]);
     }
   });

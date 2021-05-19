@@ -18,7 +18,7 @@
 var child_process = require('child_process');
 var fs = require('fs');
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   'use strict';
 
   require('load-grunt-tasks')(grunt);
@@ -56,87 +56,87 @@ module.exports = function(grunt) {
   require('./grunt/config/less')(config, lessConf, {
     appName: 'welcome',
     sourceDir: pkg.gruntConfig.welcomeSourceDir,
-    buildTarget: pkg.gruntConfig.welcomeBuildTarget
+    buildTarget: pkg.gruntConfig.welcomeBuildTarget,
   });
 
   require('./grunt/config/less')(config, lessConf, {
     appName: 'admin',
     sourceDir: pkg.gruntConfig.adminSourceDir,
-    buildTarget: pkg.gruntConfig.adminBuildTarget
+    buildTarget: pkg.gruntConfig.adminBuildTarget,
   });
   require('./grunt/config/less')(config, lessConf, {
     appName: 'admin',
     sourceDir: pkg.gruntConfig.pluginSourceDir + '/admin/plugins',
     buildTarget: pkg.gruntConfig.pluginBuildTarget + '/admin/app',
-    plugin: true
+    plugin: true,
   });
 
   require('./grunt/config/less')(config, lessConf, {
     appName: 'cockpit',
     sourceDir: pkg.gruntConfig.cockpitSourceDir,
-    buildTarget: pkg.gruntConfig.cockpitBuildTarget
+    buildTarget: pkg.gruntConfig.cockpitBuildTarget,
   });
   require('./grunt/config/less')(config, lessConf, {
     appName: 'cockpit',
     sourceDir: pkg.gruntConfig.pluginSourceDir + '/cockpit/plugins',
     buildTarget: pkg.gruntConfig.pluginBuildTarget + '/cockpit/app',
-    plugin: true
+    plugin: true,
   });
 
   require('./grunt/config/less')(config, lessConf, {
     appName: 'tasklist',
     sourceDir: pkg.gruntConfig.tasklistSourceDir,
-    buildTarget: pkg.gruntConfig.tasklistBuildTarget
+    buildTarget: pkg.gruntConfig.tasklistBuildTarget,
   });
   require('./grunt/config/less')(config, lessConf, {
     appName: 'tasklist',
     sourceDir: pkg.gruntConfig.pluginSourceDir + '/tasklist/plugins',
     buildTarget: pkg.gruntConfig.pluginBuildTarget + '/tasklist/app',
-    plugin: true
+    plugin: true,
   });
 
   require('./grunt/config/less')(config, lessConf, {
     appName: 'commons-ui',
     sourceDir: 'camunda-commons-ui/resources/less/',
-    buildTarget: 'camunda-commons-ui'
+    buildTarget: 'camunda-commons-ui',
   });
 
   var localesConf = {};
   require('./grunt/config/localescompile')(config, localesConf, {
     appName: 'tasklist',
     sourceDir: pkg.gruntConfig.tasklistSourceDir,
-    buildTarget: pkg.gruntConfig.tasklistBuildTarget
+    buildTarget: pkg.gruntConfig.tasklistBuildTarget,
   });
 
   require('./grunt/config/localescompile')(config, localesConf, {
     appName: 'welcome',
     sourceDir: pkg.gruntConfig.welcomeSourceDir,
-    buildTarget: pkg.gruntConfig.welcomeBuildTarget
+    buildTarget: pkg.gruntConfig.welcomeBuildTarget,
   });
 
   require('./grunt/config/localescompile')(config, localesConf, {
     appName: 'admin',
     sourceDir: pkg.gruntConfig.adminSourceDir,
-    buildTarget: pkg.gruntConfig.adminBuildTarget
+    buildTarget: pkg.gruntConfig.adminBuildTarget,
   });
 
   require('./grunt/config/localescompile')(config, localesConf, {
     appName: 'cockpit',
     sourceDir: pkg.gruntConfig.cockpitSourceDir,
-    buildTarget: pkg.gruntConfig.cockpitBuildTarget
+    buildTarget: pkg.gruntConfig.cockpitBuildTarget,
   });
 
   var watchConf = {
     commons_styles: {
       options: {
-        liverreload: false
+        liverreload: false,
       },
       files: [
         'ui/common/styles/**/*.less',
-        'node_modules/camunda-commons-ui/{lib,resources}/**/*.less'
+        'node_modules/camunda-commons-ui/{lib,resources}/**/*.less',
       ],
-      tasks: ['less']
-    }
+      tasks: ['less'],
+    },
   };
   require('./ui/welcome/grunt/config/watch')(config, watchConf);
   require('./ui/tasklist/grunt/config/watch')(config, watchConf);
@@ -152,7 +152,6 @@ module.exports = function(grunt) {
   require('./ui/cockpit/grunt/config/uglify')(config, uglifyConf);
   require('./camunda-bpm-sdk-js/grunt/config/uglify')(config, uglifyConf);
 
-
   var eslintConf = {};
   require('./ui/welcome/grunt/config/eslint')(config, eslintConf);
   require('./ui/admin/grunt/config/eslint')(config, eslintConf);
@@ -167,7 +166,6 @@ module.exports = function(grunt) {
   require('./ui/tasklist/grunt/config/stylelint')(config, stylelintConf);
   require('./ui/common/grunt/config/stylelint')(config, stylelintConf);
   require('./camunda-commons-ui/grunt/config/stylelint')(config, stylelintConf);
-
 
   require('./grunt/tasks/license-check')(grunt);
 
@@ -197,7 +195,7 @@ module.exports = function(grunt) {
     terser: uglifyConf,
 
     ensureLibs: {
-      thirdParty: {}
+      thirdParty: {},
     },
 
     protractor: require('./grunt/config/protractor')(config),
@@ -208,19 +206,27 @@ module.exports = function(grunt) {
         singleRun: process.env.KARMA_SINGLE_RUN || false,
         client: {
           mocha: {
-            timeout: 10000
-          }
-        }
-      }
-    }
+            timeout: 10000,
+          },
+        },
+      },
+    },
   });
 
   require('./grunt/tasks/license-header')(grunt, false);
   require('./camunda-commons-ui/grunt/tasks/localescompile')(grunt);
   var licensebookConfig = {enabled: false, includedFiles: new Set()};
 
-  require('./camunda-commons-ui/grunt/tasks/persistify')(grunt, __dirname, licensebookConfig);
-  require('./camunda-commons-ui/grunt/tasks/ensureLibs')(grunt, __dirname, licensebookConfig);
+  require('./camunda-commons-ui/grunt/tasks/persistify')(
+    grunt,
+    __dirname,
+    licensebookConfig
+  );
+  require('./camunda-commons-ui/grunt/tasks/ensureLibs')(
+    grunt,
+    __dirname,
+    licensebookConfig
+  );
 
   grunt.loadNpmTasks('grunt-karma');
 
@@ -229,10 +235,10 @@ module.exports = function(grunt) {
     'clean:sdk-js',
     'copy:sdk-js',
     'browserify:sdk-js',
-    'terser:sdk-js'
+    'terser:sdk-js',
   ]);
 
-  grunt.registerTask('build', function(mode, app) {
+  grunt.registerTask('build', function (mode, app) {
     if (typeof app !== 'undefined') {
       console.log(' ------------  will build ' + app + ' -------------');
       var objs = [
@@ -243,7 +249,7 @@ module.exports = function(grunt) {
         watchConf,
         uglifyConf,
         eslintConf,
-        stylelintConf
+        stylelintConf,
       ];
       for (var i = 0; i < objs.length; i++) {
         var obj = objs[i];
@@ -293,7 +299,7 @@ module.exports = function(grunt) {
     grunt.task.run(tasksToRun);
   });
 
-  grunt.registerTask('auto-build', function(app) {
+  grunt.registerTask('auto-build', function (app) {
     if (app) {
       grunt.task.run(['build:dev:' + app, 'watch']);
     } else {
@@ -301,7 +307,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('ensureSelenium', function() {
+  grunt.registerTask('ensureSelenium', function () {
     // set correct webdriver version
     var done, path;
 
@@ -334,7 +340,7 @@ module.exports = function(grunt) {
     child_process.execFile(
       'node',
       [__dirname + '/' + path + 'bin/webdriver-manager', '--chrome', 'update'],
-      function(err) {
+      function (err) {
         done();
       }
     );

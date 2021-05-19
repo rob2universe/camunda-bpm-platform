@@ -25,28 +25,28 @@ var template = fs.readFileSync(
 );
 
 module.exports = [
-  function() {
+  function () {
     return {
       restrict: 'A',
       scope: {
         deploymentsListData: '=',
         deployment: '=',
-        control: '='
+        control: '=',
       },
       template: template,
       controller: [
         '$scope',
         'Views',
-        function($scope, Views) {
+        function ($scope, Views) {
           $scope.deploymentData = $scope.deploymentsListData.newChild($scope);
           $scope.deploymentVars = {
-            read: ['deploymentData', 'deployment', 'control']
+            read: ['deploymentData', 'deployment', 'control'],
           };
           $scope.deploymentPlugins = Views.getProviders({
-            component: 'cockpit.repository.deployment.action'
+            component: 'cockpit.repository.deployment.action',
           });
-        }
-      ]
+        },
+      ],
     };
-  }
+  },
 ];

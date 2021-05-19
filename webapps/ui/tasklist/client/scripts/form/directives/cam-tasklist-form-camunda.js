@@ -25,7 +25,7 @@ module.exports = [
   '$translate',
   'Notifications',
   'unfixDate',
-  function(camAPI, $translate, Notifications, unfixDate) {
+  function (camAPI, $translate, Notifications, unfixDate) {
     return {
       restrict: 'A',
 
@@ -35,7 +35,7 @@ module.exports = [
 
       template: '',
 
-      link: function($scope, $element, attrs, formController) {
+      link: function ($scope, $element, attrs, formController) {
         const Task = camAPI.resource('task');
         const ProcessDefinition = camAPI.resource('process-definition');
         const taskId = formController.getParams().taskId;
@@ -48,17 +48,17 @@ module.exports = [
 
         formController.notifyFormValidated(false);
 
-        const loadVariables = function() {
+        const loadVariables = function () {
           if (!taskId) {
             return;
           }
 
           return Task.formVariables({
             id: taskId,
-            deserializeValues: false
+            deserializeValues: false,
           })
-            .then(result => {
-              angular.forEach(result, function(value, name) {
+            .then((result) => {
+              angular.forEach(result, function (value, name) {
                 var parsedValue = value.value;
 
                 if (value.type === 'Date') {
@@ -68,17 +68,17 @@ module.exports = [
                   name: name,
                   value: parsedValue,
                   type: value.type,
-                  fixedName: true
+                  fixedName: true,
                 });
               });
             })
-            .catch(err => {
+            .catch((err) => {
               return $translate('LOAD_VARIABLES_FAILURE')
-                .then(function(translated) {
+                .then(function (translated) {
                   Notifications.addError({
                     status: translated,
                     message: err.message,
-                    scope: $scope
+                    scope: $scope,
                   });
                 })
                 .catch(angular.noop);
@@ -94,7 +94,7 @@ module.exports = [
           form = createForm({
             container: $element[0],
             schema,
-            data: {...data, ...savedState}
+            data: {...data, ...savedState},
           });
           formController.notifyFormInitialized();
 
@@ -104,7 +104,7 @@ module.exports = [
             }
           });
 
-          form.on('changed', evt => {
+          form.on('changed', (evt) => {
             formController.notifyFormDirty(true);
 
             const hasError = !!Object.keys(evt.errors).length;
@@ -150,17 +150,17 @@ module.exports = [
           if (taskId) {
             return await Task.submitForm({
               id: taskId,
-              variables: variablePayload
+              variables: variablePayload,
             });
           } else {
             return await ProcessDefinition.submitForm({
               id: formController.getParams().processDefinitionId,
-              variables: variablePayload
+              variables: variablePayload,
             });
           }
         }
 
-        formController.registerCompletionHandler(async cb => {
+        formController.registerCompletionHandler(async (cb) => {
           try {
             const result = await handleSubmit();
             clearSave();
@@ -172,7 +172,7 @@ module.exports = [
 
         function handleAsynchronousFormKey(formInfo) {
           fetch(formInfo.key + `?noCache=${Date.now()}`)
-            .then(async res => {
+            .then(async (res) => {
               if (res.status !== 200) {
                 throw new Error(res.statusText);
               }
@@ -182,13 +182,13 @@ module.exports = [
               await loadVariables();
               renderForm(json);
             })
-            .catch(err => {
+            .catch((err) => {
               formController.notifyFormInitializationFailed(err);
             });
         }
 
         $scope.$watch('asynchronousFormKey', handleAsynchronousFormKey, true);
-      }
+      },
     };
-  }
+  },
 ];

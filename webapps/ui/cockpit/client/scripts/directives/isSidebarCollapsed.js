@@ -20,13 +20,13 @@
 module.exports = [
   '$parse',
   '$rootScope',
-  function($parse, $rootScope) {
+  function ($parse, $rootScope) {
     return {
       restrict: 'A',
-      link: function(scope, element, attrs) {
+      link: function (scope, element, attrs) {
         var callbackFunc;
 
-        attrs.$observe('isSidebarCollapsed', function(attribute) {
+        attrs.$observe('isSidebarCollapsed', function (attribute) {
           callbackFunc = $parse(attribute);
           notififyCallback();
         });
@@ -38,7 +38,7 @@ module.exports = [
         );
         var removeResizeListener = $rootScope.$on('resize', notififyCallback);
 
-        scope.$on('$destroy', function() {
+        scope.$on('$destroy', function () {
           removeRestoreListner();
           removeMaximizeListener();
           removeResizeListener();
@@ -49,7 +49,7 @@ module.exports = [
 
           if (callbackFunc && typeof callbackFunc === 'function') {
             callbackFunc(scope, {
-              collapsed: collapsed
+              collapsed: collapsed,
             });
           }
         }
@@ -57,7 +57,7 @@ module.exports = [
         function isCollapsed() {
           return element.hasClass('collapsed');
         }
-      }
+      },
     };
-  }
+  },
 ];

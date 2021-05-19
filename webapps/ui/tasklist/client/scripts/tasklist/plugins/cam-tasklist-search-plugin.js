@@ -31,11 +31,12 @@ var angular = require('../../../../../../camunda-commons-ui/vendor/angular');
 var moment = require('../../../../../../camunda-commons-ui/vendor/moment');
 
 var expressionsRegex = /^[\s]*([#$]){/;
-var simpleDateExp = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(|\.[0-9]{0,4})$/;
+var simpleDateExp =
+  /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(|\.[0-9]{0,4})$/;
 
 var searchConfig = JSON.parse(searchConfigJSON);
 
-var parseValue = function(value, enforceString) {
+var parseValue = function (value, enforceString) {
   if (enforceString) {
     return '' + value;
   }
@@ -58,7 +59,7 @@ var parseValue = function(value, enforceString) {
   return value;
 };
 
-var sanitizeValue = function(value, operator, search) {
+var sanitizeValue = function (value, operator, search) {
   // Regex for '\_' and '\%' epxressions
   var specialWildCardCharExp = /(\\%)|(\\_)/g;
   // Regex for '_' and '%' special characters
@@ -77,7 +78,7 @@ var sanitizeValue = function(value, operator, search) {
   return value;
 };
 
-var getQueryValueBySearch = function(search) {
+var getQueryValueBySearch = function (search) {
   if (search.basic) {
     return true;
   }
@@ -88,7 +89,7 @@ var getQueryValueBySearch = function(search) {
   );
 };
 
-var sanitizeProperty = function(search, type, operator, value) {
+var sanitizeProperty = function (search, type, operator, value) {
   var out = type;
   if (['Like', 'Before', 'After'].indexOf(operator) !== -1) {
     out += operator;
@@ -101,7 +102,7 @@ var sanitizeProperty = function(search, type, operator, value) {
       'candidateGroup',
       'candidateUser',
       'involvedUser',
-      'processInstanceBusinessKey'
+      'processInstanceBusinessKey',
     ].indexOf(type) !== -1
   ) {
     out += 'Expression';
@@ -116,7 +117,7 @@ var Controller = [
   '$scope',
   '$translate',
   '$location',
-  function($scope, $translate, $location) {
+  function ($scope, $translate, $location) {
     $scope.searches = [];
     $scope.translations = {};
     $scope.matchAny = $location.search()['searchOrQuery'] || false;
@@ -128,7 +129,7 @@ var Controller = [
     var searchData = $scope.tasklistData.newChild($scope);
     $scope.$watch(
       '[searches, matchAny]',
-      function() {
+      function () {
         var baseQuery = {};
         var tempQuery;
 
@@ -145,7 +146,7 @@ var Controller = [
           tempQuery = baseQuery;
         }
 
-        angular.forEach($scope.searches, function(search) {
+        angular.forEach($scope.searches, function (search) {
           if (typeof tempQuery[search.type.value.key] === 'object') {
             tempQuery[search.type.value.key].push({
               name:
@@ -153,7 +154,7 @@ var Controller = [
                   ? search.name.value.key
                   : search.name.value,
               operator: search.operator.value.key,
-              value: getQueryValueBySearch(search)
+              value: getQueryValueBySearch(search),
             });
           } else {
             tempQuery[
@@ -176,8 +177,8 @@ var Controller = [
       true
     );
 
-    searchData.observe('currentFilter', function(filter) {
-      angular.forEach($scope.types, function(ea) {
+    searchData.observe('currentFilter', function (filter) {
+      angular.forEach($scope.types, function (ea) {
         ea.potentialNames = [];
         for (
           var i = 0;
@@ -191,22 +192,22 @@ var Controller = [
           var v = filter.properties.variables[i];
           ea.potentialNames.push({
             key: v.name,
-            value: v.label + ' (' + v.name + ')'
+            value: v.label + ' (' + v.name + ')',
           });
         }
       });
 
-      angular.forEach($scope.searches, function(ea) {
-        ea.potentialNames = $scope.types.filter(function(type) {
+      angular.forEach($scope.searches, function (ea) {
+        ea.potentialNames = $scope.types.filter(function (type) {
           return type.id.key === ea.type.value.key;
         })[0].potentialNames;
       });
     });
 
-    searchData.observe('taskList', function(taskList) {
+    searchData.observe('taskList', function (taskList) {
       $scope.totalItems = taskList.count;
     });
-  }
+  },
 ];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -214,7 +215,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     id: 'task-search',
     template: template,
     controller: Controller,
-    priority: 100
+    priority: 100,
   });
 };
 

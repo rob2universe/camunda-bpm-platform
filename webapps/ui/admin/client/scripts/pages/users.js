@@ -24,8 +24,8 @@ var searchConfig = JSON.parse(
   fs.readFileSync(__dirname + '/users-search-plugin-config.json', 'utf8')
 );
 
-var debouncePromiseFactory = require('camunda-bpm-sdk-js').utils
-  .debouncePromiseFactory;
+var debouncePromiseFactory =
+  require('camunda-bpm-sdk-js').utils.debouncePromiseFactory;
 var debounceQuery = debouncePromiseFactory();
 var debounceCount = debouncePromiseFactory();
 
@@ -39,7 +39,7 @@ var Controller = [
   'page',
   '$translate',
   'Notifications',
-  function(
+  function (
     $scope,
     $location,
     search,
@@ -58,12 +58,12 @@ var Controller = [
     $scope.query = $scope.pages = null;
     var sorting;
 
-    $scope.onSortInitialized = function(_sorting) {
+    $scope.onSortInitialized = function (_sorting) {
       sorting = _sorting;
       $scope.blocked = false;
     };
 
-    $scope.onSortChanged = function(_sorting) {
+    $scope.onSortChanged = function (_sorting) {
       sorting = _sorting;
       updateView();
     };
@@ -82,7 +82,7 @@ var Controller = [
         firstResult: firstResult,
         maxResults: count,
         sortBy: sorting.sortBy,
-        sortOrder: sorting.sortOrder
+        sortOrder: sorting.sortOrder,
       };
 
       $scope.userList = null;
@@ -91,14 +91,14 @@ var Controller = [
       return debounceCount(
         UserResource.count(angular.extend({}, $scope.query)).$promise
       )
-        .then(function(data) {
+        .then(function (data) {
           var total = data.count;
 
           return debounceQuery(
             UserResource.query(angular.extend({}, $scope.query, queryParams))
               .$promise
           )
-            .then(function(data) {
+            .then(function (data) {
               $scope.userList = data;
               $scope.loadingState = data.length ? 'LOADED' : 'EMPTY';
 
@@ -114,7 +114,7 @@ var Controller = [
                   angular.extend({}, $scope.query, queryParams)
                 ).$promise
               )
-                .then(function(data) {
+                .then(function (data) {
                   $scope.canSortEntries = false;
                   $scope.userList = data;
                   $scope.loadingState = data.length ? 'LOADED' : 'EMPTY';
@@ -122,18 +122,18 @@ var Controller = [
                   Notifications.addMessage({
                     status: $translate.instant('USERS_NO_SORTING_HEADER'),
                     message: $translate.instant('USERS_NO_SORTING_BODY'),
-                    exclusive: true
+                    exclusive: true,
                   });
 
                   return total;
                 })
-                .catch(function() {
+                .catch(function () {
                   $scope.loadingState = 'EMPTY';
                 });
             });
         })
         .catch(angular.noop)
-        .finally(function() {
+        .finally(function () {
           setTimeout(() => {
             $scope.$apply();
           }, 0);
@@ -142,8 +142,8 @@ var Controller = [
 
     $scope.availableOperations = {};
     UserResource.OPTIONS()
-      .$promise.then(function(response) {
-        angular.forEach(response.links, function(link) {
+      .$promise.then(function (response) {
+        angular.forEach(response.links, function (link) {
           $scope.availableOperations[link.rel] = true;
         });
       })
@@ -157,19 +157,19 @@ var Controller = [
 
     pageService.breadcrumbsAdd({
       label: $translate.instant('USERS_USERS'),
-      href: '#/users/'
+      href: '#/users/',
     });
-  }
+  },
 ];
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/users', {
       template: template,
       controller: Controller,
       authentication: 'required',
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];

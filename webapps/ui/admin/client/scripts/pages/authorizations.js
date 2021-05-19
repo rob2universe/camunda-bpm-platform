@@ -27,7 +27,7 @@ var confirmTemplate = fs.readFileSync(
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/authorization', {
       template: template,
       controller: [
@@ -39,7 +39,7 @@ module.exports = [
         'Notifications',
         '$location',
         '$translate',
-        function(
+        function (
           $scope,
           pageService,
           $routeParams,
@@ -79,14 +79,14 @@ module.exports = [
             ),
             17: $translate.instant('AUTHORIZATION_OPERATION_LOG'),
             19: $translate.instant('AUTHORIZATION_HISTORIC_TASK'),
-            20: $translate.instant('AUTHORIZATION_HISTORIC_PROCESS_INSTANCE')
+            20: $translate.instant('AUTHORIZATION_HISTORIC_PROCESS_INSTANCE'),
           };
 
           pageService.breadcrumbsAdd([
             {
               label: $translate.instant('AUTHORIZATION_AUTHORIZATIONS'),
-              href: '#/authorization'
-            }
+              href: '#/authorization',
+            },
           ]);
 
           $scope.permissionMap = {
@@ -119,7 +119,7 @@ module.exports = [
               'READ_INSTANCE_VARIABLE',
               'UPDATE_INSTANCE_VARIABLE',
               'UPDATE_TASK_VARIABLE',
-              'UPDATE_HISTORY'
+              'UPDATE_HISTORY',
             ],
             7: [
               'CREATE',
@@ -129,7 +129,7 @@ module.exports = [
               'TASK_ASSIGN',
               'TASK_WORK',
               'UPDATE_VARIABLE',
-              'READ_VARIABLE'
+              'READ_VARIABLE',
             ],
             8: [
               'CREATE',
@@ -138,7 +138,7 @@ module.exports = [
               'DELETE',
               'RETRY_JOB',
               'SUSPEND',
-              'UPDATE_VARIABLE'
+              'UPDATE_VARIABLE',
             ],
             9: ['CREATE', 'READ', 'DELETE'],
             10: [
@@ -146,7 +146,7 @@ module.exports = [
               'UPDATE',
               'CREATE_INSTANCE',
               'READ_HISTORY',
-              'DELETE_HISTORY'
+              'DELETE_HISTORY',
             ],
             11: ['READ', 'UPDATE', 'CREATE', 'DELETE'],
             12: ['CREATE', 'DELETE'],
@@ -167,21 +167,21 @@ module.exports = [
               'CREATE_BATCH_SET_REMOVAL_TIME',
               'CREATE_BATCH_SET_EXTERNAL_TASK_RETRIES',
               'CREATE_BATCH_UPDATE_PROCESS_INSTANCES_SUSPEND',
-              'CREATE_BATCH_SET_VARIABLES'
+              'CREATE_BATCH_SET_VARIABLES',
             ],
             14: ['READ'],
             17: ['READ', 'DELETE', 'UPDATE'],
             19: ['READ', 'READ_VARIABLE'],
-            20: ['READ']
+            20: ['READ'],
           };
 
           $scope.typeMap = {
             0: $translate.instant('AUTHORIZATION_GLOBAL'),
             1: $translate.instant('AUTHORIZATION_ALLOW'),
-            2: $translate.instant('AUTHORIZATION_DENY')
+            2: $translate.instant('AUTHORIZATION_DENY'),
           };
 
-          $scope.getIdentityId = function(auth) {
+          $scope.getIdentityId = function (auth) {
             if (auth.userId) {
               return auth.userId;
             } else {
@@ -194,20 +194,20 @@ module.exports = [
             for (var entry in $scope.resourceMap) {
               $scope.resourceList.push({
                 id: entry,
-                name: $scope.resourceMap[entry]
+                name: $scope.resourceMap[entry],
               });
             }
           }
 
-          var getType = ($scope.getType = function(authorization) {
+          var getType = ($scope.getType = function (authorization) {
             return $scope.typeMap[authorization.type];
           });
 
-          var getResource = ($scope.getResource = function(resourceType) {
+          var getResource = ($scope.getResource = function (resourceType) {
             return $scope.resourceMap[resourceType];
           });
 
-          var formatPermissions = ($scope.formatPermissions = function(
+          var formatPermissions = ($scope.formatPermissions = function (
             permissionsList
           ) {
             // custom handling of NONE:
@@ -237,33 +237,33 @@ module.exports = [
             }
           });
 
-          $scope.deleteAuthorization = function(authorization) {
+          $scope.deleteAuthorization = function (authorization) {
             var dialog = $modal.open({
               controller: 'ConfirmDeleteAuthorizationController',
               template: confirmTemplate,
               resolve: {
-                authorizationToDelete: function() {
+                authorizationToDelete: function () {
                   return authorization;
                 },
-                formatPermissions: function() {
+                formatPermissions: function () {
                   return formatPermissions;
                 },
-                getResource: function() {
+                getResource: function () {
                   return getResource;
                 },
-                getType: function() {
+                getType: function () {
                   return getType;
-                }
-              }
+                },
+              },
             });
 
             dialog.result.then(
-              function(result) {
+              function (result) {
                 if (result == 'SUCCESS') {
                   loadAuthorizations();
                 }
               },
-              function() {
+              function () {
                 loadAuthorizations();
               }
             );
@@ -272,26 +272,26 @@ module.exports = [
           $scope.pages = $scope.pages || {
             total: 0,
             size: 25,
-            current: 1
+            current: 1,
           };
 
-          var loadAuthorizations = ($scope.loadAuthorizations = function() {
+          var loadAuthorizations = ($scope.loadAuthorizations = function () {
             $scope.loadingState = 'LOADING';
             function reqError() {
               $scope.loadingState = 'ERROR';
             }
 
             AuthorizationResource.count({
-              resourceType: $scope.selectedResourceType
-            }).$promise.then(function(response) {
+              resourceType: $scope.selectedResourceType,
+            }).$promise.then(function (response) {
               $scope.pages.total = response.count;
             }, reqError);
 
             AuthorizationResource.query({
               resourceType: $scope.selectedResourceType,
               firstResult: ($scope.pages.current - 1) * $scope.pages.size,
-              maxResults: $scope.pages.size
-            }).$promise.then(function(response) {
+              maxResults: $scope.pages.size,
+            }).$promise.then(function (response) {
               $scope.authorizations = response;
               $scope.loadingState = response.length ? 'LOADED' : 'EMPTY';
             }, reqError);
@@ -300,7 +300,7 @@ module.exports = [
           // will also trigger the initial load request
           $scope.$watch('pages.current', loadAuthorizations);
 
-          $scope.getPermissionsForResource = function() {
+          $scope.getPermissionsForResource = function () {
             if ($scope.selectedResourceType) {
               return $scope.permissionMap[$scope.selectedResourceType];
             } else {
@@ -310,15 +310,12 @@ module.exports = [
 
           // page controls ////////////////////////////////////
 
-          $scope.show = function(fragment) {
+          $scope.show = function (fragment) {
             return fragment == $location.search().tab;
           };
 
-          $scope.activeClass = function(link) {
-            var path = $location
-              .absUrl()
-              .split('?')
-              .pop();
+          $scope.activeClass = function (link) {
+            var path = $location.absUrl().split('?').pop();
             return path === link ? 'active' : '';
           };
 
@@ -335,10 +332,10 @@ module.exports = [
             $scope.title = $scope.getResource($routeParams.resource);
             $scope.selectedResourceType = $routeParams.resource;
           }
-        }
+        },
       ],
       authentication: 'required',
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];

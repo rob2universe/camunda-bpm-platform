@@ -27,7 +27,7 @@ module.exports = [
   '$uibModalInstance',
   'jobDefinition',
   '$translate',
-  function(
+  function (
     $scope,
     $q,
     Notifications,
@@ -44,23 +44,23 @@ module.exports = [
 
     var data = ($scope.data = {
       priority: jobDefinition.overridingJobPriority,
-      includeJobs: false
+      includeJobs: false,
     });
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       var response = {};
       response.status = $scope.status;
       $modalInstance.close(response);
     });
 
-    $scope.hasOverridingJobPriority = function() {
+    $scope.hasOverridingJobPriority = function () {
       return (
         jobDefinition.overridingJobPriority !== null &&
         jobDefinition.overridingJobPriority !== undefined
       );
     };
 
-    $scope.submit = function() {
+    $scope.submit = function () {
       var setJobPriority = $scope.setJobPriority;
       if (!setJobPriority) {
         data = {};
@@ -70,7 +70,7 @@ module.exports = [
         {id: jobDefinition.id},
         data,
 
-        function() {
+        function () {
           $scope.status = SUCCESS;
           if (setJobPriority) {
             Notifications.addMessage({
@@ -80,7 +80,7 @@ module.exports = [
               message: $translate.instant(
                 'PLUGIN_JOBDEFINITION_ACTION_DIALOG_MSN_1'
               ),
-              exclusive: true
+              exclusive: true,
             });
           } else {
             Notifications.addMessage({
@@ -90,12 +90,12 @@ module.exports = [
               message: $translate.instant(
                 'PLUGIN_JOBDEFINITION_ACTION_DIALOG_MSN_2'
               ),
-              exclusive: true
+              exclusive: true,
             });
           }
         },
 
-        function(error) {
+        function (error) {
           $scope.status = FAILED;
           if (setJobPriority) {
             Notifications.addError({
@@ -106,7 +106,7 @@ module.exports = [
                 'PLUGIN_JOBDEFINITION_ACTION_DIALOG_ERR_1',
                 {message: error.data.message}
               ),
-              exclusive: true
+              exclusive: true,
             });
           } else {
             Notifications.addError({
@@ -117,14 +117,14 @@ module.exports = [
                 'PLUGIN_JOBDEFINITION_ACTION_DIALOG_ERR_2',
                 {message: error.data.message}
               ),
-              exclusive: true
+              exclusive: true,
             });
           }
         }
       );
     };
 
-    $scope.isValid = function() {
+    $scope.isValid = function () {
       var formScope = angular
         .element('[name="overrideJobPriorityForm"]')
         .scope();
@@ -136,10 +136,10 @@ module.exports = [
       );
     };
 
-    $scope.close = function(status) {
+    $scope.close = function (status) {
       var response = {};
       response.status = status;
       $modalInstance.close(response);
     };
-  }
+  },
 ];

@@ -17,9 +17,9 @@
 
 'use strict';
 
-module.exports = function() {
+module.exports = function () {
   return {
-    link: function(scope, element) {
+    link: function (scope, element) {
       var processData = scope.processData;
       var selectedActivityInstanceQuery = element.attr(
         'cam-select-activity-instance'
@@ -35,16 +35,16 @@ module.exports = function() {
         );
       }
 
-      element.on('click', function(event) {
+      element.on('click', function (event) {
         event.preventDefault();
 
-        scope.$apply(function() {
+        scope.$apply(function () {
           // refresh view with selected activity instance id
           processData.set('filter', {
-            activityInstanceIds: [scope.$eval(selectedActivityInstanceQuery)]
+            activityInstanceIds: [scope.$eval(selectedActivityInstanceQuery)],
           });
         });
       });
-    }
+    },
   };
 };

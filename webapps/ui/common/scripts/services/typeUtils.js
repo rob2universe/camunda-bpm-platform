@@ -19,6 +19,6 @@
 
 var typeUtils = require('camunda-bpm-sdk-js').utils.typeUtils;
 
-module.exports = function() {
+module.exports = function () {
   return typeUtils;
 };

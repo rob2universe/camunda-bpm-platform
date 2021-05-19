@@ -33,7 +33,7 @@ var Controller = [
   'localConf',
   'camAPI',
   'search',
-  function($scope, Views, $translate, localConf, camAPI, search) {
+  function ($scope, Views, $translate, localConf, camAPI, search) {
     // prettier-ignore
     $scope.headColumns = [
       { class: 'state',         request: 'suspended'     , sortable: true, content: $translate.instant('PLUGIN_JOBDEFINITION_STATE')},
@@ -48,10 +48,10 @@ var Controller = [
     $scope.sortObj = loadLocal({
       sortBy: 'suspended',
       sortOrder: 'asc',
-      sortReverse: false
+      sortReverse: false,
     });
 
-    $scope.onSortChange = function(sortObj) {
+    $scope.onSortChange = function (sortObj) {
       sortObj = sortObj || $scope.sortObj;
       // sortReverse required by anqular-sorting;
       sortObj.sortReverse = sortObj.sortOrder !== 'asc';
@@ -77,24 +77,24 @@ var Controller = [
     $scope.pages = {
       total: 0,
       current: parseInt(search().page || 1, 10),
-      size: 50
+      size: 50,
     };
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
       search('page', null);
     });
 
-    $scope.$watch('pages.current', function(newValue, oldValue) {
+    $scope.$watch('pages.current', function (newValue, oldValue) {
       newValue !== oldValue && loadJobDefinitions();
       search('page', !newValue || newValue == 1 ? null : newValue);
     });
 
-    processData.observe(['filter'], function(filter) {
+    processData.observe(['filter'], function (filter) {
       updateView(filter);
     });
 
-    var updateTaskNames = function() {
-      angular.forEach(jobDefinitions, function(jobDefinition) {
+    var updateTaskNames = function () {
+      angular.forEach(jobDefinitions, function (jobDefinition) {
         var activityId = jobDefinition.activityId,
           bpmnElement = bpmnElements[activityId];
         jobDefinition.activityName =
@@ -102,21 +102,21 @@ var Controller = [
       });
     };
 
-    processData.observe(['bpmnElements', 'processDefinition'], function(
-      newElements,
-      newProcessDefinition
-    ) {
-      bpmnElements = newElements;
-      processDefinition = newProcessDefinition;
+    processData.observe(
+      ['bpmnElements', 'processDefinition'],
+      function (newElements, newProcessDefinition) {
+        bpmnElements = newElements;
+        processDefinition = newProcessDefinition;
 
-      JobProvider.count({
-        processDefinitionId: processDefinition.id
-      }).then(function(count) {
-        $scope.pages.total = count;
-      });
+        JobProvider.count({
+          processDefinitionId: processDefinition.id,
+        }).then(function (count) {
+          $scope.pages.total = count;
+        });
 
-      loadJobDefinitions();
-    });
+        loadJobDefinitions();
+      }
+    );
 
     function loadJobDefinitions() {
       $scope.jobDefinitions = null;
@@ -124,8 +124,8 @@ var Controller = [
       JobProvider.list({
         processDefinitionId: processDefinition.id,
         maxResults: $scope.pages.size,
-        firstResult: ($scope.pages.current - 1) * $scope.pages.size
-      }).then(function(res) {
+        firstResult: ($scope.pages.current - 1) * $scope.pages.size,
+      }).then(function (res) {
         jobDefinitions = res;
 
         updateTaskNames();
@@ -150,7 +150,7 @@ var Controller = [
 
       var jobDefinitionSelection = [];
 
-      angular.forEach(jobDefinitions, function(jobDefinition) {
+      angular.forEach(jobDefinitions, function (jobDefinition) {
         var activityId = jobDefinition.activityId;
 
         if (activityIds.indexOf(activityId) != -1) {
@@ -162,17 +162,15 @@ var Controller = [
     }
 
     $scope.jobDefinitionVars = {
-      read: ['jobDefinition', 'processData', 'filter']
+      read: ['jobDefinition', 'processData', 'filter'],
     };
     $scope.jobDefinitionActions = Views.getProviders({
-      component: 'cockpit.jobDefinition.action'
+      component: 'cockpit.jobDefinition.action',
     });
 
-    $scope.getSearchQueryForSearchType = searchWidgetUtils.getSearchQueryForSearchType.bind(
-      null,
-      'activityIdIn'
-    );
-  }
+    $scope.getSearchQueryForSearchType =
+      searchWidgetUtils.getSearchQueryForSearchType.bind(null, 'activityIdIn');
+  },
 ];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -181,7 +179,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     label: 'PLUGIN_JOB_DEFINITION_LABEL',
     template: template,
     controller: Controller,
-    priority: 2
+    priority: 2,
   });
 };
 

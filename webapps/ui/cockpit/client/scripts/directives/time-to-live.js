@@ -26,16 +26,16 @@ module.exports = [
   '$window',
   'Notifications',
   '$translate',
-  function(camAPI, $window, Notifications, $translate) {
+  function (camAPI, $window, Notifications, $translate) {
     return {
       restrict: 'A',
       template: template,
       scope: {
         definition: '=timeToLive',
         customOnChange: '=onChange',
-        resource: '@'
+        resource: '@',
       },
-      link: function($scope) {
+      link: function ($scope) {
         var lastValue = getAndCorrectTimeToLiveValue();
         var resource = camAPI.resource($scope.resource);
 
@@ -45,27 +45,27 @@ module.exports = [
           }
         }
 
-        $scope.onChange = function() {
-          $window.setTimeout(function() {
+        $scope.onChange = function () {
+          $window.setTimeout(function () {
             var timeToLive = getAndCorrectTimeToLiveValue();
 
             updateValue(timeToLive)
               .then(customOnChange)
-              .catch(function() {});
+              .catch(function () {});
           });
         };
 
-        $scope.onRemove = function() {
+        $scope.onRemove = function () {
           updateValue(null)
-            .then(function() {
+            .then(function () {
               lastValue = null;
               $scope.definition.historyTimeToLive = null;
               customOnChange();
             })
-            .catch(function() {});
+            .catch(function () {});
         };
 
-        $scope.format = function(property) {
+        $scope.format = function (property) {
           if (property === 1) {
             return $translate.instant('TIME_TO_LIVE_DAY', {ttl: property});
           }
@@ -76,20 +76,20 @@ module.exports = [
         function updateValue(timeToLive) {
           return resource
             .updateHistoryTimeToLive($scope.definition.id, {
-              historyTimeToLive: timeToLive
+              historyTimeToLive: timeToLive,
             })
-            .catch(function(error) {
+            .catch(function (error) {
               $scope.definition.historyTimeToLive = lastValue;
 
               Notifications.addError({
                 status: $translate.instant('TIME_TO_LIVE_MESSAGE_ERR'),
-                message: error
+                message: error,
               });
             })
-            .then(function() {
+            .then(function () {
               lastValue = getAndCorrectTimeToLiveValue();
             })
-            .catch(function() {});
+            .catch(function () {});
         }
 
         function getAndCorrectTimeToLiveValue() {
@@ -99,7 +99,7 @@ module.exports = [
 
           return +$scope.definition.historyTimeToLive;
         }
-      }
+      },
     };
-  }
+  },
 ];

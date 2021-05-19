@@ -28,13 +28,13 @@ var decisionSearchConfig = JSON.parse(
   fs.readFileSync(__dirname + '/decision-instance-search-config.json', 'utf8')
 );
 
-var debouncePromiseFactory = require('camunda-bpm-sdk-js').utils
-  .debouncePromiseFactory;
+var debouncePromiseFactory =
+  require('camunda-bpm-sdk-js').utils.debouncePromiseFactory;
 var debounceQuery = debouncePromiseFactory();
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.decisionDefinition.tab', {
       id: 'decision-instances-table',
       label: 'DECISION_DEFINITION_LABEL',
@@ -48,7 +48,7 @@ module.exports = [
         'Views',
         '$translate',
         'localConf',
-        function(
+        function (
           $scope,
           $location,
           search,
@@ -72,10 +72,10 @@ module.exports = [
           $scope.sortObj = loadLocal(defaultValue);
 
           var processInstancePlugins = Views.getProviders({
-            component: 'cockpit.processInstance.view'
+            component: 'cockpit.processInstance.view',
           });
           var hasHistoryPlugin =
-            processInstancePlugins.filter(function(plugin) {
+            processInstancePlugins.filter(function (plugin) {
               return plugin.id === 'history';
             }).length > 0;
 
@@ -86,7 +86,7 @@ module.exports = [
             // do nothing
           }
 
-          $scope.getProcessDefinitionLink = function(decisionInstance) {
+          $scope.getProcessDefinitionLink = function (decisionInstance) {
             if (hasHistoryPlugin) {
               return (
                 '#/process-definition/' +
@@ -100,7 +100,7 @@ module.exports = [
             }
           };
 
-          $scope.getProcessInstanceLink = function(decisionInstance) {
+          $scope.getProcessInstanceLink = function (decisionInstance) {
             if (hasHistoryPlugin) {
               return (
                 '#/process-instance/' +
@@ -116,13 +116,13 @@ module.exports = [
             }
           };
 
-          $scope.getActivitySearch = function(decisionInstance) {
+          $scope.getActivitySearch = function (decisionInstance) {
             return JSON.stringify([
               {
                 type: 'caseActivityIdIn',
                 operator: 'eq',
-                value: decisionInstance.activityId
-              }
+                value: decisionInstance.activityId,
+              },
             ]);
           };
 
@@ -155,14 +155,14 @@ module.exports = [
                 firstResult: firstResult,
                 maxResults: count,
                 sortBy: $scope.sortObj.sortBy,
-                sortOrder: $scope.sortObj.sortOrder
+                sortOrder: $scope.sortObj.sortOrder,
               },
               searchQuery
             );
 
             var countQuery = angular.extend(
               {
-                decisionDefinitionId: $scope.decisionDefinition.id
+                decisionDefinitionId: $scope.decisionDefinition.id,
               },
               searchQuery
             );
@@ -170,13 +170,13 @@ module.exports = [
             return debounceQuery(
               historyService
                 .decisionInstanceCount(countQuery)
-                .then(function(count) {
+                .then(function (count) {
                   var total = count.count;
 
                   return historyService
                     .decisionInstance(decisionInstanceQuery)
 
-                    .then(function(data) {
+                    .then(function (data) {
                       return {total, data};
                     });
                 })
@@ -201,9 +201,9 @@ module.exports = [
           function loadLocal(defaultValue) {
             return localConf.get('sortDecInstTab', defaultValue);
           }
-        }
+        },
       ],
-      priority: 10
+      priority: 10,
     });
-  }
+  },
 ];

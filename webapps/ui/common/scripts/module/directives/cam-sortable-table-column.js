@@ -24,25 +24,25 @@ var template = fs.readFileSync(
   'utf8'
 );
 
-var Directive = function() {
+var Directive = function () {
   return {
     replace: false,
     restrict: 'A',
     scope: {
-      column: '@sortByProperty'
+      column: '@sortByProperty',
     },
     transclude: true,
     require: '^^camSortableTableHeader',
     template: template,
-    link: function($scope, element, attrs, ctrl) {
+    link: function ($scope, element, attrs, ctrl) {
       // Order Icons
-      $scope.orderClass = function(forColumn) {
+      $scope.orderClass = function (forColumn) {
         var sorting = ctrl.getSorting();
         forColumn = forColumn || sorting.sortBy;
         var icons = {
           none: 'minus',
           desc: 'chevron-down',
-          asc: 'chevron-up'
+          asc: 'chevron-up',
         };
         return (
           'glyphicon-' +
@@ -51,10 +51,10 @@ var Directive = function() {
       };
 
       // On-click function to order Columns
-      $scope.changeOrder = function(column) {
+      $scope.changeOrder = function (column) {
         ctrl.changeOrder(column);
       };
-    }
+    },
   };
 };
 

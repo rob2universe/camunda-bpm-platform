@@ -28,7 +28,7 @@ module.exports = [
   'camAPI',
   'Notifications',
   '$translate',
-  function(
+  function (
     $timeout,
     $location,
     ProcessDefinitionResource,
@@ -43,9 +43,9 @@ module.exports = [
         definition: '=changeVersion',
         type: '@',
         history: '@?',
-        noRedirect: '@?'
+        noRedirect: '@?',
       },
-      link: function($scope, element) {
+      link: function ($scope, element) {
         $scope.model = {};
         $scope.model.newVersion =
           typeof $scope.definition.version === 'number'
@@ -57,20 +57,17 @@ module.exports = [
 
         $scope.isActive = false;
 
-        $scope.enableValidating = function() {
+        $scope.enableValidating = function () {
           $scope.isValidating = true;
         };
 
-        $scope.changeLocation = function() {
+        $scope.changeLocation = function () {
           $scope.isActive = false;
           $scope.definition.version = parseInt($scope.model.newVersion, 10);
-          element
-            .parent()
-            .find('.dropdown-toggle')
-            .show();
+          element.parent().find('.dropdown-toggle').show();
 
           if ($scope.noRedirect === undefined) {
-            $timeout(function() {
+            $timeout(function () {
               var path = '/';
               if ($scope.type === 'drd') {
                 path += 'decision-requirement/';
@@ -88,7 +85,7 @@ module.exports = [
           }
         };
 
-        $scope.change = function(form) {
+        $scope.change = function (form) {
           $scope.isValid = form.$valid;
 
           if (
@@ -105,7 +102,7 @@ module.exports = [
             var queryParams = {
               key: definition.key,
               version: $scope.model.newVersion,
-              maxResults: 2
+              maxResults: 2,
             };
 
             if (definition.tenantId) {
@@ -116,8 +113,8 @@ module.exports = [
 
             var definitions;
             if ($scope.type === 'process') {
-              definitions = ProcessDefinitionResource.query(queryParams)
-                .$promise;
+              definitions =
+                ProcessDefinitionResource.query(queryParams).$promise;
             } else if ($scope.type === 'drd') {
               definitions = camAPI.resource('drd').list(queryParams);
             } else {
@@ -126,7 +123,7 @@ module.exports = [
                 .list(queryParams);
             }
 
-            definitions.then(data => {
+            definitions.then((data) => {
               if (data.length > 1) {
                 $scope.isValid = false;
                 $scope.isValidating = false;
@@ -135,7 +132,7 @@ module.exports = [
                   status: $translate.instant('NOTIFICATIONS_STATUS_FAILED'),
                   message: $translate.instant(
                     'DEF_VIEW_CHANGE_VERSION_NOT_UNIQUE'
-                  )
+                  ),
                 });
               } else {
                 $scope.isValid = data.length === 1;
@@ -149,7 +146,7 @@ module.exports = [
           }
         };
 
-        $scope.open = function() {
+        $scope.open = function () {
           $scope.model.newVersion =
             typeof $scope.definition.version === 'number'
               ? $scope.definition.version
@@ -157,39 +154,30 @@ module.exports = [
 
           $scope.storedVersion = $scope.model.newVersion;
           $scope.isActive = true;
-          element
-            .parent()
-            .find('.dropdown-toggle')
-            .hide();
+          element.parent().find('.dropdown-toggle').hide();
         };
 
-        $scope.close = function(form) {
+        $scope.close = function (form) {
           // cancel debounce
           form.$rollbackViewValue();
 
           $scope.model.newVersion = $scope.storedVersion;
           $scope.isActive = false;
-          element
-            .parent()
-            .find('.dropdown-toggle')
-            .show();
+          element.parent().find('.dropdown-toggle').show();
         };
 
         $scope.$watch(
           'isActive',
-          function() {
-            $timeout(function() {
+          function () {
+            $timeout(function () {
               if ($scope.isActive) {
-                element
-                  .parent()
-                  .find('input')
-                  .focus();
+                element.parent().find('input').focus();
               }
             });
           },
           true
         );
-      }
+      },
     };
-  }
+  },
 ];

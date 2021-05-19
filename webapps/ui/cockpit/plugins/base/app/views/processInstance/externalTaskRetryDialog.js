@@ -25,7 +25,7 @@ module.exports = [
   '$uibModalInstance',
   'incident',
   '$translate',
-  function(
+  function (
     $scope,
     $location,
     Notifications,
@@ -40,19 +40,19 @@ module.exports = [
 
     var ExternalTask = camAPI.resource('external-task');
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       $modalInstance.close($scope.status);
     });
 
-    $scope.incrementRetry = function() {
+    $scope.incrementRetry = function () {
       $scope.status = PERFORM;
 
       ExternalTask.retries(
         {
           id: incident.configuration,
-          retries: 1
+          retries: 1,
         },
-        function(error) {
+        function (error) {
           if (!error) {
             $scope.status = FINISHED;
             Notifications.addMessage({
@@ -60,7 +60,7 @@ module.exports = [
                 'PLUGIN_EXTERNAL_TASK_STATUS_FINISHED'
               ),
               message: $translate.instant('PLUGIN_EXTERNAL_TASK_MESSAGE_1'),
-              exclusive: true
+              exclusive: true,
             });
           } else {
             $scope.status = FAILED;
@@ -69,17 +69,17 @@ module.exports = [
                 'PLUGIN_EXTERNAL_TASK_STATUS_FINISHED'
               ),
               message: $translate.instant('PLUGIN_EXTERNAL_TASK_MESSAGE_2', {
-                message: error.message
+                message: error.message,
               }),
-              exclusive: true
+              exclusive: true,
             });
           }
         }
       );
     };
 
-    $scope.close = function(status) {
+    $scope.close = function (status) {
       $modalInstance.close(status);
     };
-  }
+  },
 ];

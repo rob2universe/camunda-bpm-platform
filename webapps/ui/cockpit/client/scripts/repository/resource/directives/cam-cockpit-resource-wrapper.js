@@ -27,12 +27,12 @@ var template = fs.readFileSync(
 var angular = require('../../../../../../../camunda-commons-ui/vendor/angular');
 
 module.exports = [
-  function() {
+  function () {
     return {
       restrict: 'A',
       scope: {
         resourceDetailsData: '=',
-        control: '=?'
+        control: '=?',
       },
 
       template: template,
@@ -45,7 +45,7 @@ module.exports = [
         'Notifications',
         'search',
         '$translate',
-        function(
+        function (
           $scope,
           $q,
           $location,
@@ -56,7 +56,7 @@ module.exports = [
         ) {
           // utilities ///////////////////////////////////////////////////////////////////
 
-          var errorNotification = function(src, err) {
+          var errorNotification = function (src, err) {
             if (err.message) {
               var idx = err.message.indexOf('<-');
               if (idx !== -1) {
@@ -67,11 +67,11 @@ module.exports = [
               status: src,
               message: err ? err.message : '',
               exclusive: true,
-              scope: $scope
+              scope: $scope,
             });
           };
 
-          var enhanceErrorMessage = function(msg) {
+          var enhanceErrorMessage = function (msg) {
             if (msg) {
               if (msg.indexOf('does not exist') === -1) {
                 return $translate.instant(
@@ -84,7 +84,7 @@ module.exports = [
             );
           };
 
-          var clearResource = function() {
+          var clearResource = function () {
             var search = $location.search() || {};
             delete search.resource;
             delete search.resourceName;
@@ -94,27 +94,26 @@ module.exports = [
 
           // fields /////////////////////////////////////////////////////////////////////
 
-          var resourceData = ($scope.resourceData = $scope.resourceDetailsData.newChild(
-            $scope
-          ));
+          var resourceData = ($scope.resourceData =
+            $scope.resourceDetailsData.newChild($scope));
 
           var PLUGIN_DETAILS_COMPONENT = 'cockpit.repository.resource.detail';
 
           // observe /////////////////////////////////////////////////////////////////////
 
-          resourceData.observe('currentDeployment', function(deployment) {
+          resourceData.observe('currentDeployment', function (deployment) {
             $scope.deployment = deployment;
           });
 
           $scope.resourceState = resourceData.observe([
             'resource',
             'binary',
-            function(resource) {
+            function (resource) {
               $scope.resource = resource;
-            }
+            },
           ]);
 
-          $scope.$watch('resourceState.$error', function(err) {
+          $scope.$watch('resourceState.$error', function (err) {
             if (err) {
               var src = enhanceErrorMessage(err.message);
               errorNotification(src, err);
@@ -125,13 +124,13 @@ module.exports = [
           // plugins ///////////////////////////////////////////////////////////////////////
 
           $scope.resourceVars = {
-            read: ['control', 'deployment', 'resource', 'resourceData']
+            read: ['control', 'deployment', 'resource', 'resourceData'],
           };
           $scope.resourceDetailTabs = Views.getProviders({
-            component: PLUGIN_DETAILS_COMPONENT
+            component: PLUGIN_DETAILS_COMPONENT,
           });
-        }
-      ]
+        },
+      ],
     };
-  }
+  },
 ];

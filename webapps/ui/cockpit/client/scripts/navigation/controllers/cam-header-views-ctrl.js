@@ -28,19 +28,19 @@ module.exports = [
   '$injector',
   '$location',
   'Views',
-  function($scope, $injector, $location, Views) {
+  function ($scope, $injector, $location, Views) {
     $scope.navbarVars = {read: []};
 
     $scope.menuActions = [];
     $scope.dropdownActions = [];
 
-    Views.getProviders({component: 'cockpit.navigation'}).forEach(function(
+    Views.getProviders({component: 'cockpit.navigation'}).forEach(function (
       plugin
     ) {
       if (angular.isArray(plugin.access)) {
         var fn = $injector.invoke(plugin.access);
 
-        fn(function(err, access) {
+        fn(function (err, access) {
           if (err) {
             throw err;
           }
@@ -65,13 +65,15 @@ module.exports = [
       );
     });
 
-    $scope.activeClass = function(plugin) {
+    $scope.activeClass = function (plugin) {
       var path = $location.absUrl();
-      return (typeof plugin.checkActive === 'function'
-      ? plugin.checkActive(path)
-      : checkActive(plugin, path))
+      return (
+        typeof plugin.checkActive === 'function'
+          ? plugin.checkActive(path)
+          : checkActive(plugin, path)
+      )
         ? 'active'
         : '';
     };
-  }
+  },
 ];

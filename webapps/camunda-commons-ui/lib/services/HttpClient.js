@@ -18,7 +18,7 @@
 'use strict';
 
 var angular = require('../../../camunda-bpm-sdk-js/vendor/angular');
-var CamSDK = require('camunda-bpm-sdk-js/lib/angularjs/index');
+var CamSDK = require('../../../camunda-bpm-sdk-js/lib/angularjs/index');
 
 module.exports = [
   '$rootScope',
@@ -26,7 +26,7 @@ module.exports = [
   '$q',
   '$cookies',
   'configuration',
-  function($rootScope, $timeout, $q, $cookies, configuration) {
+  function ($rootScope, $timeout, $q, $cookies, configuration) {
     function setHeaders(options) {
       var headers = (options.headers = options.headers || {});
       var token = $cookies.get(configuration.getCsrfCookieName());
@@ -42,9 +42,9 @@ module.exports = [
 
     angular.forEach(
       ['post', 'get', 'load', 'put', 'del', 'options', 'head'],
-      function(name) {
-        AngularClient.prototype[name] = function(path, options) {
-          var myTimeout = $timeout(function() {}, 100000);
+      function (name) {
+        AngularClient.prototype[name] = function (path, options) {
+          var myTimeout = $timeout(function () {}, 100000);
 
           setHeaders(options);
 
@@ -52,7 +52,7 @@ module.exports = [
             ? options.done
             : angular.noop;
 
-          options.done = function(err, result) {
+          options.done = function (err, result) {
             function applyResponse() {
               // in case the session expired
               if (err && err.status === 401) {
@@ -84,12 +84,12 @@ module.exports = [
       }
     );
 
-    angular.forEach(['on', 'once', 'off', 'trigger'], function(name) {
-      AngularClient.prototype[name] = function() {
+    angular.forEach(['on', 'once', 'off', 'trigger'], function (name) {
+      AngularClient.prototype[name] = function () {
         this._wrapped[name].apply(this, arguments);
       };
     });
 
     return AngularClient;
-  }
+  },
 ];

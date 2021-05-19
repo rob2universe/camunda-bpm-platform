@@ -33,7 +33,7 @@ module.exports = [
   'camAPI',
   '$q',
   '$timeout',
-  function(camAPI, $q, $timeout) {
+  function (camAPI, $q, $timeout) {
     return {
       restrict: 'A',
       require: '^camTasklistFilterModalForm',
@@ -41,12 +41,12 @@ module.exports = [
         filter: '=',
         accesses: '=',
         filterModalFormData: '=',
-        isOpen: '='
+        isOpen: '=',
       },
 
       template: template,
 
-      link: function($scope, $element, attrs, parentCtrl) {
+      link: function ($scope, $element, attrs, parentCtrl) {
         // by default, the fields for new permission are not shown
         $scope.showNewPermissionFields = false;
 
@@ -54,7 +54,7 @@ module.exports = [
         // the "permission" accordion part is being closed
         // this will add the permission
         // (like if the "add" button had been clicked)
-        $scope.$watch('isOpen', function(actual, previous) {
+        $scope.$watch('isOpen', function (actual, previous) {
           if (!$scope.disableAddButton() && !actual && previous) {
             $scope.addReadPermission();
           }
@@ -62,7 +62,7 @@ module.exports = [
           $scope.showNewPermissionFields = false;
         });
 
-        $scope.$on('pre-submit', function() {
+        $scope.$on('pre-submit', function () {
           if (!$scope.disableAddButton()) {
             $scope.addReadPermission();
           }
@@ -74,14 +74,13 @@ module.exports = [
 
         var Authorization = camAPI.resource('authorization');
 
-        var filterAuthorizationData = $scope.filterModalFormData.newChild(
-          $scope
-        );
+        var filterAuthorizationData =
+          $scope.filterModalFormData.newChild($scope);
 
         var DEFAULT_PAGES = {
           size: 50,
           total: 0,
-          current: 1
+          current: 1,
         };
 
         $scope.onPaginationChange = function onPaginationChange(pages) {
@@ -101,19 +100,19 @@ module.exports = [
 
         var NEW_DEFAULT_AUTHORIZATION = {
           resourceType: RESOURCE_TYPE,
-          permissions: ['READ']
+          permissions: ['READ'],
         };
 
         var NEW_PERMISSION = {
           type: 'user',
-          id: null
+          id: null,
         };
 
         var newPermission = ($scope.newPermission = copy(NEW_PERMISSION));
 
         // register handler to show or hide the accordion hint /////////////////
 
-        var showHintProvider = function() {
+        var showHintProvider = function () {
           var control = getNewPermissionField();
 
           return control && control.$error && control.$error.duplicate;
@@ -128,7 +127,7 @@ module.exports = [
 
         filterAuthorizationData.provide('authorizations', [
           'filter',
-          function(filter) {
+          function (filter) {
             var deferred = $q.defer();
 
             if (!filter || !filter.id) {
@@ -138,9 +137,9 @@ module.exports = [
               Authorization.count(
                 {
                   resourceType: RESOURCE_TYPE,
-                  resourceId: filter.id
+                  resourceId: filter.id,
                 },
-                function(err, resp) {
+                function (err, resp) {
                   if (err) {
                     deferred.reject(err);
                   } else {
@@ -153,9 +152,9 @@ module.exports = [
                   resourceType: RESOURCE_TYPE,
                   resourceId: filter.id,
                   maxResults: pages.size,
-                  firstResult: pages.size * (pages.current - 1)
+                  firstResult: pages.size * (pages.current - 1),
                 },
-                function(err, resp) {
+                function (err, resp) {
                   if (err) {
                     deferred.reject(err);
                   } else {
@@ -166,22 +165,21 @@ module.exports = [
             }
 
             return deferred.promise;
-          }
+          },
         ]);
 
         // observe ////////////////////////////////////////////////////////////////////////
 
         $scope.authorizationState = filterAuthorizationData.observe(
           'authorizations',
-          function(_authorizations) {
+          function (_authorizations) {
             authorizations = $scope.authorizations =
               copy(_authorizations) || [];
             initializeAuthorizations(authorizations);
 
             globalAuthorization = getGlobalAuthorization(authorizations);
-            $scope.isGlobalReadAuthorization = hasReadPermission(
-              globalAuthorization
-            );
+            $scope.isGlobalReadAuthorization =
+              hasReadPermission(globalAuthorization);
 
             groupAuthorizationMap = getAuthorziationMap(
               authorizations,
@@ -196,7 +194,7 @@ module.exports = [
 
         // handle global read permission ////////////////////////////////////////////////////
 
-        $scope.globalReadAuthorizationChanged = function() {
+        $scope.globalReadAuthorizationChanged = function () {
           if ($scope.isGlobalReadAuthorization) {
             if (!globalAuthorization) {
               globalAuthorization = angular.extend(
@@ -219,43 +217,44 @@ module.exports = [
 
         // handle new permission ////////////////////////////////////////////////////////////
 
-        $scope.switchType = function() {
+        $scope.switchType = function () {
           newPermission.type = newPermission.type === 'user' ? 'group' : 'user';
           validateNewPermission();
         };
 
-        $scope.getReadAuthorizations = function(authorizations) {
+        $scope.getReadAuthorizations = function (authorizations) {
           if (authorizations) {
             return getAuthorizationsWithReadPermissions(authorizations);
           }
         };
 
-        var validateNewPermission = ($scope.validateNewPermission = function() {
-          var control = getNewPermissionField();
-          // new permission fields might not be present when this function is called
-          if (!control) {
-            return;
-          }
-
-          control.$setValidity('authorization', true);
-          control.$setValidity('duplicate', true);
-
-          var id = newPermission.id;
-
-          if (id) {
-            var auths =
-              newPermission.type === 'user'
-                ? userAuthorizationMap
-                : groupAuthorizationMap;
-            var auth = auths[id];
-
-            if (auth && hasReadPermission(auth)) {
-              return control.$setValidity('duplicate', false);
+        var validateNewPermission = ($scope.validateNewPermission =
+          function () {
+            var control = getNewPermissionField();
+            // new permission fields might not be present when this function is called
+            if (!control) {
+              return;
             }
-          }
-        });
 
-        $scope.disableAddButton = function() {
+            control.$setValidity('authorization', true);
+            control.$setValidity('duplicate', true);
+
+            var id = newPermission.id;
+
+            if (id) {
+              var auths =
+                newPermission.type === 'user'
+                  ? userAuthorizationMap
+                  : groupAuthorizationMap;
+              var auth = auths[id];
+
+              if (auth && hasReadPermission(auth)) {
+                return control.$setValidity('duplicate', false);
+              }
+            }
+          });
+
+        $scope.disableAddButton = function () {
           // when the new permission fields are not yet present,
           // the "Add permis." is aimed to make them visible
           // (see addReadPermission below)
@@ -272,12 +271,12 @@ module.exports = [
           );
         };
 
-        var addReadPermission = ($scope.addReadPermission = function() {
+        var addReadPermission = ($scope.addReadPermission = function () {
           // the first click only adds the fields
           if (!$scope.showNewPermissionFields) {
             $scope.showNewPermissionFields = true;
 
-            $timeout(function() {
+            $timeout(function () {
               var element = $element[0].querySelector('.new-permission button');
               if (element) {
                 element.focus();
@@ -325,7 +324,7 @@ module.exports = [
           control.$setValidity('authorization', true);
           control.$setPristine();
 
-          $timeout(function() {
+          $timeout(function () {
             var element = $element[0].querySelector('.new-permission button');
             if (element) {
               element.focus();
@@ -333,7 +332,7 @@ module.exports = [
           });
         });
 
-        $scope.keyPressed = function($event) {
+        $scope.keyPressed = function ($event) {
           var keyCode = $event.keyCode;
 
           if (keyCode === 13) {
@@ -355,7 +354,7 @@ module.exports = [
 
         // remove read permission ///////////////////////////////////////////////////////////
 
-        $scope.removeReadPermission = function(auth) {
+        $scope.removeReadPermission = function (auth) {
           removeReadPermissionFromAuthorization(auth);
           validateNewPermission();
 
@@ -366,7 +365,7 @@ module.exports = [
 
         var errors = [];
 
-        var submitAuthorizations = function(filter, callback) {
+        var submitAuthorizations = function (filter, callback) {
           var actions = [];
           errors = [];
 
@@ -398,7 +397,7 @@ module.exports = [
                   // delete
                   actions.push({
                     type: 'delete',
-                    authorization: authorization
+                    authorization: authorization,
                   });
                 } else {
                   // permissions changed -> update authorization
@@ -406,7 +405,7 @@ module.exports = [
                     // update
                     actions.push({
                       type: 'update',
-                      authorization: authorization
+                      authorization: authorization,
                     });
                   }
                 }
@@ -417,7 +416,7 @@ module.exports = [
                   // create
                   actions.push({
                     type: 'create',
-                    authorization: authorization
+                    authorization: authorization,
                   });
                 }
               }
@@ -425,7 +424,7 @@ module.exports = [
           }
 
           performSubmit(actions, filter)
-            .then(function() {
+            .then(function () {
               if (!errors || !errors.length) {
                 errors = null;
               }
@@ -451,7 +450,7 @@ module.exports = [
 
             authorization.resourceId = authorization.resourceId || filter.id;
 
-            var callback = function(err, resp) {
+            var callback = function (err, resp) {
               count = count - 1;
 
               if (!err) {
@@ -474,7 +473,7 @@ module.exports = [
               } else {
                 errors.push({
                   status: 'FILTER_FORM_PERMISSIONS_SAVE_ERROR',
-                  error: err
+                  error: err,
                 });
 
                 // set $permissions again
@@ -640,7 +639,7 @@ module.exports = [
               authorization.permissions = ['READ'];
             } else if (permissions && permissions.length === 1) {
               authorization.permissions = authorization.permissions.concat([
-                'READ'
+                'READ',
               ]);
             } else {
               authorization.permissions = ['ALL'];
@@ -671,7 +670,7 @@ module.exports = [
             }
           }
         }
-      }
+      },
     };
-  }
+  },
 ];

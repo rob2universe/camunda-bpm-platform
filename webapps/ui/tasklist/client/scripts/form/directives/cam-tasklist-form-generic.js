@@ -30,7 +30,7 @@ module.exports = [
   'CamForm',
   'camAPI',
   '$timeout',
-  function(CamForm, camAPI, $timeout) {
+  function (CamForm, camAPI, $timeout) {
     return {
       restrict: 'A',
 
@@ -40,21 +40,21 @@ module.exports = [
 
       template: template,
 
-      link: function($scope, $element, attrs, formController) {
+      link: function ($scope, $element, attrs, formController) {
         var formElement = $($element[0]).find('form');
         var camForm = ($scope.camForm = null);
         var form = {
           $valid: false,
-          $invalid: true
+          $invalid: true,
         };
 
         var $update = false;
 
         $scope.$watch(
-          function() {
+          function () {
             return $update;
           },
-          function(value) {
+          function (value) {
             if (value) {
               showForm(value, formController.getParams());
               $update = false;
@@ -63,10 +63,10 @@ module.exports = [
         );
 
         $scope.$watch(
-          function() {
+          function () {
             return formController.getTasklistForm();
           },
-          function(value) {
+          function (value) {
             if (value) {
               $update = true;
               $scope.variables = [];
@@ -75,10 +75,10 @@ module.exports = [
         );
 
         $scope.$watch(
-          function() {
+          function () {
             return form && form.$valid;
           },
-          function(value) {
+          function (value) {
             formController.notifyFormValidated(!value);
           }
         );
@@ -91,13 +91,13 @@ module.exports = [
           angular.extend(params, {
             client: camAPI,
             formElement: formElement,
-            done: done
+            done: done,
           });
 
           $scope.camForm = camForm = new CamForm(params);
         }
 
-        var done = function(err, _camForm) {
+        var done = function (err, _camForm) {
           if (err) {
             return formController.notifyFormInitializationFailed(err);
           }
@@ -114,10 +114,9 @@ module.exports = [
           formController.notifyFormInitialized();
 
           if ($scope.options.autoFocus) {
-            $timeout(function() {
-              var focusElement = _camForm.formElement[0].querySelectorAll(
-                'input'
-              )[0];
+            $timeout(function () {
+              var focusElement =
+                _camForm.formElement[0].querySelectorAll('input')[0];
               if (focusElement) {
                 focusElement.focus();
               }
@@ -136,7 +135,7 @@ module.exports = [
           camForm.fields = [];
         }
 
-        var complete = function(callback) {
+        var complete = function (callback) {
           function localCallback(error, result) {
             clearVariableManager();
             clearFields();
@@ -155,13 +154,13 @@ module.exports = [
           }
 
           $scope.variables
-            .filter(el => el.type === 'Object')
-            .forEach(el => {
+            .filter((el) => el.type === 'Object')
+            .forEach((el) => {
               camForm.variableManager.createVariable({
                 name: el.name,
                 type: 'Object',
                 value: el.value,
-                valueInfo: el.valueInfo
+                valueInfo: el.valueInfo,
               });
             });
 
@@ -169,7 +168,7 @@ module.exports = [
         };
 
         formController.registerCompletionHandler(complete);
-      }
+      },
     };
-  }
+  },
 ];

@@ -26,8 +26,8 @@ var template = fs.readFileSync(
 var jquery = require('jquery');
 var moment = require('../../../../../../../camunda-commons-ui/vendor/moment');
 
-var findOrCreateDay = function(days, timestamp) {
-  var day = jquery.grep(days, function(elem) {
+var findOrCreateDay = function (days, timestamp) {
+  var day = jquery.grep(days, function (elem) {
     return (
       moment(elem.date, moment.ISO_8601).format('YYYY-MM-DD') ===
       moment(timestamp, moment.ISO_8601).format('YYYY-MM-DD')
@@ -38,15 +38,15 @@ var findOrCreateDay = function(days, timestamp) {
   } else {
     day = {
       date: timestamp,
-      events: []
+      events: [],
     };
     days.push(day);
     return day;
   }
 };
 
-var findOrCreateParentEvent = function(events, event) {
-  var parentEvent = jquery.grep(events, function(elem) {
+var findOrCreateParentEvent = function (events, event) {
+  var parentEvent = jquery.grep(events, function (elem) {
     return elem.operationId === event.operationId;
   });
   if (parentEvent.length > 0) {
@@ -57,7 +57,7 @@ var findOrCreateParentEvent = function(events, event) {
       type: event.operationType,
       operationId: event.operationId,
       userId: event.userId,
-      subEvents: []
+      subEvents: [],
     };
     events.push(parentEvent);
     return parentEvent;
@@ -72,7 +72,7 @@ var Controller = [
   '$scope',
   'camAPI',
   '$q',
-  function($scope, camAPI, $q) {
+  function ($scope, camAPI, $q) {
     var History = camAPI.resource('history');
     var Task = camAPI.resource('task');
 
@@ -81,7 +81,7 @@ var Controller = [
     var pages = ($scope.pages = {
       size: 50,
       total: 0,
-      current: 1
+      current: 1,
     });
 
     $scope.onPaginationChange = function onPaginationChange() {
@@ -90,7 +90,7 @@ var Controller = [
 
     historyData.provide('history', [
       'task',
-      function(task) {
+      function (task) {
         var deferred = $q.defer();
 
         if (!task) {
@@ -99,9 +99,9 @@ var Controller = [
 
         History.userOperationCount(
           {
-            taskId: task.id
+            taskId: task.id,
           },
-          function(err, res) {
+          function (err, res) {
             if (err) {
               throw err;
             } else {
@@ -114,9 +114,9 @@ var Controller = [
           {
             taskId: task.id,
             maxResults: pages.size,
-            firstResult: pages.size * (pages.current - 1)
+            firstResult: pages.size * (pages.current - 1),
           },
-          function(err, res) {
+          function (err, res) {
             if (err) {
               deferred.reject(err);
             } else {
@@ -126,26 +126,26 @@ var Controller = [
         );
 
         return deferred.promise;
-      }
+      },
     ]);
 
     historyData.provide('comments', [
       'task',
-      function(task) {
+      function (task) {
         var deferred = $q.defer();
 
         if (!task) {
           return deferred.resolve(null);
         }
 
-        return Task.comments(task.id).catch(function() {});
-      }
+        return Task.comments(task.id).catch(function () {});
+      },
     ]);
 
     historyData.provide('orderedHistoryAndCommentsByDay', [
       'history',
       'comments',
-      function(history, comments) {
+      function (history, comments) {
         history = history || {};
         comments = comments || {};
 
@@ -185,16 +185,16 @@ var Controller = [
         }
 
         return days;
-      }
+      },
     ]);
 
     $scope.state = historyData.observe(
       'orderedHistoryAndCommentsByDay',
-      function(days) {
+      function (days) {
         $scope.days = days;
       }
     );
-  }
+  },
 ];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -203,7 +203,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     label: 'HISTORY',
     template: template,
     controller: Controller,
-    priority: 800
+    priority: 800,
   });
 };
 

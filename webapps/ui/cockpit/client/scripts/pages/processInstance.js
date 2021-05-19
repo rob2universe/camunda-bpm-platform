@@ -30,7 +30,7 @@ var camCommons = require('../../../../../camunda-commons-ui/lib');
 var ngModule = angular.module('cam.cockpit.pages.processInstance', [
   camCommons.name,
   commonModule.name,
-  'dataDepend'
+  'dataDepend',
 ]);
 
 var Controller = [
@@ -53,7 +53,7 @@ var Controller = [
   'isModuleAvailable',
   '$translate',
   'camAPI',
-  function(
+  function (
     $scope,
     $filter,
     $rootScope,
@@ -81,9 +81,9 @@ var Controller = [
     var pageData = ($scope.pageData = dataDepend.create($scope));
 
     $scope.diagramCollapsed = true;
-    $scope.onDiagramCollapseChange = function(collapsed) {
+    $scope.onDiagramCollapseChange = function (collapsed) {
       if (!$scope.$$phase) {
-        $scope.$apply(function() {
+        $scope.$apply(function () {
           $scope.diagramCollapsed = collapsed;
         });
       } else {
@@ -94,7 +94,7 @@ var Controller = [
     // utilities ///////////////////////
 
     $scope.hovered = null;
-    $scope.hoverTitle = function(id) {
+    $scope.hoverTitle = function (id) {
       $scope.hovered = id || null;
     };
 
@@ -108,50 +108,50 @@ var Controller = [
     // processDefinition
     processData.provide('processDefinition', [
       'processInstance',
-      function(processInstance) {
+      function (processInstance) {
         return ProcessDefinitionResource.get({id: processInstance.definitionId})
           .$promise;
-      }
+      },
     ]);
 
     processData.provide('bpmn20Xml', [
       'processDefinition',
-      function(definition) {
+      function (definition) {
         return ProcessDefinitionResource.getBpmn20Xml({id: definition.id})
           .$promise;
-      }
+      },
     ]);
 
     // bpmnElements
     processData.provide('parsedBpmn20', [
       'bpmn20Xml',
-      function(bpmn20Xml) {
+      function (bpmn20Xml) {
         return Transform.transformBpmn20Xml(bpmn20Xml.bpmn20Xml);
-      }
+      },
     ]);
 
     processData.provide('bpmnElements', [
       'parsedBpmn20',
-      function(parsedBpmn20) {
+      function (parsedBpmn20) {
         return parsedBpmn20.bpmnElements;
-      }
+      },
     ]);
 
     processData.provide('bpmnDefinition', [
       'parsedBpmn20',
-      function(parsedBpmn20) {
+      function (parsedBpmn20) {
         return parsedBpmn20.definitions;
-      }
+      },
     ]);
 
     // activityInstances
     processData.provide('activityInstances', [
       'processInstance',
-      function(processInstance) {
+      function (processInstance) {
         return ProcessInstanceResource.activityInstances({
-          id: processInstance.id
+          id: processInstance.id,
         }).$promise;
-      }
+      },
     ]);
 
     // activityInstanceTree, activityIdToInstancesMap, instanceIdToInstanceMap
@@ -160,13 +160,13 @@ var Controller = [
         'activityInstanceTree',
         'activityIdToInstancesMap',
         'instanceIdToInstanceMap',
-        'activityIdToIncidentIdMap'
+        'activityIdToIncidentIdMap',
       ],
       [
         'activityInstances',
         'processDefinition',
         'bpmnElements',
-        function(activityInstances, processDefinition, bpmnElements) {
+        function (activityInstances, processDefinition, bpmnElements) {
           var activityIdToInstancesMap = {},
             instanceIdToInstanceMap = {},
             model = bpmnElements[processDefinition.key],
@@ -187,7 +187,7 @@ var Controller = [
           }
 
           function addIncidents(incidents) {
-            incidents.forEach(function(incident) {
+            incidents.forEach(function (incident) {
               var incidentIds =
                 activityIdToIncidentIdMap[incident.activityId] || [];
               incidentIds.push(incident.id);
@@ -237,9 +237,8 @@ var Controller = [
                   transition.name = targetActivityId;
                 }
                 transition.isTransitionInstance = true;
-                activityIdToInstancesMap[
-                  targetActivityId
-                ] = transitionInstances;
+                activityIdToInstancesMap[targetActivityId] =
+                  transitionInstances;
                 if (!instanceIdToInstanceMap[transition.id]) {
                   instanceIdToInstanceMap[transition.id] = transition;
                 }
@@ -262,15 +261,15 @@ var Controller = [
             activityInstances,
             activityIdToInstancesMap,
             instanceIdToInstanceMap,
-            activityIdToIncidentIdMap
+            activityIdToIncidentIdMap,
           ];
-        }
+        },
       ]
     );
 
     processData.provide('executionIdToInstanceMap', [
       'instanceIdToInstanceMap',
-      function(instanceIdToInstanceMap) {
+      function (instanceIdToInstanceMap) {
         var executionIdToInstanceMap = {};
 
         for (var key in instanceIdToInstanceMap) {
@@ -290,32 +289,32 @@ var Controller = [
         }
 
         return executionIdToInstanceMap;
-      }
+      },
     ]);
 
     // processDiagram
     processData.provide('processDiagram', [
       'bpmnDefinition',
       'bpmnElements',
-      function(bpmnDefinition, bpmnElements) {
+      function (bpmnDefinition, bpmnElements) {
         var processDiagram = {};
 
         processDiagram.bpmnDefinition = bpmnDefinition;
         processDiagram.bpmnElements = bpmnElements;
 
         return processDiagram;
-      }
+      },
     ]);
 
     processData.provide('latestDefinition', [
       'processDefinition',
-      function(definition) {
+      function (definition) {
         var queryParams = {
           key: definition.key,
           sortBy: 'version',
           sortOrder: 'desc',
           latestVersion: true,
-          maxResults: 1
+          maxResults: 1,
         };
 
         if (definition.tenantId) {
@@ -324,38 +323,38 @@ var Controller = [
           queryParams.withoutTenantId = true;
         }
         return camAPI.resource('process-definition').list(queryParams);
-      }
+      },
     ]);
 
     // /////// End definition of process data
     integrateActivityInstanceFilter($scope, angular.noop, {
-      shouldRemoveActivityIds: true
+      shouldRemoveActivityIds: true,
     });
 
     // /////// Begin usage of definied process data
 
     $scope.processDefinition = processData.observe(
       'processDefinition',
-      function(processDefinition) {
+      function (processDefinition) {
         $scope.processDefinition = processDefinition;
       }
     );
 
     $scope.latestProcessDefinition = processData.observe(
       'latestDefinition',
-      function(processDefinition) {
+      function (processDefinition) {
         $scope.latestProcessDefinition = processDefinition.items[0];
       }
     );
 
-    $scope.isLatestVersion = function() {
+    $scope.isLatestVersion = function () {
       return (
         $scope.processDefinition.version ===
         $scope.latestProcessDefinition.version
       );
     };
 
-    $scope.getMigrationUrl = function() {
+    $scope.getMigrationUrl = function () {
       var path = '#/migration';
 
       var searches = {
@@ -367,9 +366,9 @@ var Controller = [
           {
             type: 'processInstanceIds',
             operator: 'eq',
-            value: $scope.processInstance.id
-          }
-        ])
+            value: $scope.processInstance.id,
+          },
+        ]),
       };
 
       return routeUtil.redirectTo(path, searches, [
@@ -377,11 +376,11 @@ var Controller = [
         'targetKey',
         'sourceVersion',
         'targetVersion',
-        'searchQuery'
+        'searchQuery',
       ]);
     };
 
-    $scope.getDeploymentUrl = function() {
+    $scope.getDeploymentUrl = function () {
       var path = '#/repository';
 
       var deploymentId = $scope.processDefinition.deploymentId;
@@ -392,36 +391,36 @@ var Controller = [
           {
             type: 'id',
             operator: 'eq',
-            value: deploymentId
-          }
-        ])
+            value: deploymentId,
+          },
+        ]),
       };
 
       return routeUtil.redirectTo(path, searches, [
         'deployment',
         'resourceName',
-        'deploymentsQuery'
+        'deploymentsQuery',
       ]);
     };
 
     processData.provide('superProcessInstance', [
       'processInstance',
-      function(processInstance) {
+      function (processInstance) {
         return ProcessInstanceResource.query(
           {maxResults: 1},
           {subProcessInstance: processInstance.id}
         ).$promise;
-      }
+      },
     ]);
 
     function fetchSuperProcessInstance(processInstance, done) {
       ProcessInstanceResource.query(
         {maxResults: 1},
         {
-          subProcessInstance: processInstance.id
+          subProcessInstance: processInstance.id,
         }
       )
-        .$promise.then(function(response) {
+        .$promise.then(function (response) {
           var superInstance = response[0];
 
           done(null, superInstance);
@@ -433,18 +432,18 @@ var Controller = [
 
     processData.observe(
       ['processDefinition', 'processInstance', 'superProcessInstance'],
-      function(processDefinition, processInstance, superProcessInstance) {
+      function (processDefinition, processInstance, superProcessInstance) {
         var crumbs = [
           {
             label: $translate.instant('PROCESS_INSTANCE_PROCESSES'),
-            href: '#/processes/'
-          }
+            href: '#/processes/',
+          },
         ];
 
         if (superProcessInstance.length) {
           $scope.superProcessInstance = superProcessInstance[0];
 
-          crumbs.push(function(index) {
+          crumbs.push(function (index) {
             breadcrumbTrails(
               processInstance,
               fetchSuperProcessInstance,
@@ -461,11 +460,11 @@ var Controller = [
             processDefinition.key ||
             processDefinition.id,
           href: '#/process-definition/' + processDefinition.id + '/runtime',
-          keepSearchParams: ['viewbox']
+          keepSearchParams: ['viewbox'],
         });
 
         var plugins = Views.getProviders({
-          component: 'cockpit.processInstance.view'
+          component: 'cockpit.processInstance.view',
         });
 
         crumbs.push({
@@ -477,21 +476,21 @@ var Controller = [
           processInstance: processInstance,
 
           choices: plugins
-            .sort(function(a, b) {
+            .sort(function (a, b) {
               return a.priority < b.priority
                 ? -1
                 : a.priority > b.priority
                 ? 1
                 : 0;
             })
-            .map(function(plugin) {
+            .map(function (plugin) {
               return {
                 active: plugin.id === 'runtime',
                 label: plugin.label,
                 href:
-                  '#/process-instance/' + processInstance.id + '/' + plugin.id
+                  '#/process-instance/' + processInstance.id + '/' + plugin.id,
               };
-            })
+            }),
         });
 
         page.breadcrumbsClear().breadcrumbsAdd(crumbs);
@@ -499,7 +498,7 @@ var Controller = [
         page.titleSet(
           [
             $scope.processDefinition.name || $scope.processDefinition.id,
-            $translate.instant('PROCESS_INSTANCE_INSTANCE_VIEW')
+            $translate.instant('PROCESS_INSTANCE_INSTANCE_VIEW'),
           ].join(' | ')
         );
       }
@@ -507,20 +506,21 @@ var Controller = [
 
     $scope.activityInstanceTree = processData.observe(
       'activityInstanceTree',
-      function(activityInstanceTree) {
+      function (activityInstanceTree) {
         $scope.activityInstanceTree = activityInstanceTree;
       }
     );
 
-    $scope.processDiagram = processData.observe('processDiagram', function(
-      processDiagram
-    ) {
-      $scope.processDiagram = processDiagram;
-    });
+    $scope.processDiagram = processData.observe(
+      'processDiagram',
+      function (processDiagram) {
+        $scope.processDiagram = processDiagram;
+      }
+    );
 
     processData.observe(
       ['instanceIdToInstanceMap', 'activityIdToInstancesMap'],
-      function(instanceIdToInstanceMap, activityIdToInstancesMap) {
+      function (instanceIdToInstanceMap, activityIdToInstancesMap) {
         $scope.instanceIdToInstanceMap = instanceIdToInstanceMap;
         $scope.activityIdToInstancesMap = activityIdToInstancesMap;
       }
@@ -528,7 +528,7 @@ var Controller = [
 
     // /////// End of usage of definied process data
 
-    $scope.handleBpmnElementSelection = function(id, $event) {
+    $scope.handleBpmnElementSelection = function (id, $event) {
       if (!id) {
         processData.set('filter', {});
         return;
@@ -558,7 +558,7 @@ var Controller = [
         }
 
         activityInstanceIds = [];
-        angular.forEach(instanceList, function(instance) {
+        angular.forEach(instanceList, function (instance) {
           activityInstanceIds.push(instance.id);
         });
       } else if (ctrlKey) {
@@ -567,7 +567,7 @@ var Controller = [
           if (multiInstance) {
             activityIds.push(id + '#multiInstanceBody');
           }
-          angular.forEach(instanceList, function(instance) {
+          angular.forEach(instanceList, function (instance) {
             activityInstanceIds.push(instance.id);
           });
         } else if (idx !== -1) {
@@ -579,7 +579,7 @@ var Controller = [
             );
           }
 
-          angular.forEach(instanceList, function(instance) {
+          angular.forEach(instanceList, function (instance) {
             var instanceId = instance.id,
               index = activityInstanceIds.indexOf(instanceId);
 
@@ -592,13 +592,13 @@ var Controller = [
 
       newFilter = {
         activityIds: activityIds,
-        activityInstanceIds: activityInstanceIds
+        activityInstanceIds: activityInstanceIds,
       };
 
       processData.set('filter', newFilter);
     };
 
-    $scope.handleActivityInstanceSelection = function(id, activityId, $event) {
+    $scope.handleActivityInstanceSelection = function (id, activityId, $event) {
       if (!id) {
         processData.set('filter', {});
         return;
@@ -648,14 +648,14 @@ var Controller = [
       newFilter = {
         activityIds: activityIds,
         activityInstanceIds: activityInstanceIds,
-        scrollToBpmnElement: activityId
+        scrollToBpmnElement: activityId,
       };
 
       processData.set('filter', newFilter);
     };
 
-    $scope.orderChildrenBy = function() {
-      return function(elem) {
+    $scope.orderChildrenBy = function () {
+      return function (elem) {
         var id = elem.id,
           idx = id.indexOf(':');
 
@@ -663,36 +663,36 @@ var Controller = [
       };
     };
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       page.breadcrumbsClear();
     });
 
     $scope.processInstanceVars = {
-      read: ['processInstance', 'processData', 'filter', 'pageData']
+      read: ['processInstance', 'processData', 'filter', 'pageData'],
     };
 
     $scope.processInstanceActions = Views.getProviders({
-      component: 'cockpit.processInstance.runtime.action'
+      component: 'cockpit.processInstance.runtime.action',
     });
 
     Data.instantiateProviders('cockpit.processInstance.data', {
       $scope: $scope,
-      processData: processData
+      processData: processData,
     });
 
     // INITIALIZE PLUGINS
     var instancePlugins = Views.getProviders({
-      component: 'cockpit.processInstance.runtime.tab'
+      component: 'cockpit.processInstance.runtime.tab',
     })
       .concat(
         Views.getProviders({
-          component: 'cockpit.processInstance.runtime.action'
+          component: 'cockpit.processInstance.runtime.action',
         })
       )
       .concat(Views.getProviders({component: 'cockpit.processInstance.view'}))
       .concat(
         Views.getProviders({
-          component: 'cockpit.processInstance.diagram.overlay'
+          component: 'cockpit.processInstance.diagram.overlay',
         })
       );
 
@@ -700,7 +700,7 @@ var Controller = [
       processInstance: processInstance,
       processData: processData,
       filter: $scope.filter,
-      pageData: pageData
+      pageData: pageData,
     };
 
     $scope.initData = initData;
@@ -710,19 +710,19 @@ var Controller = [
         instancePlugins[i].initialize(initData);
       }
     }
-  }
+  },
 ];
 
 ngModule.controller('ProcessInstanceFilterController', [
   '$scope',
   '$translate',
-  function($scope, $translate) {
+  function ($scope, $translate) {
     var processData = $scope.processData.newChild($scope),
       filterData;
 
     processData.provide('filterData', [
       'filter',
-      function(filter) {
+      function (filter) {
         if (!filterData || filterData.filter != filter) {
           var activityIds = filter.activityIds || [],
             activityInstanceIds = filter.activityInstanceIds || [];
@@ -730,48 +730,48 @@ ngModule.controller('ProcessInstanceFilterController', [
           return {
             filter: filter,
             activityCount: activityIds.length || 0,
-            activityInstanceCount: activityInstanceIds.length || 0
+            activityInstanceCount: activityInstanceIds.length || 0,
           };
         } else {
           return filterData;
         }
-      }
+      },
     ]);
 
-    processData.observe(['filterData'], function(_filterData) {
+    processData.observe(['filterData'], function (_filterData) {
       $scope.filterData = filterData = _filterData;
     });
 
-    $scope.clearSelection = function() {
+    $scope.clearSelection = function () {
       // update cached filter
       filterData = {
         activityCount: 0,
         activityInstanceCount: 0,
-        filter: {}
+        filter: {},
       };
 
       processData.set('filter', filterData.filter);
     };
 
-    $scope.getDataWhen = function() {
+    $scope.getDataWhen = function () {
       return {
         null: $translate.instant('PAGES_PROCESS_INSTANCES_NOTHING'),
-        '0': $translate.instant('PAGES_PROCESS_INSTANCES_NOTHING'),
+        0: $translate.instant('PAGES_PROCESS_INSTANCES_NOTHING'),
         one: $translate.instant('PAGES_PROCESS_INSTANCES_ONE_SELECT'),
-        other: $translate.instant('PAGES_PROCESS_INSTANCES_OTHER_SELECT')
+        other: $translate.instant('PAGES_PROCESS_INSTANCES_OTHER_SELECT'),
       };
     };
 
     $scope.sidebarTab = 'info';
-  }
+  },
 ]);
 
 var RouteConfig = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/process-instance/:id', {
       redirectTo: routeUtil.redirectToRuntime,
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
 
     $routeProvider.when('/process-instance/:id/runtime', {
@@ -789,7 +789,7 @@ var RouteConfig = [
           '$http',
           '$location',
           '$translate',
-          function(
+          function (
             ResourceResolver,
             ProcessInstanceResource,
             Uri,
@@ -805,11 +805,11 @@ var RouteConfig = [
                 'PROCESS_INSTANCE_RUNNING_PROCESS_INSTANCE'
               ),
 
-              resolve: function(id) {
+              resolve: function (id) {
                 return ProcessInstanceResource.get({id: id});
               },
 
-              redirectTo: function() {
+              redirectTo: function () {
                 var id = $route.current.params['id'];
 
                 $http
@@ -818,7 +818,7 @@ var RouteConfig = [
                       'engine://engine/:engine/history/process-instance/'
                     ) + id
                   )
-                  .then(function(result) {
+                  .then(function (result) {
                     var path;
                     var search;
 
@@ -832,7 +832,7 @@ var RouteConfig = [
 
                     var historyProvider = Views.getProvider({
                       id: 'history',
-                      component: 'cockpit.processInstance.view'
+                      component: 'cockpit.processInstance.view',
                     });
 
                     if (historyProvider) {
@@ -862,10 +862,10 @@ var RouteConfig = [
                       message: message,
                       http: true,
                       exclusive: ['http'],
-                      duration: 5000
+                      duration: 5000,
                     });
                   })
-                  .catch(function() {
+                  .catch(function () {
                     $location.path('/dashboard');
                     $location.search({});
                     $location.replace();
@@ -879,29 +879,29 @@ var RouteConfig = [
                         {id: id}
                       ),
                       http: true,
-                      exclusive: ['http']
+                      exclusive: ['http'],
                     });
                   });
-              }
+              },
             });
-          }
-        ]
+          },
+        ],
       },
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];
 
 var ViewConfig = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.processInstance.view', {
       id: 'runtime',
       priority: 20,
       label: 'BREAD_CRUMBS_RUNTIME',
-      keepSearchParams: ['viewbox']
+      keepSearchParams: ['viewbox'],
     });
-  }
+  },
 ];
 
 ngModule.config(RouteConfig).config(ViewConfig);

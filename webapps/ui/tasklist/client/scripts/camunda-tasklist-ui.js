@@ -40,14 +40,14 @@ var lodash = require('../../../../camunda-commons-ui/vendor/lodash');
  */
 
 function bootstrapApp() {
-  $(document).ready(function() {
+  $(document).ready(function () {
     angular.bootstrap(document.documentElement, [
       'cam.tasklist',
       'cam.embedded.forms',
-      'cam.tasklist.custom'
+      'cam.tasklist.custom',
     ]);
 
-    setTimeout(function() {
+    setTimeout(function () {
       var $aufocused = $('[autofocus]');
       if ($aufocused.length) {
         $aufocused[0].focus();
@@ -56,7 +56,7 @@ function bootstrapApp() {
   });
 }
 
-module.exports = function(pluginDependencies) {
+module.exports = function (pluginDependencies) {
   var ngDeps = [
     commons.name,
     'pascalprecht.translate',
@@ -69,9 +69,9 @@ module.exports = function(pluginDependencies) {
     require('./form/index').name,
     require('./filter/index').name,
     require('./api/index').name,
-    require('./shortcuts/plugins/index').name
+    require('./shortcuts/plugins/index').name,
   ].concat(
-    pluginDependencies.map(function(el) {
+    pluginDependencies.map(function (el) {
       return el.ngModuleName;
     })
   );
@@ -96,7 +96,7 @@ module.exports = function(pluginDependencies) {
     '$locationProvider',
     '$animateProvider',
     '$qProvider',
-    function(
+    function (
       $modalProvider,
       $tooltipProvider,
       $locationProvider,
@@ -106,13 +106,13 @@ module.exports = function(pluginDependencies) {
       $modalProvider.options = {
         animation: true,
         backdrop: true,
-        keyboard: true
+        keyboard: true,
       };
 
       $tooltipProvider.options({
         animation: true,
         popupDelay: 100,
-        appendToBody: true
+        appendToBody: true,
       });
 
       $locationProvider.hashPrefix('');
@@ -120,7 +120,7 @@ module.exports = function(pluginDependencies) {
       $animateProvider.classNameFilter(/angular-animate/);
 
       $qProvider.errorOnUnhandledRejections(false);
-    }
+    },
   ];
 
   tasklistApp.config(ModuleConfig);
@@ -164,7 +164,7 @@ module.exports = function(pluginDependencies) {
   ).then(bootstrapApp);
 };
 
-module.exports.exposePackages = function(container) {
+module.exports.exposePackages = function (container) {
   container.angular = angular;
   container.jquery = $;
   container['camunda-commons-ui'] = commons;

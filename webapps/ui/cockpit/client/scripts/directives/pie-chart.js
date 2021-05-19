@@ -31,7 +31,11 @@ function PieChart(options, $translate) {
   this.lineWidth = options.lineWidth || 1;
 
   this.missingData = [
-    {color: '#959595', label: $translate.instant('PIE_CHART_NO_DATA'), value: 1}
+    {
+      color: '#959595',
+      label: $translate.instant('PIE_CHART_NO_DATA'),
+      value: 1,
+    },
   ];
 
   this.setData(this.missingData);
@@ -39,7 +43,7 @@ function PieChart(options, $translate) {
 
 var proto = PieChart.prototype;
 
-proto.resize = function(width, height) {
+proto.resize = function (width, height) {
   this.canvas.width = width;
   this.canvas.height = height;
   this.ctx = this.canvas.getContext('2d');
@@ -56,20 +60,20 @@ proto.resize = function(width, height) {
   return this;
 };
 
-proto.setData = function(data) {
+proto.setData = function (data) {
   this.data = data;
   if (!this.data.length || (!this.data[0].value && this.data[0].value !== 0)) {
     this.data = this.missingData;
   }
 
-  this.total = this.data.reduce(function(prev, curr) {
+  this.total = this.data.reduce(function (prev, curr) {
     return prev + curr.value;
   }, 0);
 
   return this.draw();
 };
 
-proto.punchPie = function(ctx) {
+proto.punchPie = function (ctx) {
   ctx.strokeStyle = ctx.fillStyle = '#fff';
   ctx.moveTo(this.x, this.y);
   ctx.beginPath();
@@ -79,7 +83,7 @@ proto.punchPie = function(ctx) {
   ctx.fill();
 };
 
-proto.hoveredSlice = function(px, py) {
+proto.hoveredSlice = function (px, py) {
   var ctx = this.offCtx;
   ctx.font = this.fontSize + 'px sans-serif';
   var data = this.data || this.missingData;
@@ -115,7 +119,7 @@ proto.hoveredSlice = function(px, py) {
   return false;
 };
 
-proto.draw = function() {
+proto.draw = function () {
   var ctx = this.ctx;
   var data = this.data || this.missingData;
 
@@ -127,7 +131,7 @@ proto.draw = function() {
   var tt = this.total;
   var prev = Math.PI;
   var rad = Math.PI * 2;
-  data.forEach(function(item) {
+  data.forEach(function (item) {
     var angle = (item.value / tt) * rad;
 
     ctx.fillStyle = item.color;
@@ -153,7 +157,7 @@ module.exports = [
   '$location',
   '$window',
   '$translate',
-  function($location, $window, $translate) {
+  function ($location, $window, $translate) {
     return {
       restrict: 'A',
 
@@ -161,17 +165,17 @@ module.exports = [
 
       scope: {
         values: '=',
-        placeholder: '@'
+        placeholder: '@',
       },
 
-      link: function($scope, $element) {
+      link: function ($scope, $element) {
         var container =
           $element[0].querySelector('.canvas-holder') || $element[0];
 
         var pieChart = new PieChart(
           {
             canvas: $element[0].querySelector('canvas'),
-            lineColors: $scope.colors
+            lineColors: $scope.colors,
           },
           $translate
         );
@@ -180,12 +184,12 @@ module.exports = [
           var rect = pieChart.canvas.getBoundingClientRect();
           return {
             x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
+            y: evt.clientY - rect.top,
           };
         }
 
-        pieChart.canvas.addEventListener('mousemove', function(evt) {
-          $scope.$apply(function() {
+        pieChart.canvas.addEventListener('mousemove', function (evt) {
+          $scope.$apply(function () {
             var pos = getMousePos(evt);
             $scope.hoveredSlice = pieChart.hoveredSlice(pos.x, pos.y);
             pieChart.canvas.style.cursor =
@@ -195,8 +199,8 @@ module.exports = [
           });
         });
 
-        pieChart.canvas.addEventListener('click', function(evt) {
-          $scope.$apply(function() {
+        pieChart.canvas.addEventListener('click', function (evt) {
+          $scope.$apply(function () {
             var pos = getMousePos(evt);
             var slice = pieChart.hoveredSlice(pos.x, pos.y);
             if (slice.url) {
@@ -205,7 +209,7 @@ module.exports = [
           });
         });
 
-        $scope.$watch('values', function() {
+        $scope.$watch('values', function () {
           if (!$scope.values || !$scope.values.length) {
             return;
           }
@@ -224,7 +228,7 @@ module.exports = [
         var _resize = throttle(resize, 100);
         $window.addEventListener('resize', _resize);
 
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
           $window.removeEventListener('resize', _resize);
         });
       },
@@ -240,7 +244,7 @@ module.exports = [
         '<span ng-if="hoveredSlice.value" ng-style="{color: hoveredSlice.color}">{{ hoveredSlice.value | abbreviateNumber }}: {{ hoveredSlice.label }}</span>' +
         '<span ng-if="!hoveredSlice.value">{{ placeholder }}</span>' +
         '</h4>' +
-        '</div>'
+        '</div>',
     };
-  }
+  },
 ];

@@ -26,7 +26,7 @@ var template = fs.readFileSync(
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.decisionInstance.tab', {
       id: 'decision-input-table',
       label: 'PLUGIN_INPUT_TABLE_LABEL',
@@ -36,10 +36,10 @@ module.exports = [
         '$translate',
         'localConf',
         'orderByFilter',
-        function($scope, $translate, localConf, orderBy) {
+        function ($scope, $translate, localConf, orderBy) {
           $scope.loadingState =
             $scope.decisionInstance.inputs.length > 0 ? 'LOADED' : 'EMPTY';
-          $scope.variables = $scope.decisionInstance.inputs.map(function(
+          $scope.variables = $scope.decisionInstance.inputs.map(function (
             variable
           ) {
             return {
@@ -47,8 +47,8 @@ module.exports = [
                 type: variable.type,
                 value: variable.value,
                 name: variable.clauseName || variable.clauseId,
-                valueInfo: variable.valueInfo
-              }
+                valueInfo: variable.valueInfo,
+              },
             };
           });
 
@@ -63,10 +63,10 @@ module.exports = [
           $scope.sortObj = loadLocal({
             sortBy: 'variable.name',
             sortOrder: 'asc',
-            sortReverse: false
+            sortReverse: false,
           });
 
-          $scope.onSortChange = function(sortObj) {
+          $scope.onSortChange = function (sortObj) {
             sortObj = sortObj || $scope.sortObj;
             sortObj.sortReverse = sortObj.sortOrder !== 'asc';
             saveLocal(sortObj);
@@ -85,9 +85,9 @@ module.exports = [
           function loadLocal(defaultValue) {
             return localConf.get('sortDecisionInputTab', defaultValue);
           }
-        }
+        },
       ],
-      priority: 20
+      priority: 20,
     });
-  }
+  },
 ];

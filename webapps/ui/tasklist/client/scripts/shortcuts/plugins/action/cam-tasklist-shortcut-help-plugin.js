@@ -32,7 +32,7 @@ var showHelpTemplate = fs.readFileSync(
 var Controller = [
   '$scope',
   '$uibModal',
-  function($scope, $modal) {
+  function ($scope, $modal) {
     var mousetrap = require('mousetrap');
 
     if (
@@ -45,8 +45,8 @@ var Controller = [
         var shortcut = window.camTasklistConf.shortcuts[key];
         mousetrap.bind(
           shortcut.key,
-          (function(key) {
-            return function() {
+          (function (key) {
+            return function () {
               $scope.$root.$broadcast('shortcut:' + key);
             };
           })(key)
@@ -54,25 +54,25 @@ var Controller = [
       }
     }
 
-    $scope.showHelp = function() {
+    $scope.showHelp = function () {
       var modalInstance = $modal.open({
         // creates a child scope of a provided scope
         scope: $scope,
         windowClass: 'shortcut-modal',
         size: 'lg',
-        template: showHelpTemplate
+        template: showHelpTemplate,
       });
 
       modalInstance.result.then(
-        function() {
+        function () {
           document.querySelector('a.showShortcutHelp').focus();
         },
-        function() {
+        function () {
           document.querySelector('a.showShortcutHelp').focus();
         }
       );
     };
-  }
+  },
 ];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -80,7 +80,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     id: 'shortcut-help',
     template: helpLinkTemplate,
     controller: Controller,
-    priority: 300
+    priority: 300,
   });
 };
 

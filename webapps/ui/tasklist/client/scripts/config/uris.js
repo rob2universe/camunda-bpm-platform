@@ -17,10 +17,10 @@
 
 'use strict';
 
-module.exports = function(ngModule, config) {
+module.exports = function (ngModule, config) {
   ngModule.config([
     'UriProvider',
-    function(UriProvider) {
+    function (UriProvider) {
       UriProvider.replace(':appName', 'tasklist');
       UriProvider.replace('app://', config.href);
       UriProvider.replace('adminbase://', config['app-root'] + '/app/admin/');
@@ -38,7 +38,7 @@ module.exports = function(ngModule, config) {
 
       UriProvider.replace(':engine', [
         '$window',
-        function($window) {
+        function ($window) {
           var uri = $window.location.href;
 
           var match = uri.match(/\/app\/tasklist\/([\w-]+)(|\/)/);
@@ -47,8 +47,8 @@ module.exports = function(ngModule, config) {
           } else {
             throw new Error('no process engine selected');
           }
-        }
+        },
       ]);
-    }
+    },
   ]);
 };

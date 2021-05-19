@@ -35,12 +35,12 @@ var criteriaExpressionSupport = {};
 var criteriaHelp = {};
 var criteriaValidator = {};
 
-var defaultValidate = function() {
+var defaultValidate = function () {
   return {valid: true};
 };
 
-each(criteria, function(group) {
-  each(group.options, function(criterion) {
+each(criteria, function (group) {
+  each(group.options, function (criterion) {
     includeAssignedTasksSupport[criterion.name] =
       criterion.includeAssignedTasksSupport;
     if (includeAssignedTasksSupport[criterion.name]) {
@@ -59,19 +59,19 @@ each(criteria, function(group) {
 });
 
 module.exports = [
-  function() {
+  function () {
     return {
       restrict: 'A',
       require: '^camTasklistFilterModalForm',
       scope: {
         filter: '=',
-        accesses: '='
+        accesses: '=',
       },
 
       template: template,
 
-      link: function($scope, $element, attrs, parentCtrl) {
-        $scope.switchMatchType = function() {
+      link: function ($scope, $element, attrs, parentCtrl) {
+        $scope.switchMatchType = function () {
           if ($scope.filter.matchType === 'any') {
             $scope.filter.matchType = 'all';
           } else {
@@ -81,7 +81,7 @@ module.exports = [
 
         var emptyCriterion = {
           key: '',
-          value: ''
+          value: '',
         };
 
         $scope.criteria = criteria;
@@ -92,7 +92,7 @@ module.exports = [
         $scope.query = $scope.filter.query = $scope.filter.query || [];
 
         // a little exception to deal with
-        $scope.query = $scope.filter.query = $scope.query.filter(function(
+        $scope.query = $scope.filter.query = $scope.query.filter(function (
           item
         ) {
           if (item.key === 'includeAssignedTasks') {
@@ -105,11 +105,11 @@ module.exports = [
           return item.key !== 'includeAssignedTasks';
         });
 
-        $scope.isQueryParameter = function(queryParam) {
+        $scope.isQueryParameter = function (queryParam) {
           return queryParam.key !== 'sorting';
         };
 
-        $scope.canIncludeAssignedTasks = function() {
+        $scope.canIncludeAssignedTasks = function () {
           for (var q = 0; q < $scope.query.length; q++) {
             if (includeAssignedTasksSupport[$scope.query[q].key]) {
               return true;
@@ -120,7 +120,7 @@ module.exports = [
 
         $scope.$watch(
           'query',
-          function() {
+          function () {
             $scope.includeAssignedTasks = $scope.filter.includeAssignedTasks =
               $scope.canIncludeAssignedTasks() &&
               $scope.filter.includeAssignedTasks;
@@ -130,7 +130,7 @@ module.exports = [
 
         // register handler to show or hide the accordion hint /////////////////
 
-        var showHintProvider = function() {
+        var showHintProvider = function () {
           for (var i = 0, nestedForm; (nestedForm = nestedForms[i]); i++) {
             var queryParamKey = nestedForm.queryParamKey;
             var queryParamValue = nestedForm.queryParamValue;
@@ -152,22 +152,22 @@ module.exports = [
         // handles each nested form//////////////////////////////////////////////
 
         var nestedForms = [];
-        $scope.addForm = function(_form) {
+        $scope.addForm = function (_form) {
           nestedForms.push(_form);
         };
 
-        $scope.clearKey = function(queryParam) {
+        $scope.clearKey = function (queryParam) {
           queryParam.key = getCriterionName(queryParam.key);
         };
 
         // criterion interaction ///////////////////////////////////////////////
 
-        $scope.addCriterion = function() {
+        $scope.addCriterion = function () {
           var _emptyCriteria = copy(emptyCriterion);
           $scope.query.push(_emptyCriteria);
         };
 
-        $scope.removeCriterion = function(delta) {
+        $scope.removeCriterion = function (delta) {
           $scope.filter.query = $scope.query = parentCtrl.removeArrayItem(
             $scope.query,
             delta
@@ -175,7 +175,7 @@ module.exports = [
           nestedForms = parentCtrl.removeArrayItem(nestedForms, delta);
         };
 
-        $scope.valueChanged = function(queryParam, control) {
+        $scope.valueChanged = function (queryParam, control) {
           control.$setValidity('number', true);
           control.$setValidity('date', true);
           control.$setValidity('dateValue', true);
@@ -197,7 +197,7 @@ module.exports = [
 
         // helper //////////////////////////////////////////////////////////////
 
-        $scope.getQueryParamKeys = function() {
+        $scope.getQueryParamKeys = function () {
           var result = [];
 
           for (var i = 0, entry; (entry = $scope.query[i]); i++) {
@@ -212,7 +212,7 @@ module.exports = [
           return result;
         };
 
-        var getCriterionName = ($scope.getCriterionName = function(name) {
+        var getCriterionName = ($scope.getCriterionName = function (name) {
           if (!name) {
             return name;
           }
@@ -220,16 +220,16 @@ module.exports = [
           return simple;
         });
 
-        var getCriteriaHelp = ($scope.getCriteriaHelp = function(key) {
+        var getCriteriaHelp = ($scope.getCriteriaHelp = function (key) {
           key = getCriterionName(key);
 
           return criteriaHelp[key];
         });
 
-        $scope.isCriteriaHelpAvailable = function(key) {
+        $scope.isCriteriaHelpAvailable = function (key) {
           return !!getCriteriaHelp(key);
         };
-      }
+      },
     };
-  }
+  },
 ];

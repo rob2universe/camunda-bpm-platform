@@ -24,18 +24,18 @@ var template = fs.readFileSync(__dirname + '/cam-cockpit-form.html', 'utf8');
 const createForm = require('@bpmn-io/form-js-viewer').createForm;
 
 module.exports = [
-  function() {
+  function () {
     return {
       restrict: 'A',
 
       scope: {
         name: '=',
-        source: '='
+        source: '=',
       },
 
       template: template,
 
-      link: function($scope, $element) {
+      link: function ($scope, $element) {
         $scope.error = null;
 
         try {
@@ -43,13 +43,13 @@ module.exports = [
           const form = createForm({
             container: $element.find('.camundaForm')[0],
             schema: json,
-            data: {}
+            data: {},
           });
           form.setProperty('readOnly', true);
         } catch (e) {
           $scope.error = e;
         }
-      }
+      },
     };
-  }
+  },
 ];

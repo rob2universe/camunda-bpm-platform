@@ -36,7 +36,7 @@ var Controller = [
   'readonly',
   'variable',
   '$translate',
-  function(
+  function (
     $http,
     $modalInstance,
     $scope,
@@ -73,7 +73,7 @@ var Controller = [
 
     var initialDeserializedValue;
 
-    $scope.isChangeDisabled = function() {
+    $scope.isChangeDisabled = function () {
       return (
         ($scope.isJsonOrXml
           ? !isValidJsonXml()
@@ -81,11 +81,11 @@ var Controller = [
       );
     };
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       $modalInstance.dismiss();
     });
 
-    $scope.selectTab = function(tab) {
+    $scope.selectTab = function (tab) {
       $scope.selectedTab = tab;
       // reset changed state
       $scope.currentValue = angular.copy($scope.variable.value);
@@ -93,7 +93,7 @@ var Controller = [
       $scope.status = BEFORE_CHANGE;
     };
 
-    $scope.typeIn = function(formScope, type) {
+    $scope.typeIn = function (formScope, type) {
       if (isSerializedTab(type)) {
         $scope.currentValue = formScope.currentValue;
       } else {
@@ -103,7 +103,7 @@ var Controller = [
       $scope.status = hasChanged(type) ? CONFIRM_CHANGE : BEFORE_CHANGE;
     };
 
-    var hasChanged = ($scope.hasChanged = function(type) {
+    var hasChanged = ($scope.hasChanged = function (type) {
       if ($scope.isJsonOrXml || isSerializedTab(type)) {
         return $scope.variable.value !== $scope.currentValue;
       } else {
@@ -111,7 +111,7 @@ var Controller = [
       }
     });
 
-    $scope.change = function() {
+    $scope.change = function () {
       var updateDeserialized = !isSerializedTab($scope.selectedTab);
       var newValue = updateDeserialized
         ? $scope.currentDeserializedValue
@@ -132,9 +132,9 @@ var Controller = [
           Notifications.addError({
             status: $translate.instant('VARIABLE_INSPECT_VARIABLE'),
             message: $translate.instant('VARIABLE_INSPECT_MESSAGE_ERR_1', {
-              exception: e.message
+              exception: e.message,
             }),
-            exclusive: true
+            exclusive: true,
           });
           return;
         }
@@ -158,7 +158,7 @@ var Controller = [
       var variableUpdate = {
         type: variable.type,
         value: newValue,
-        valueInfo: variable.valueInfo
+        valueInfo: variable.valueInfo,
       };
 
       if (!$scope.isJsonOrXml) {
@@ -168,14 +168,14 @@ var Controller = [
       $http({
         method: 'PUT',
         url: Uri.appUri(basePath),
-        data: variableUpdate
+        data: variableUpdate,
       })
-        .then(function() {
+        .then(function () {
           $scope.status = CHANGE_SUCCESS;
           updateVariable();
           addMessage(variable);
         })
-        .catch(function() {
+        .catch(function () {
           $scope.status = BEFORE_CHANGE;
           addError(variable);
         });
@@ -191,9 +191,9 @@ var Controller = [
       $http
         .post(Uri.appUri(basePath + '/data'), fd, {
           transformRequest: angular.identity,
-          headers: {'Content-Type': undefined}
+          headers: {'Content-Type': undefined},
         })
-        .then(function() {
+        .then(function () {
           $scope.status = CHANGE_SUCCESS;
           updateVariable();
           addMessage(variable);
@@ -203,9 +203,9 @@ var Controller = [
     function updateVariable() {
       $http({
         method: 'GET',
-        url: Uri.appUri(basePath + '?deserializeValue=false')
+        url: Uri.appUri(basePath + '?deserializeValue=false'),
       })
-        .then(function(res) {
+        .then(function (res) {
           variable.value = res.data.value;
         })
         .catch(angular.noop);
@@ -219,9 +219,9 @@ var Controller = [
             (history ? 'history/' : '') +
             'variable-instance/' +
             variable.id
-        )
+        ),
       })
-        .then(function(data) {
+        .then(function (data) {
           data = data.data;
           if (!data.errorMessage) {
             initialDeserializedValue = JSON.stringify(data.value);
@@ -232,7 +232,7 @@ var Controller = [
             $scope.deserializationError = data.errorMessage;
           }
         })
-        .catch(function(err) {
+        .catch(function (err) {
           $scope.deserializationError = err.message;
         });
     }
@@ -241,9 +241,9 @@ var Controller = [
       Notifications.addError({
         status: $translate.instant('VARIABLE_INSPECT_VARIABLE'),
         message: $translate.instant('VARIABLE_INSPECT_MESSAGE_ERR_2', {
-          name: variable.name
+          name: variable.name,
         }),
-        exclusive: true
+        exclusive: true,
       });
     }
 
@@ -251,14 +251,14 @@ var Controller = [
       Notifications.addMessage({
         status: $translate.instant('VARIABLE_INSPECT_VARIABLE'),
         message: $translate.instant('VARIABLE_INSPECT_MESSAGE_ADD', {
-          name: variable.name
-        })
+          name: variable.name,
+        }),
       });
     }
-  }
+  },
 ];
 
 module.exports = {
   template: template,
-  controller: Controller
+  controller: Controller,
 };

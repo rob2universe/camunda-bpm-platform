@@ -32,20 +32,20 @@ var Controller = [
   '$scope',
   '$uibModal',
   '$timeout',
-  function($scope, $modal, $timeout) {
-    $scope.open = function() {
+  function ($scope, $modal, $timeout) {
+    $scope.open = function () {
       var modalInstance = $modal.open({
         size: 'lg',
         controller: 'camCreateTaskModalCtrl',
-        template: createTaskModalTemplate
+        template: createTaskModalTemplate,
       });
 
       modalInstance.result.then(
-        function() {
+        function () {
           $scope.$root.$broadcast('refresh');
           document.querySelector('.create-task-action a').focus();
         },
-        function() {
+        function () {
           document.querySelector('.create-task-action a').focus();
         }
       );
@@ -53,16 +53,16 @@ var Controller = [
       // once we upgrade to a newer version of angular and angular-ui-bootstrap,
       // we can use the {{rendered}} promise to get rid of the $timeouts
       modalInstance.opened
-        .then(function() {
-          $timeout(function() {
-            $timeout(function() {
+        .then(function () {
+          $timeout(function () {
+            $timeout(function () {
               document.querySelectorAll('div.modal-content input')[0].focus();
             });
           });
         })
-        .catch(function() {});
+        .catch(function () {});
     };
-  }
+  },
 ];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -70,7 +70,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     id: 'create-task-action',
     template: createTaskActionTemplate,
     controller: Controller,
-    priority: 200
+    priority: 200,
   });
 };
 

@@ -30,7 +30,7 @@ var angular = require('../../../../../../camunda-commons-ui/vendor/angular'),
   camCockpitDeleteDeploymentModalCtrl = require('./plugins/actions/delete/modals/cam-cockpit-delete-deployment-modal-ctrl');
 
 var deploymentsModule = angular.module('cam.cockpit.repository.deployments', [
-  'ui.bootstrap'
+  'ui.bootstrap',
 ]);
 
 /* controllers */

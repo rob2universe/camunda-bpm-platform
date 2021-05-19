@@ -37,20 +37,20 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
       '$scope',
       '$rootScope',
       '$uibModal',
-      function($scope, $rootScope, $modal) {
-        $scope.openDialog = function(jobDefinition) {
+      function ($scope, $rootScope, $modal) {
+        $scope.openDialog = function (jobDefinition) {
           var dialog = $modal.open({
             resolve: {
-              jobDefinition: function() {
+              jobDefinition: function () {
                 return jobDefinition;
-              }
+              },
             },
             controller: 'JobDefinitionOverrideJobPriorityController',
-            template: dialogTemplate
+            template: dialogTemplate,
           });
 
           dialog.result
-            .then(function(result) {
+            .then(function (result) {
               // dialog closed. YEA!
               if (result.status === 'SUCCESS') {
                 $scope.processData.changed('jobDefinitions');
@@ -62,9 +62,9 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
             })
             .catch(angular.noop);
         };
-      }
+      },
     ],
-    priority: 10
+    priority: 10,
   });
 };
 

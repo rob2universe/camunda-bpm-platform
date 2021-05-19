@@ -26,7 +26,7 @@ module.exports = [
   '$uibModalInstance',
   'processInstance',
   '$translate',
-  function(
+  function (
     $scope,
     $http,
     $filter,
@@ -45,11 +45,11 @@ module.exports = [
 
     $scope.status = BEFORE_UPDATE;
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       $modalInstance.close($scope.status);
     });
 
-    $scope.updateSuspensionState = function() {
+    $scope.updateSuspensionState = function () {
       $scope.status = PERFORM_UPDATE;
 
       var data = {};
@@ -65,29 +65,29 @@ module.exports = [
           ),
           data
         )
-        .then(function() {
+        .then(function () {
           $scope.status = UPDATE_SUCCESS;
 
           Notifications.addMessage({
             status: $translate.instant('PLUGIN_UPDATE_DIALOG_STATUS_FINISHED'),
             message: $translate.instant('PLUGIN_UPDATE_DIALOG_MESSAGES_1'),
-            exclusive: true
+            exclusive: true,
           });
         })
-        .catch(function(data) {
+        .catch(function (data) {
           $scope.status = UPDATE_FAILED;
 
           Notifications.addError({
             status: $translate.instant('PLUGIN_UPDATE_DIALOG_STATUS_FINISHED'),
             message: $translate.instant('PLUGIN_UPDATE_DIALOG_ERROR_1', {
-              message: data.data.message
+              message: data.data.message,
             }),
-            exclusive: true
+            exclusive: true,
           });
         });
     };
 
-    $scope.close = function(status) {
+    $scope.close = function (status) {
       var response = {};
 
       response.status = status;
@@ -95,5 +95,5 @@ module.exports = [
 
       $modalInstance.close(response);
     };
-  }
+  },
 ];

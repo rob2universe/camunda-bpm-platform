@@ -26,12 +26,12 @@ var template = fs.readFileSync(
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView('cockpit.processInstance.runtime.tab', {
       id: 'external-tasks-process-instance-runtime',
       label: 'PLUGIN_EXTERNAL_TASKS_LABEL',
       template: template,
-      controller: 'ProcessInstanceRuntimeTabController as RuntimeTab'
+      controller: 'ProcessInstanceRuntimeTabController as RuntimeTab',
     });
-  }
+  },
 ];

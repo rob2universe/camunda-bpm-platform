@@ -22,16 +22,16 @@ var tasklistTemplate = fs.readFileSync(__dirname + '/../index.html', 'utf8');
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider
       .when('/', {
         template: tasklistTemplate,
         controller: 'camTasklistViewCtrl',
         authentication: 'required',
-        reloadOnSearch: false
+        reloadOnSearch: false,
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/',
       });
-  }
+  },
 ];

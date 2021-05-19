@@ -24,11 +24,11 @@ var angular = require('../../../../../../camunda-commons-ui/vendor/angular');
 var $ = require('jquery');
 
 module.exports = [
-  function() {
+  function () {
     return {
       restrict: 'A',
       scope: {
-        tasklistData: '='
+        tasklistData: '=',
       },
 
       template: template,
@@ -40,7 +40,7 @@ module.exports = [
         'search',
         'Views',
         '$timeout',
-        function($element, $scope, $location, search, Views, $timeout) {
+        function ($element, $scope, $location, search, Views, $timeout) {
           function updateSilently(params) {
             search.updateSilently(params);
           }
@@ -53,7 +53,7 @@ module.exports = [
           }
 
           $scope.expanded = {};
-          $scope.toggle = function(delta, $event) {
+          $scope.toggle = function (delta, $event) {
             $scope.expanded[delta] = !$scope.expanded[delta];
             if ($event && $event.preventDefault) {
               $event.preventDefault();
@@ -73,16 +73,16 @@ module.exports = [
           $scope.query = {};
 
           var assignees = ($scope.assignees = {});
-          var parseAssignees = function(assigneeList) {
+          var parseAssignees = function (assigneeList) {
             for (var i = 0; i < assigneeList.length; i++) {
               $scope.assignees[assigneeList[i].id] = assigneeList[i];
             }
           };
 
           function updateShutters() {
-            $('.task-card-details').each(function() {
+            $('.task-card-details').each(function () {
               var h = 0;
-              $('view', this).each(function() {
+              $('view', this).each(function () {
                 h += this.clientHeight;
               });
 
@@ -93,11 +93,11 @@ module.exports = [
           }
 
           var postLoadingJobs = [];
-          var executePostLoadingJobs = function() {
-            postLoadingJobs.push(function() {
+          var executePostLoadingJobs = function () {
+            postLoadingJobs.push(function () {
               $timeout(updateShutters);
             });
-            postLoadingJobs.forEach(function(job) {
+            postLoadingJobs.forEach(function (job) {
               job();
             });
             postLoadingJobs = [];
@@ -107,7 +107,7 @@ module.exports = [
           /**
            * observe the list of tasks
            */
-          $scope.state = tasksData.observe('taskList', function(taskList) {
+          $scope.state = tasksData.observe('taskList', function (taskList) {
             if (taskList instanceof Error) {
               $scope.error = taskList;
               throw taskList;
@@ -121,7 +121,7 @@ module.exports = [
             executePostLoadingJobs();
           });
 
-          $scope.$on('shortcut:focusList', function() {
+          $scope.$on('shortcut:focusList', function () {
             var el = document.querySelector(
               '[cam-tasks] .tasks-list li:first-child a'
             );
@@ -130,7 +130,7 @@ module.exports = [
             }
           });
 
-          $scope.assigneeDisplayedName = function(task) {
+          $scope.assigneeDisplayedName = function (task) {
             var _assignee = assignees[task.assignee] || {};
             var hasFirstLastName = _assignee.firstName || _assignee.lastName;
             if (hasFirstLastName) {
@@ -146,7 +146,7 @@ module.exports = [
           /**
            * observe the task list query
            */
-          tasksData.observe('taskListQuery', function(taskListQuery) {
+          tasksData.observe('taskListQuery', function (taskListQuery) {
             if (taskListQuery) {
               var oldQuery = $scope.query;
               var searchParams = $location.search() || {};
@@ -170,7 +170,7 @@ module.exports = [
             }
           });
 
-          tasksData.observe('taskId', function(taskId) {
+          tasksData.observe('taskId', function (taskId) {
             $scope.currentTaskId = taskId.taskId;
           });
 
@@ -180,15 +180,15 @@ module.exports = [
            */
           tasksData.observe([
             'currentFilter',
-            function(currentFilter) {
+            function (currentFilter) {
               if (currentFilter) {
                 $scope.filterProperties =
                   currentFilter !== null ? currentFilter.properties : null;
               }
-            }
+            },
           ]);
 
-          $scope.focus = function($event, task) {
+          $scope.focus = function ($event, task) {
             if ($event) {
               $event.preventDefault();
             }
@@ -209,7 +209,7 @@ module.exports = [
             }
           };
 
-          var selectNextTask = function() {
+          var selectNextTask = function () {
             for (var i = 0; i < $scope.tasks.length - 1; i++) {
               if ($scope.tasks[i].id === $scope.currentTaskId) {
                 return $scope.focus(null, $scope.tasks[i + 1]);
@@ -220,16 +220,16 @@ module.exports = [
             ) {
               $scope.pageNum++;
               $scope.pageChange();
-              postLoadingJobs.push(function() {
+              postLoadingJobs.push(function () {
                 // wait until the html is applied so you can focus the html element
-                $timeout(function() {
+                $timeout(function () {
                   $scope.focus(null, $scope.tasks[0]);
                 });
               });
             }
           };
 
-          var selectPreviousTask = function() {
+          var selectPreviousTask = function () {
             for (var i = 1; i < $scope.tasks.length; i++) {
               if ($scope.tasks[i].id === $scope.currentTaskId) {
                 return $scope.focus(null, $scope.tasks[i - 1]);
@@ -238,16 +238,16 @@ module.exports = [
             if ($scope.pageNum > 1) {
               $scope.pageNum--;
               $scope.pageChange();
-              postLoadingJobs.push(function() {
+              postLoadingJobs.push(function () {
                 // wait until the html is applied so you can focus the html element
-                $timeout(function() {
+                $timeout(function () {
                   $scope.focus(null, $scope.tasks[$scope.tasks.length - 1]);
                 });
               });
             }
           };
 
-          $scope.handleKeydown = function($event) {
+          $scope.handleKeydown = function ($event) {
             if ($event.keyCode === 40) {
               $event.preventDefault();
               selectNextTask($event);
@@ -256,7 +256,7 @@ module.exports = [
               selectPreviousTask();
             }
             // wait for angular to update the classes and scroll to the newly selected task
-            $timeout(function() {
+            $timeout(function () {
               var $el = $($event.target).find('li.active')[0];
               if ($el) {
                 $el.scrollIntoView(false);
@@ -264,7 +264,7 @@ module.exports = [
             });
           };
 
-          $scope.getHrefUrl = function(task) {
+          $scope.getHrefUrl = function (task) {
             var href = '#/?task=' + task.id;
             var detailsTab = $location.search().detailsTab;
             if (detailsTab) {
@@ -276,28 +276,28 @@ module.exports = [
 
           $scope.cardPluginVars = {read: ['task', 'filterProperties']};
           $scope.cardPlugins = Views.getProviders({
-            component: 'tasklist.card'
+            component: 'tasklist.card',
           });
 
           /**
            * invoked when pagination is changed
            */
-          $scope.pageChange = function() {
+          $scope.pageChange = function () {
             // update query
             updateSilently({
-              page: $scope.pageNum
+              page: $scope.pageNum,
             });
             tasksData.changed('taskListQuery');
           };
 
-          $scope.resetPage = function() {
+          $scope.resetPage = function () {
             updateSilently({
-              page: 1
+              page: 1,
             });
             tasksData.changed('taskListQuery');
           };
-        }
-      ]
+        },
+      ],
     };
-  }
+  },
 ];

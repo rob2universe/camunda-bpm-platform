@@ -35,25 +35,25 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
       '$scope',
       '$uibModal',
       '$rootScope',
-      function($scope, $modal, $rootScope) {
-        $scope.openDialog = function() {
+      function ($scope, $modal, $rootScope) {
+        $scope.openDialog = function () {
           var dialog = $modal.open({
             scope: $scope,
             resolve: {
               operation: false,
-              instance: function() {
+              instance: function () {
                 return $scope.processInstance;
               },
-              isProcessInstance: function() {
+              isProcessInstance: function () {
                 return true;
-              }
+              },
             },
             controller: addTemplate.controller,
-            template: addTemplate.template
+            template: addTemplate.template,
           });
 
           dialog.result
-            .then(function(result) {
+            .then(function (result) {
               // dialog closed. YEA!
               if (result === 'SUCCESS') {
                 // refresh filter and all views
@@ -68,9 +68,9 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
             })
             .catch(angular.noop);
         };
-      }
+      },
     ],
-    priority: 10
+    priority: 10,
   });
 };
 

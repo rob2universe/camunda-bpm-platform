@@ -29,5 +29,5 @@ module.exports = angular.module('cockpit.plugin.cockpitPlugins', [
   decisionList.name,
   jobDefinition.name,
   tasks.name,
-  externalTasksTab.name
+  externalTasksTab.name,
 ]);

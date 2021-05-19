@@ -29,23 +29,23 @@ var template = fs.readFileSync(
 module.exports = [
   '$sce',
   'configuration',
-  function($sce, configuration) {
+  function ($sce, configuration) {
     return {
       restrict: 'A',
 
       scope: {
         name: '=',
-        source: '='
+        source: '=',
       },
 
       template: template,
 
-      link: function($scope) {
+      link: function ($scope) {
         $scope.showHtml = configuration.getPreviewHtml();
         if ($scope.showHtml) {
           $scope.trustedHtml = $sce.trustAsHtml($scope.source);
         }
-      }
+      },
     };
-  }
+  },
 ];

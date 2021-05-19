@@ -24,7 +24,7 @@ var template = fs.readFileSync(__dirname + '/overlayAction.html', 'utf8');
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView(
       'cockpit.processDefinition.diagram.action',
       {
@@ -38,7 +38,7 @@ module.exports = [
           '$rootScope',
           '$translate',
           'configuration',
-          function(
+          function (
             $scope,
             Loaders,
             get,
@@ -52,7 +52,7 @@ module.exports = [
             $scope.toggle = $scope.enabled;
             $scope.isLoading = false;
 
-            $scope.toggleOverlay = function() {
+            $scope.toggleOverlay = function () {
               $scope.toggle = !$scope.toggle;
               if ($scope.toggle) {
                 showOverlays();
@@ -73,7 +73,7 @@ module.exports = [
                 getData: getInstancesCountsForElement,
                 updateOverlayNodes: updateOverlayNodes,
                 isActive: isActive,
-                toggleIsLoading: toggleIsLoading
+                toggleIsLoading: toggleIsLoading,
               };
 
               instanceCount(
@@ -90,22 +90,23 @@ module.exports = [
             function removeOverlays() {
               Array.from(
                 document.getElementsByClassName('djs-overlay')
-              ).forEach(function(element) {
+              ).forEach(function (element) {
                 element.remove();
               });
             }
 
-            $scope.processData.observe('processDiagram', function(
-              processDiagram
-            ) {
-              $scope.processDiagram = processDiagram;
-              $scope.toggle && showOverlays();
-            });
+            $scope.processData.observe(
+              'processDiagram',
+              function (processDiagram) {
+                $scope.processDiagram = processDiagram;
+                $scope.toggle && showOverlays();
+              }
+            );
 
             function observe(callback) {
               $scope.processData.observe(
                 ['activityInstanceStatistics'],
-                function(activityInstanceStatistics) {
+                function (activityInstanceStatistics) {
                   callback([activityInstanceStatistics]);
                 }
               );
@@ -115,12 +116,12 @@ module.exports = [
               return data.instances || data.incidents;
             }
 
-            var getIncidentCount = function(incidents) {
+            var getIncidentCount = function (incidents) {
               if (!incidents) {
                 return 0;
               }
 
-              return incidents.reduce(function(sum, incident) {
+              return incidents.reduce(function (sum, incident) {
                 return sum + incident.incidentCount;
               }, 0);
             };
@@ -146,12 +147,12 @@ module.exports = [
               return {
                 instances:
                   get(stats, ['instances'], 0) + get(statsMi, ['instances'], 0),
-                incidents: incidentsCount
+                incidents: incidentsCount,
               };
             }
 
             function getStatsWithId(activityInstanceStatistics, id) {
-              return activityInstanceStatistics.filter(function(entry) {
+              return activityInstanceStatistics.filter(function (entry) {
                 return entry.id === id;
               })[0];
             }
@@ -174,7 +175,7 @@ module.exports = [
                     'PLUGIN_ACTIVITY_INSTANCE_RUNNING_ACTIVITY_INSTANCES'
                   ),
                   placement: 'top',
-                  animation: false
+                  animation: false,
                 });
               }
 
@@ -186,15 +187,15 @@ module.exports = [
                     'PLUGIN_ACTIVITY_INSTANCE_OPEN_INCIDENTS'
                   ),
                   placement: 'top',
-                  animation: false
+                  animation: false,
                 });
               } else {
                 nodes.incidentsNode.hide();
               }
             }
-          }
-        ]
+          },
+        ],
       }
     );
-  }
+  },
 ];

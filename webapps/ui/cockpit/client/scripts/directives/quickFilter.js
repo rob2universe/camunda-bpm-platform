@@ -42,7 +42,7 @@ var template = fs.readFileSync(__dirname + '/quick-filter.html', 'utf8');
 
 var $ = require('jquery');
 
-module.exports = function() {
+module.exports = function () {
   /**
       determine if an element has to be schown
      */
@@ -73,14 +73,14 @@ module.exports = function() {
     scope: {
       holderSelector: '@',
       labelSelector: '@',
-      itemSelector: '@'
+      itemSelector: '@',
     },
 
     restrict: 'A',
 
     template: template,
 
-    link: function(scope, element, attrs) {
+    link: function (scope, element, attrs) {
       if (!scope.holderSelector) {
         throw new Error('A holder-selector attribute must be specified');
       }
@@ -104,7 +104,7 @@ module.exports = function() {
       scope.showNameFilter = typeof attrs.nameFilter !== 'undefined';
       scope.showStateFilter = typeof attrs.stateFilter !== 'undefined';
 
-      scope.search = function() {
+      scope.search = function () {
         if (
           scope.quickFilters &&
           scope.quickFilters.running &&
@@ -139,21 +139,21 @@ module.exports = function() {
           completed:
             !!scope.showStateFilter &&
             !!scope.quickFilters.completed &&
-            !!scope.quickFilters.completed.$viewValue
+            !!scope.quickFilters.completed.$viewValue,
         };
 
-        $(scope.itemSelector, $holder).each(function() {
+        $(scope.itemSelector, $holder).each(function () {
           var $el = $(this);
           var visible = showElement(states, searched, $el);
           $el[visible ? 'show' : 'hide']();
         });
       };
 
-      scope.clearName = function() {
+      scope.clearName = function () {
         scope.quickFilters.name.$setViewValue('');
         scope.quickFilters.name.$render();
         scope.search();
       };
-    }
+    },
   };
 };

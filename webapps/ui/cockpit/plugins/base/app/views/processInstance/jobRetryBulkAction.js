@@ -28,29 +28,29 @@ var actionTemplate = fs.readFileSync(
   'utf8'
 );
 
-module.exports = function(ngModule) {
+module.exports = function (ngModule) {
   ngModule.controller('JobRetryActionController', [
     '$scope',
     '$uibModal',
-    function($scope, $modal) {
-      $scope.openDialog = function() {
+    function ($scope, $modal) {
+      $scope.openDialog = function () {
         $modal
           .open({
             resolve: {
-              processData: function() {
+              processData: function () {
                 return $scope.processData;
               },
-              processInstance: function() {
+              processInstance: function () {
                 return $scope.processInstance;
-              }
+              },
             },
             size: 'lg',
             controller: 'JobRetriesController',
-            template: dialogTemplate
+            template: dialogTemplate,
           })
-          .result.catch(function() {});
+          .result.catch(function () {});
       };
-    }
+    },
   ]);
 
   var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -61,7 +61,7 @@ module.exports = function(ngModule) {
         label: 'Job Retry Action',
         template: actionTemplate,
         controller: 'JobRetryActionController',
-        priority: 15
+        priority: 15,
       }
     );
   };

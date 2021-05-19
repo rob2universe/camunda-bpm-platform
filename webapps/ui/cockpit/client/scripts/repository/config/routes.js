@@ -26,12 +26,12 @@ var template = fs.readFileSync(
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/repository', {
       template: template,
       controller: 'camCockpitRepositoryViewCtrl',
       authentication: 'required',
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];

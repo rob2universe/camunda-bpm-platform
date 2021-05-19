@@ -30,7 +30,7 @@ var DEFAULT_OPTIONS = {
   hideLoadVariablesButton: false,
   disableCompleteButton: false,
   disableForm: false,
-  disableAddVariableButton: false
+  disableAddVariableButton: false,
 };
 
 var Controller = [
@@ -39,7 +39,7 @@ var Controller = [
   '$q',
   'camAPI',
   'assignNotification',
-  function($scope, $location, $q, camAPI, assignNotification) {
+  function ($scope, $location, $q, camAPI, assignNotification) {
     // setup ///////////////////////////////////////////////////////////
     $scope.loadingState = 'LOADING';
 
@@ -53,7 +53,7 @@ var Controller = [
 
     taskFormData.provide('taskForm', [
       'task',
-      function(task) {
+      function (task) {
         var deferred = $q.defer();
 
         // Nothing changed, return already loaded form
@@ -67,7 +67,7 @@ var Controller = [
           return deferred.resolve(null);
         }
 
-        Task.form(task.id, function(err, res) {
+        Task.form(task.id, function (err, res) {
           if (err) {
             $scope.loadingState = 'ERROR';
             deferred.reject(err);
@@ -78,7 +78,7 @@ var Controller = [
         });
 
         return deferred.promise;
-      }
+      },
     ]);
 
     // observer ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ var Controller = [
     taskFormData.observe([
       'task',
       'isAssignee',
-      function(task, isAssignee) {
+      function (task, isAssignee) {
         if (task && task.id) {
           if (task.id !== $scope.task.id) {
             // Only reset options when the task changed, not on assignment
@@ -98,7 +98,7 @@ var Controller = [
             caseDefinitionId: task.caseDefinitionId,
             caseInstanceId: task.caseInstanceId,
             processDefinitionId: task.processDefinitionId,
-            processInstanceId: task.processInstanceId
+            processInstanceId: task.processInstanceId,
           };
         } else {
           $scope.params = null;
@@ -107,10 +107,10 @@ var Controller = [
         $scope.options.disableCompleteButton = !isAssignee;
         $scope.options.disableForm = !isAssignee;
         $scope.options.disableAddVariableButton = !isAssignee;
-      }
+      },
     ]);
 
-    taskFormData.observe('taskForm', function(taskForm) {
+    taskFormData.observe('taskForm', function (taskForm) {
       if (!angular.equals(taskForm, $scope.taskForm)) {
         $scope.taskForm = angular.copy(taskForm);
       }
@@ -136,7 +136,7 @@ var Controller = [
     }
 
     // will be called when the form has been submitted
-    $scope.completionCallback = function(err) {
+    $scope.completionCallback = function (err) {
       if (err) {
         return errorHandler('COMPLETE_ERROR', err);
       }
@@ -145,19 +145,19 @@ var Controller = [
         assignNotification({
           assignee: $scope.task.assignee,
           processInstanceId: $scope.task.processInstanceId,
-          maxResults: 15
+          maxResults: 15,
         });
       } else if ($scope.task.caseInstanceId) {
         assignNotification({
           assignee: $scope.task.assignee,
           caseInstanceId: $scope.task.caseInstanceId,
-          maxResults: 15
+          maxResults: 15,
         });
       }
 
       clearTask();
     };
-  }
+  },
 ];
 
 var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -166,7 +166,7 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     label: 'FORM',
     template: template,
     controller: Controller,
-    priority: 1000
+    priority: 1000,
   });
 };
 

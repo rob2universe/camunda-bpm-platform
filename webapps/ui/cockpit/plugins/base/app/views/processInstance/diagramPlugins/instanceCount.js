@@ -22,7 +22,7 @@ var instanceCount = require('../../common/diagramPlugins/instanceCount');
 
 module.exports = [
   'ViewsProvider',
-  function(ViewsProvider) {
+  function (ViewsProvider) {
     ViewsProvider.registerDefaultView(
       'cockpit.processInstance.diagram.plugin',
       {
@@ -36,7 +36,7 @@ module.exports = [
           '$filter',
           '$rootScope',
           '$translate',
-          function(
+          function (
             $scope,
             control,
             processData,
@@ -50,7 +50,7 @@ module.exports = [
               observe: observe,
               getData: getInstancesCountsForElement,
               updateOverlayNodes: updateOverlayNodes,
-              isActive: isActive
+              isActive: isActive,
             };
 
             instanceCount(
@@ -70,10 +70,10 @@ module.exports = [
             function observe(callback) {
               processData.observe(
                 ['activityIdToInstancesMap', 'activityIdToIncidentIdMap'],
-                function(activityIdToInstancesMap, activityIdToIncidentIdMap) {
+                function (activityIdToInstancesMap, activityIdToIncidentIdMap) {
                   callback([
                     activityIdToInstancesMap,
-                    activityIdToIncidentIdMap
+                    activityIdToIncidentIdMap,
                   ]);
                 }
               );
@@ -104,10 +104,10 @@ module.exports = [
               return {
                 instanceCount: getInstanceCount({
                   instances: instances,
-                  instancesMI: instancesMI
+                  instancesMI: instancesMI,
                 }),
                 incidents: incidents.length || incidentsMI.length,
-                multiInstance: multiInstance
+                multiInstance: multiInstance,
               };
             }
 
@@ -120,7 +120,7 @@ module.exports = [
 
               if (data.instancesMI) {
                 count +=
-                  data.instancesMI.filter(function(instance) {
+                  data.instancesMI.filter(function (instance) {
                     return instance.isTransitionInstance;
                   }).length || 0;
               }
@@ -147,7 +147,7 @@ module.exports = [
                     'PLUGIN_ACTIVITY_INSTANCE_RUNNING_ACTIVITY_INSTANCES'
                   ),
                   placement: 'top',
-                  animation: false
+                  animation: false,
                 });
               }
 
@@ -161,13 +161,13 @@ module.exports = [
                     'PLUGIN_ACTIVITY_INSTANCE_OPEN_INCIDENTS'
                   ),
                   placement: 'top',
-                  animation: false
+                  animation: false,
                 });
               }
             }
-          }
-        ]
+          },
+        ],
       }
     );
-  }
+  },
 ];

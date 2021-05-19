@@ -27,12 +27,12 @@ var ctrl = require('../controllers/view-ctrl');
 
 module.exports = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/batch', {
       template: template,
       controller: ctrl,
       authentication: 'required',
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];

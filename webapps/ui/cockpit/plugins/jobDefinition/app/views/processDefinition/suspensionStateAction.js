@@ -36,20 +36,20 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
     controller: [
       '$scope',
       '$uibModal',
-      function($scope, $modal) {
-        $scope.openSuspensionStateDialog = function(jobDefinition) {
+      function ($scope, $modal) {
+        $scope.openSuspensionStateDialog = function (jobDefinition) {
           var dialog = $modal.open({
             resolve: {
-              jobDefinition: function() {
+              jobDefinition: function () {
                 return jobDefinition;
-              }
+              },
             },
             controller: 'JobDefinitionSuspensionStateController',
-            template: dialogTemplate
+            template: dialogTemplate,
           });
 
           dialog.result
-            .then(function(result) {
+            .then(function (result) {
               // dialog closed. YEA!
               if (result.status === 'SUCCESS') {
                 if (result.executeImmediately) {
@@ -64,9 +64,9 @@ var Configuration = function PluginConfiguration(ViewsProvider) {
             })
             .catch(angular.noop);
         };
-      }
+      },
     ],
-    priority: 50
+    priority: 50,
   });
 };
 

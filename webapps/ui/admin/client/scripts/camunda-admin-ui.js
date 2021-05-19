@@ -35,7 +35,7 @@ var $ = (window.jQuery = window.$ = require('jquery')),
 
 var APP_NAME = 'cam.admin';
 
-module.exports = function(pluginDependencies) {
+module.exports = function (pluginDependencies) {
   var ngDependencies = [
     'ng',
     'ngResource',
@@ -45,9 +45,9 @@ module.exports = function(pluginDependencies) {
     filtersModule.name,
     pagesModule.name,
     resourcesModule.name,
-    servicesModule.name
+    servicesModule.name,
   ].concat(
-    pluginDependencies.map(function(el) {
+    pluginDependencies.map(function (el) {
       return el.ngModuleName;
     })
   );
@@ -71,7 +71,7 @@ module.exports = function(pluginDependencies) {
     '$locationProvider',
     '$animateProvider',
     '$qProvider',
-    function(
+    function (
       $routeProvider,
       UriProvider,
       $modalProvider,
@@ -94,7 +94,7 @@ module.exports = function(pluginDependencies) {
 
       UriProvider.replace(':engine', [
         '$window',
-        function($window) {
+        function ($window) {
           var uri = $window.location.href;
 
           var match = uri.match(/\/app\/admin\/([\w-]+)(|\/)/);
@@ -103,19 +103,19 @@ module.exports = function(pluginDependencies) {
           } else {
             throw new Error('no process engine selected');
           }
-        }
+        },
       ]);
 
       $modalProvider.options = {
         animation: true,
         backdrop: true,
-        keyboard: true
+        keyboard: true,
       };
 
       $tooltipProvider.options({
         animation: true,
         popupDelay: 100,
-        appendToBody: true
+        appendToBody: true,
       });
 
       $locationProvider.hashPrefix('');
@@ -123,7 +123,7 @@ module.exports = function(pluginDependencies) {
       $animateProvider.classNameFilter(/angular-animate/);
 
       $qProvider.errorOnUnhandledRejections(false);
-    }
+    },
   ];
 
   appNgModule.provider(
@@ -146,7 +146,7 @@ module.exports = function(pluginDependencies) {
     '$scope',
     '$route',
     'camAPI',
-    function($scope, $route, camAPI) {
+    function ($scope, $route, camAPI) {
       var userService = camAPI.resource('user');
       function getUserProfile(auth) {
         if (!auth || !auth.name) {
@@ -154,14 +154,14 @@ module.exports = function(pluginDependencies) {
           return;
         }
 
-        userService.profile(auth.name, function(err, info) {
+        userService.profile(auth.name, function (err, info) {
           if (!err) {
             $scope.userFullName = info.firstName + ' ' + info.lastName;
           }
         });
       }
 
-      $scope.$on('authentication.changed', function(ev, auth) {
+      $scope.$on('authentication.changed', function (ev, auth) {
         if (auth) {
           getUserProfile(auth);
         } else {
@@ -170,7 +170,7 @@ module.exports = function(pluginDependencies) {
       });
 
       getUserProfile($scope.authentication);
-    }
+    },
   ]);
 
   require('../../../common/scripts/services/plugins/addPlugins')(
@@ -178,10 +178,10 @@ module.exports = function(pluginDependencies) {
     appNgModule,
     'admin'
   ).then(() => {
-    $(document).ready(function() {
+    $(document).ready(function () {
       angular.bootstrap(document.documentElement, [
         appNgModule.name,
-        'cam.admin.custom'
+        'cam.admin.custom',
       ]);
 
       if (top !== window) {
@@ -191,7 +191,7 @@ module.exports = function(pluginDependencies) {
   });
 };
 
-module.exports.exposePackages = function(requirePackages) {
+module.exports.exposePackages = function (requirePackages) {
   requirePackages.angular = angular;
   requirePackages.jquery = $;
   requirePackages['camunda-commons-ui'] = camCommonsUi;

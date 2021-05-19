@@ -23,16 +23,16 @@ var template = fs.readFileSync(
   'utf8'
 );
 
-var noop = function() {};
+var noop = function () {};
 
 module.exports = [
-  function() {
+  function () {
     return {
       restrict: 'A',
       scope: {
         filtersData: '=',
         openModal: '&',
-        userCanCreateFilter: '='
+        userCanCreateFilter: '=',
       },
 
       template: template,
@@ -44,15 +44,14 @@ module.exports = [
         'Uri',
         'Notifications',
         '$translate',
-        function($scope, search, camAPI, Uri, Notifications, $translate) {
-          var filtersData = ($scope.filtersData = $scope.filtersData.newChild(
-            $scope
-          ));
+        function ($scope, search, camAPI, Uri, Notifications, $translate) {
+          var filtersData = ($scope.filtersData =
+            $scope.filtersData.newChild($scope));
 
           var page = ($scope.page = {
             total: 0,
             current: search().filterPage || 1,
-            size: 50
+            size: 50,
           });
 
           function updateView() {
@@ -61,7 +60,7 @@ module.exports = [
               page.current * page.size
             );
             search.updateSilently({
-              filterPage: page.current === 1 ? null : page.current
+              filterPage: page.current === 1 ? null : page.current,
             });
           }
 
@@ -87,23 +86,23 @@ module.exports = [
           /**
            * observe the count for the current filter
            */
-          filtersData.observe('taskList', function(taskList) {
+          filtersData.observe('taskList', function (taskList) {
             $scope.filterCount = taskList.count;
           });
 
           /**
            * observe list of filters to set the background-color on a filter
            */
-          $scope.state = filtersData.observe('filters', function(filters) {
+          $scope.state = filtersData.observe('filters', function (filters) {
             page.total = $scope.totalItems = filters.length;
 
             for (var i = 0, filter; (filter = filters[i]); i++) {
               filter.style = {
-                'z-index': filters.length + 10 - i
+                'z-index': filters.length + 10 - i,
               };
             }
 
-            $scope.allFilters = filters.sort(function(a, b) {
+            $scope.allFilters = filters.sort(function (a, b) {
               return (
                 (a.properties.priority || 0) - (b.properties.priority || 0)
               );
@@ -111,10 +110,10 @@ module.exports = [
             updateView();
           });
 
-          $scope.onPaginationchange = function() {
+          $scope.onPaginationchange = function () {
             updateView();
           };
-          filtersData.observe('currentFilter', function(currentFilter) {
+          filtersData.observe('currentFilter', function (currentFilter) {
             $scope.currentFilter = currentFilter;
           });
 
@@ -123,11 +122,11 @@ module.exports = [
           /**
            * select a filter
            */
-          $scope.focus = function(filter) {
+          $scope.focus = function (filter) {
             $scope.filterCount = undefined;
 
             search.updateSilently({
-              filter: filter.id
+              filter: filter.id,
             });
 
             filtersData.changed('currentFilter');
@@ -136,7 +135,7 @@ module.exports = [
           /**
            * returns true if the provided filter is the focused filter
            */
-          $scope.isFocused = function(filter) {
+          $scope.isFocused = function (filter) {
             return filter.id === $scope.currentFilter.id;
           };
 
@@ -144,9 +143,9 @@ module.exports = [
            * Add initial 'All' filter
            */
 
-          $scope.addAllFilter = function() {
+          $scope.addAllFilter = function () {
             return $translate('ALL_TASKS')
-              .then(function(translated) {
+              .then(function (translated) {
                 var payload = {
                   name: translated,
                   resourceType: 'Task',
@@ -156,27 +155,27 @@ module.exports = [
                     priority: 1,
                     color: '#555555',
                     refresh: false,
-                    howUndefinedVariable: false
-                  }
+                    howUndefinedVariable: false,
+                  },
                 };
                 return filterResource.create(payload);
               })
-              .then(function() {
+              .then(function () {
                 $scope.filtersData.changed('filters');
               })
-              .catch(function(err) {
+              .catch(function (err) {
                 return $translate('FILTER_SAVE_ERROR')
-                  .then(function(translated) {
+                  .then(function (translated) {
                     Notifications.addError({
                       status: translated,
-                      message: err.message || ''
+                      message: err.message || '',
                     });
                   })
-                  .catch(function() {});
+                  .catch(function () {});
               });
           };
-        }
-      ]
+        },
+      ],
     };
-  }
+  },
 ];

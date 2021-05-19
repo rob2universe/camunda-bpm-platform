@@ -22,7 +22,7 @@ var angular = require('angular');
 
 var template = fs.readFileSync(__dirname + '/instanceCount.html', 'utf8');
 
-module.exports = function(
+module.exports = function (
   $scope,
   control,
   processData,
@@ -38,10 +38,10 @@ module.exports = function(
   var stopLoading = Loaders.startLoading();
   var overlaysNodes = {};
 
-  callbacks.observe(function(sources) {
+  callbacks.observe(function (sources) {
     stopLoading();
 
-    elementRegistry.forEach(function(shape) {
+    elementRegistry.forEach(function (shape) {
       var element = processDiagram.bpmnElements[shape.businessObject.id];
       var data = callbacks.getData.apply(null, [element].concat(sources));
       var nodes;
@@ -53,13 +53,13 @@ module.exports = function(
           overlays.add(element.id, {
             position: {
               bottom: 0,
-              left: 0
+              left: 0,
             },
             show: {
               minZoom: -Infinity,
-              maxZoom: +Infinity
+              maxZoom: +Infinity,
             },
-            html: nodes.html
+            html: nodes.html,
           });
 
           overlaysNodes[element.id] = nodes;
@@ -84,19 +84,19 @@ module.exports = function(
     var nodes = {
       html: html,
       instancesNode: html.find('.instance-count'),
-      incidentsNode: html.find('.instance-incidents')
+      incidentsNode: html.find('.instance-incidents'),
     };
 
     html.on('click', clickListener);
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
       html.off('click', clickListener);
     });
 
     return nodes;
   }
 
-  var currentFilter = processData.observe('filter', function(filter) {
+  var currentFilter = processData.observe('filter', function (filter) {
     currentFilter = filter;
   });
 
@@ -137,7 +137,7 @@ module.exports = function(
 
     newFilter.activityIds = activityIds;
 
-    $scope.$apply(function() {
+    $scope.$apply(function () {
       processData.set('filter', newFilter);
     });
   }

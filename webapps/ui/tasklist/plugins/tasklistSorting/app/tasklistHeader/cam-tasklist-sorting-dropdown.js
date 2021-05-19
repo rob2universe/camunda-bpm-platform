@@ -25,7 +25,7 @@ var template = fs.readFileSync(
 
 module.exports = [
   '$translate',
-  function($translate) {
+  function ($translate) {
     return {
       restrict: 'A',
 
@@ -37,24 +37,24 @@ module.exports = [
         options: '=',
         clickHandler: '&',
         change: '&',
-        resetFunction: '='
+        resetFunction: '=',
       },
 
-      link: function($scope) {
+      link: function ($scope) {
         $scope.change = $scope.$eval($scope.change);
 
         $scope.variable = {
           varName: '',
-          varType: 'Integer'
+          varType: 'Integer',
         };
 
-        $scope.hasOptions = function() {
+        $scope.hasOptions = function () {
           return $scope.options && Object.keys($scope.options).length > 0;
         };
 
         // --- CONTROL FUNCTIONS ---
         $scope.resetInputs = {};
-        $scope.resetFunction = function(id, type, value) {
+        $scope.resetFunction = function (id, type, value) {
           if ($scope.sortableVariables[id]) {
             $scope.focusedOn = id;
             $scope.variable.varType = type;
@@ -66,13 +66,13 @@ module.exports = [
           }
         };
 
-        $scope.handleClick = function(evt, name) {
+        $scope.handleClick = function (evt, name) {
           if ($scope.sortableVariables[name]) {
             $scope.clickHandler({
               $event: evt,
               id: name,
               type: $scope.variable.varType,
-              value: $scope.variable.varName
+              value: $scope.variable.varName,
             });
           } else {
             $scope.clickHandler({$event: evt, id: name});
@@ -84,15 +84,15 @@ module.exports = [
           executionVariable: $translate.instant('EXECUTION_VARIABLE'),
           taskVariable: $translate.instant('TASK_VARIABLE'),
           caseExecutionVariable: $translate.instant('CASE_EXECUTION_VARIABLE'),
-          caseInstanceVariable: $translate.instant('CASE_INSTANCE_VARIABLE')
+          caseInstanceVariable: $translate.instant('CASE_INSTANCE_VARIABLE'),
         };
 
-        $scope.showInputs = function($event, name) {
+        $scope.showInputs = function ($event, name) {
           $event.preventDefault();
           $event.stopPropagation();
           $scope.focusedOn = name;
         };
-      }
+      },
     };
-  }
+  },
 ];

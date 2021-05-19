@@ -34,22 +34,22 @@ module.exports = [
   '$uibModal',
   '$window',
   'Uri',
-  function($modal, $window, Uri) {
+  function ($modal, $window, Uri) {
     return {
       template: template,
 
       scope: {
         variables: '=',
-        filterProperties: '='
+        filterProperties: '=',
       },
 
-      link: function(scope) {
+      link: function (scope) {
         scope.variableDefinitions = [];
         scope.variablesByName = {};
         scope.expanded = false;
         scope.shownVariablesCount = 0;
 
-        scope.showValue = function(variable, $event) {
+        scope.showValue = function (variable, $event) {
           $event.preventDefault();
           $event.stopPropagation();
           $modal
@@ -59,17 +59,17 @@ module.exports = [
               windowClass: 'variable-modal-detail',
 
               resolve: {
-                details: function() {
+                details: function () {
                   return variable;
-                }
+                },
               },
 
-              controller: 'camTasklistVariablesDetailsModalCtrl'
+              controller: 'camTasklistVariablesDetailsModalCtrl',
             })
             .result.catch(angular.noop);
         };
 
-        scope.download = function(variable, $event) {
+        scope.download = function (variable, $event) {
           $event.preventDefault();
           $event.stopPropagation();
           var link = variable._links.self.href + '/data';
@@ -82,7 +82,7 @@ module.exports = [
 
           // building an object on which keys are name of variables is more efficient
           // than calling a function which would iterate every time.
-          angular.forEach(scope.variables, function(variable) {
+          angular.forEach(scope.variables, function (variable) {
             scope.variablesByName[variable.name] = variable;
           });
 
@@ -92,7 +92,7 @@ module.exports = [
               : scope.variablesByName
           ).length;
         }
-      }
+      },
     };
-  }
+  },
 ];

@@ -28,30 +28,30 @@ var actionTemplate = fs.readFileSync(
   'utf8'
 );
 
-module.exports = function(ngModule) {
+module.exports = function (ngModule) {
   ngModule.controller('CancelProcessInstanceActionController', [
     '$scope',
     'search',
     'Uri',
     '$uibModal',
-    function($scope, search, Uri, $modal) {
-      $scope.openDialog = function() {
+    function ($scope, search, Uri, $modal) {
+      $scope.openDialog = function () {
         $modal
           .open({
             resolve: {
-              processData: function() {
+              processData: function () {
                 return $scope.processData;
               },
-              processInstance: function() {
+              processInstance: function () {
                 return $scope.processInstance;
-              }
+              },
             },
             controller: 'CancelProcessInstanceController',
-            template: dialogTemplate
+            template: dialogTemplate,
           })
-          .result.catch(function() {});
+          .result.catch(function () {});
       };
-    }
+    },
   ]);
 
   var Configuration = function PluginConfiguration(ViewsProvider) {
@@ -62,7 +62,7 @@ module.exports = function(ngModule) {
         label: 'PLUGIN_CANCEL_PROCESS_DELETE_ACTION',
         template: actionTemplate,
         controller: 'CancelProcessInstanceActionController',
-        priority: 20
+        priority: 20,
       }
     );
   };

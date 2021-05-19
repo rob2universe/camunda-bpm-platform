@@ -18,14 +18,14 @@
 'use strict';
 
 var angular = require('../../../../../camunda-commons-ui/vendor/angular');
-var debouncePromiseFactory = require('camunda-bpm-sdk-js').utils
-  .debouncePromiseFactory;
+var debouncePromiseFactory =
+  require('camunda-bpm-sdk-js').utils.debouncePromiseFactory;
 var debouncePromise = debouncePromiseFactory();
 
 module.exports = [
   'camAPI',
   'createListQueryFunction',
-  function(camAPI, createListQueryFunction) {
+  function (camAPI, createListQueryFunction) {
     var externalTasks = camAPI.resource('external-task');
     var getExternalTasks = createListQueryFunction(
       externalTasks.count.bind(externalTasks),
@@ -33,7 +33,7 @@ module.exports = [
     );
 
     return {
-      getActiveExternalTasksForProcess: getActiveExternalTasksForProcess
+      getActiveExternalTasksForProcess: getActiveExternalTasksForProcess,
     };
 
     function getActiveExternalTasksForProcess(
@@ -52,5 +52,5 @@ module.exports = [
         )
       );
     }
-  }
+  },
 ];

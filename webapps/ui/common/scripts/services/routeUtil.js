@@ -29,13 +29,13 @@ var routeUtil = require('./../util/routeUtil');
  * @module cam.cockpit.services.routeUtil
  */
 module.exports = [
-  function() {
+  function () {
     return {
-      redirectToRuntime: function(params, currentPath, currentSearch) {
+      redirectToRuntime: function (params, currentPath, currentSearch) {
         return routeUtil.redirectToRuntime(params, currentPath, currentSearch);
       },
 
-      replaceLastPathFragment: function(
+      replaceLastPathFragment: function (
         replacement,
         currentPath,
         currentSearch,
@@ -49,13 +49,13 @@ module.exports = [
         );
       },
 
-      redirectTo: function(redirectUrl, currentSearch, keepSearchParams) {
+      redirectTo: function (redirectUrl, currentSearch, keepSearchParams) {
         return routeUtil.redirectTo(
           redirectUrl,
           currentSearch,
           keepSearchParams
         );
-      }
+      },
     };
-  }
+  },
 ];

@@ -33,7 +33,7 @@ var Controller = [
   '$translate',
   'camAPI',
   'operation',
-  function(
+  function (
     $modalInstance,
     $scope,
     Notifications,
@@ -59,13 +59,13 @@ var Controller = [
       'Null',
       'Object',
       'Json',
-      'Xml'
+      'Xml',
     ];
 
     var newVariable = ($scope.newVariable = {
       name: null,
       type: 'String',
-      value: null
+      value: null,
     });
 
     var PERFORM_SAVE = 'PERFORM_SAVE',
@@ -75,15 +75,15 @@ var Controller = [
     var processInstance = camAPI.resource('process-instance');
     var caseInstance = camAPI.resource('case-instance');
 
-    $scope.$on('$routeChangeStart', function() {
+    $scope.$on('$routeChangeStart', function () {
       $modalInstance.close($scope.status);
     });
 
-    $scope.close = function() {
+    $scope.close = function () {
       $modalInstance.close($scope.status);
     };
 
-    var isValid = ($scope.isValid = function() {
+    var isValid = ($scope.isValid = function () {
       // that's a pity... I do not get why,
       // but getting the form scope is.. kind of random
       // m2c: it has to do with the `click event`
@@ -94,7 +94,7 @@ var Controller = [
         : false;
     });
 
-    $scope.save = function() {
+    $scope.save = function () {
       if (!isValid()) {
         return;
       }
@@ -104,14 +104,14 @@ var Controller = [
       var data = angular.extend({}, newVariable);
 
       if (operation.variables) {
-        operation.variables = operation.variables.filter(variable => {
+        operation.variables = operation.variables.filter((variable) => {
           return data.name !== variable.variable.name;
         });
 
         operation.variables.push({
           variable: data,
           valid: true,
-          changed: false
+          changed: false,
         });
 
         $scope.$root.$broadcast('variable.added');
@@ -125,7 +125,7 @@ var Controller = [
         var instanceAPI = isProcessInstance ? processInstance : caseInstance;
         instanceAPI
           .setVariable(instance.id, data)
-          .then(function() {
+          .then(function () {
             $scope.status = SUCCESS;
 
             Notifications.addMessage({
@@ -133,12 +133,12 @@ var Controller = [
                 'VARIABLE_ADD_MESSAGE_STATUS_FINISHED'
               ),
               message: $translate.instant('VARIABLE_ADD_MESSAGE_MESSAGE_ADD', {
-                name: data.name
+                name: data.name,
               }),
-              exclusive: true
+              exclusive: true,
             });
           })
-          .catch(function(data) {
+          .catch(function (data) {
             $scope.status = FAIL;
 
             Notifications.addError({
@@ -148,18 +148,18 @@ var Controller = [
               message: $translate.instant(
                 'VARIABLE_ADD_MESSAGE_MESSAGE_ERROR',
                 {
-                  message: data.message
+                  message: data.message,
                 }
               ),
-              exclusive: true
+              exclusive: true,
             });
           });
       }
     };
-  }
+  },
 ];
 
 module.exports = {
   template: template,
-  controller: Controller
+  controller: Controller,
 };

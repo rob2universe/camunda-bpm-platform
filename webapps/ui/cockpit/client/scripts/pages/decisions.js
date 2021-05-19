@@ -26,7 +26,7 @@ var Controller = [
   'Views',
   'page',
   '$translate',
-  function($scope, Views, page, $translate) {
+  function ($scope, Views, page, $translate) {
     var $rootScope = $scope.$root;
 
     $rootScope.showBreadcrumbs = true;
@@ -34,28 +34,28 @@ var Controller = [
     page.breadcrumbsClear();
 
     page.breadcrumbsAdd({
-      label: $translate.instant('DECISION_INSTANCE_DECISIONS')
+      label: $translate.instant('DECISION_INSTANCE_DECISIONS'),
     });
 
     page.titleSet($translate.instant('DECISION_INSTANCE_DECISIONS'));
 
     // INITIALIZE PLUGINS
     $scope.plugins = Views.getProviders({
-      component: 'cockpit.decisions.dashboard'
+      component: 'cockpit.decisions.dashboard',
     });
-  }
+  },
 ];
 
 var RouteConfig = [
   '$routeProvider',
-  function($routeProvider) {
+  function ($routeProvider) {
     $routeProvider.when('/decisions', {
       template: template,
       controller: Controller,
       authentication: 'required',
-      reloadOnSearch: false
+      reloadOnSearch: false,
     });
-  }
+  },
 ];
 
 module.exports = RouteConfig;

@@ -22,7 +22,7 @@ function getCSRFToken(CSRFCookieName) {
   );
 }
 
-module.exports = function(params, CSRFCookieName = 'XSRF-TOKEN', appName) {
+module.exports = function (params, CSRFCookieName = 'XSRF-TOKEN', appName) {
   const base = document.querySelector('base');
   const regex = new RegExp(`.*${appName}\/([^/]*).*`);
   const engine = window.location.href.replace(regex, '$1');
@@ -35,8 +35,8 @@ module.exports = function(params, CSRFCookieName = 'XSRF-TOKEN', appName) {
       tasklistApi: base.getAttribute('tasklist-api').slice(0, -1),
       engineApi: base.getAttribute('engine-api') + 'engine/' + engine,
       engine,
-      CSRFToken: getCSRFToken(CSRFCookieName)
+      CSRFToken: getCSRFToken(CSRFCookieName),
     },
-    ...params
+    ...params,
   };
 };
