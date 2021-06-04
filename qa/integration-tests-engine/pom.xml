@@ -377,6 +377,9 @@
                 <!-- CAM-1778 -->
                 <exclude>**/TestWarDeploymentWithProcessEnginePlugin.java</exclude>
                 <exclude>**/TestWarDeploymentWithProcessEnginePlugin.exclude</exclude>
+                <exludes>**/JavascriptScriptEngineWithSpinPluginSupportTest.java</exludes>
+                <exludes>**/JavascriptScriptEngineWithSpinPluginSupportNashornTest.java</exludes>
+                <exludes>**/JavascriptScriptEngineWithSpinPluginSupportGraalJsTest.java</exludes>
               </excludes>
               <redirectTestOutputToFile>${redirect.test.output}</redirectTestOutputToFile>
             </configuration>
@@ -491,6 +494,9 @@
                 <exclude>**/BusinessRuleTaskVersionTagTest.java</exclude>
                 <!-- CAM-1778 -->
                 <exludes>**/TestWarDeploymentWithProcessEnginePlugin.java</exludes>
+                <exludes>**/JavascriptScriptEngineWithSpinPluginSupportTest.java</exludes>
+                <exludes>**/JavascriptScriptEngineWithSpinPluginSupportNashornTest.java</exludes>
+                <exludes>**/JavascriptScriptEngineWithSpinPluginSupportGraalJsTest.java</exludes>
               </excludes>
               <redirectTestOutputToFile>${redirect.test.output}</redirectTestOutputToFile>
             </configuration>

@@ -14,23 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.camunda.bpm.engine.impl.scripting.engine;
+package org.camunda.bpm.integrationtest.functional.scriptengine;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-public interface ScriptEngineResolver {
+/**
+ * @author Sebastian Menski
+ */
+public class JavascriptScriptEngineWithSpinPluginSupportTest extends AbstractScriptEngineSupportTest {
 
-  void addScriptEngineFactory(ScriptEngineFactory scriptEngineFactory);
+  @Deployment
+  public static WebArchive createProcessApplication() {
+    return initWebArchiveDeployment()
+      .addClass(AbstractScriptEngineSupportTest.class)
+      .addAsResource(createScriptTaskProcess("javascript", EXAMPLE_SPIN_SCRIPT), "process.bpmn20.xml");
+  }
 
-  ScriptEngineManager getScriptEngineManager();
-
-  /**
-   * Returns a cached script engine or creates a new script engine if no such engine is currently cached.
-   *
-   * @param language the language (such as 'groovy' for the script engine)
-   * @return the cached engine or null if no script engine can be created for the given language
-   */
-  ScriptEngine getScriptEngine(String language, boolean resolveFromCache);
 }
